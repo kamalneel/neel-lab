@@ -1,0 +1,11 @@
+{
+  "name": "neel-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Neel's Lab - Tech Tools for Friends & Family",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'Static site - no build needed'"
+  }
+}
+
