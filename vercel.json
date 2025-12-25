@@ -2,7 +2,7 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/optionpundit", "destination": "/optionpundit/index.html" },
+    { "source": "/optionpundit/(.*)", "destination": "/optionpundit/index.html" }
   ]
 }
-

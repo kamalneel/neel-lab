@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="OptionPundit - Your Options Strategy Advisor. Get smart recommendations for rolling, closing, and managing your options positions." />
+    <meta name="theme-color" content="#0D0D0D" />
+    
+    <!-- Fonts (matching Agrawal Estate Planner) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <title>OptionPundit - Your Options Strategy Advisor</title>
+    
+    <style>
+      /* Critical CSS for fast load */
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0D0D0D;
+        font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Loading state */
+      .loading-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        color: #FFFFFF;
+        background: radial-gradient(ellipse at 30% 20%, rgba(0, 214, 50, 0.06) 0%, transparent 50%), #0D0D0D;
+      }
+      
+      .loading-screen img {
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-Co91CcFC.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CGHaQ6Uq.css">
+  </head>
+  <body>
+    <div id="root">
+      <!-- Loading state shown before React hydrates -->
+      <div class="loading-screen">
+        <img src="./logo.png" alt="OptionPundit" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 16px;" />
+        <div>Loading OptionPundit...</div>
+      </div>
+    </div>
+  </body>
+</html>
