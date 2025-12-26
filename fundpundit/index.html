@@ -376,6 +376,42 @@
       letter-spacing: 2px;
     }
 
+    /* Blocked Fund Styles */
+    .blocked-row {
+      opacity: 0.5;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .blocked-row td {
+      color: var(--color-text-tertiary) !important;
+    }
+
+    .blocked-row .positive,
+    .blocked-row .negative {
+      color: var(--color-text-tertiary) !important;
+    }
+
+    .blocked-row .nrank-badge {
+      opacity: 0.6;
+    }
+
+    .blocked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      background: rgba(255, 90, 90, 0.15);
+      color: var(--color-negative);
+      border: 1px solid rgba(255, 90, 90, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: var(--space-2);
+      white-space: nowrap;
+    }
+
     /* Category Badge */
     .category-badge {
       display: inline-block;
@@ -615,6 +651,14 @@
         <button class="filter-btn" data-category="Flexi Cap">Flexi Cap</button>
         <button class="filter-btn" data-category="ELSS">ELSS (Tax Saver)</button>
         <button class="filter-btn" data-category="International">International</button>
+      </div>
+      
+      <!-- Legend -->
+      <div style="display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-3); font-size: 0.75rem; color: var(--color-text-tertiary);">
+        <span style="display: flex; align-items: center; gap: var(--space-2);">
+          <span class="blocked-badge" style="margin: 0;">🚫 Blocked</span>
+          = Temporarily blocked for new purchases (RBI restrictions on international funds)
+        </span>
       </div>
 
       <!-- Fund Table -->
@@ -998,13 +1042,13 @@
     // ═══════════════════════════════════════════════════════════════
 
     const sampleFunds = [
+      // Active funds
       { name: "Parag Parikh Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 45000, expense: 0.63, return1y: 28.5, return3y: 22.1, return5y: 21.4, sharpe: 1.42, alpha: 5.2, volatility: 14.2, vrRating: 5, age: 12, isDirect: true, sector: "International" },
       { name: "Mirae Asset Large Cap Fund - Direct", category: "Large Cap", aum: 35000, expense: 0.52, return1y: 18.2, return3y: 15.8, return5y: 16.2, sharpe: 1.15, alpha: 2.8, volatility: 13.8, vrRating: 5, age: 15, isDirect: true },
       { name: "Axis Small Cap Fund - Direct", category: "Small Cap", aum: 15000, expense: 0.48, return1y: 32.4, return3y: 28.6, return5y: 26.8, sharpe: 1.35, alpha: 8.1, volatility: 22.5, vrRating: 5, age: 8, isDirect: true },
       { name: "HDFC Mid-Cap Opportunities Fund - Direct", category: "Mid Cap", aum: 42000, expense: 0.78, return1y: 35.2, return3y: 26.4, return5y: 22.1, sharpe: 1.28, alpha: 6.4, volatility: 18.2, vrRating: 5, age: 14, isDirect: true },
       { name: "SBI Small Cap Fund - Direct", category: "Small Cap", aum: 22000, expense: 0.68, return1y: 29.8, return3y: 25.2, return5y: 24.5, sharpe: 1.22, alpha: 7.2, volatility: 23.1, vrRating: 5, age: 11, isDirect: true },
       { name: "Kotak Emerging Equity Fund - Direct", category: "Mid Cap", aum: 28000, expense: 0.55, return1y: 38.6, return3y: 28.1, return5y: 23.8, sharpe: 1.38, alpha: 7.8, volatility: 19.5, vrRating: 5, age: 9, isDirect: true },
-      { name: "Motilal Oswal Nasdaq 100 FOF - Direct", category: "International", aum: 8500, expense: 0.48, return1y: 22.4, return3y: 12.5, return5y: 18.2, sharpe: 0.95, alpha: 1.2, volatility: 18.8, vrRating: 4, age: 6, isDirect: true, sector: "US Tech" },
       { name: "Canara Robeco Bluechip Equity - Direct", category: "Large Cap", aum: 9800, expense: 0.42, return1y: 21.5, return3y: 17.2, return5y: 17.8, sharpe: 1.18, alpha: 3.5, volatility: 13.2, vrRating: 5, age: 10, isDirect: true },
       { name: "UTI Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 24000, expense: 0.95, return1y: 24.2, return3y: 18.5, return5y: 17.2, sharpe: 1.08, alpha: 2.1, volatility: 15.5, vrRating: 4, age: 18, isDirect: true },
       { name: "Nippon India Small Cap - Direct", category: "Small Cap", aum: 38000, expense: 0.82, return1y: 42.5, return3y: 32.4, return5y: 28.2, sharpe: 1.45, alpha: 9.5, volatility: 24.8, vrRating: 5, age: 12, isDirect: true },
@@ -1014,12 +1058,23 @@
       { name: "Mirae Asset ELSS Tax Saver - Direct", category: "ELSS", aum: 18500, expense: 0.48, return1y: 26.8, return3y: 18.5, return5y: 18.2, sharpe: 1.22, alpha: 4.2, volatility: 15.2, vrRating: 5, age: 8, isDirect: true },
       { name: "PGIM India Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 5200, expense: 0.42, return1y: 15.2, return3y: 8.5, return5y: 14.8, sharpe: 0.72, alpha: -1.2, volatility: 16.5, vrRating: 3, age: 6, isDirect: true },
       { name: "Franklin India Healthcare - Direct", category: "Healthcare", aum: 680, expense: 1.85, return1y: 42.8, return3y: 22.5, return5y: 18.2, sharpe: 1.12, alpha: 5.8, volatility: 19.2, vrRating: 4, age: 8, isDirect: true, sector: "Healthcare" },
+      
+      // BLOCKED FUNDS - Temporarily not available for purchase (international/US funds with RBI restrictions)
+      // N-Rank scores are as specified by user
+      { name: "Motilal Oswal Nasdaq 100 FOF - Direct", category: "International", aum: 8500, expense: 0.48, return1y: 28.5, return3y: 18.5, return5y: 22.2, sharpe: 1.25, alpha: 4.2, volatility: 18.8, vrRating: 5, age: 8, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 73 },
+      { name: "Edelweiss US Tech Equity - Direct", category: "International", aum: 2800, expense: 0.58, return1y: 22.5, return3y: 14.2, return5y: 18.8, sharpe: 1.05, alpha: 2.5, volatility: 20.2, vrRating: 4, age: 5, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 64 },
+      { name: "Edelweiss Europe Equity - Direct", category: "International", aum: 420, expense: 0.65, return1y: 18.8, return3y: 12.5, return5y: 15.2, sharpe: 0.88, alpha: 1.2, volatility: 18.5, vrRating: 4, age: 4, isDirect: true, sector: "International", blocked: true, nrankOverride: 58 },
+      { name: "Mirae Asset NYSE FANG+ ETF FOF - Direct", category: "International", aum: 3200, expense: 0.52, return1y: 18.2, return3y: 10.8, return5y: 16.5, sharpe: 0.82, alpha: 0.5, volatility: 22.8, vrRating: 4, age: 4, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 55 },
+      { name: "Axis Global Innovation Fund - Direct", category: "International", aum: 1850, expense: 0.72, return1y: 16.5, return3y: 9.2, return5y: 14.8, sharpe: 0.75, alpha: -0.2, volatility: 21.5, vrRating: 3, age: 3, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 53 },
+      { name: "Nippon India US Equity Opp - Direct", category: "International", aum: 580, expense: 0.88, return1y: 12.5, return3y: 7.2, return5y: 12.5, sharpe: 0.55, alpha: -1.5, volatility: 19.8, vrRating: 3, age: 5, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 43 },
+      { name: "ICICI Prudential US Equity - Direct", category: "International", aum: 2100, expense: 0.95, return1y: 10.2, return3y: 5.5, return5y: 10.8, sharpe: 0.45, alpha: -2.2, volatility: 20.5, vrRating: 3, age: 6, isDirect: true, sector: "US Tech", blocked: true, nrankOverride: 37 },
     ];
 
-    // Calculate N-Rank for all funds
+    // Calculate N-Rank for all funds (use override if provided)
     const fundsWithRank = sampleFunds.map(fund => {
       const { score, breakdown } = calculateNRank(fund);
-      return { ...fund, nrank: score, breakdown };
+      const finalScore = fund.nrankOverride !== undefined ? fund.nrankOverride : score;
+      return { ...fund, nrank: finalScore, breakdown };
     }).sort((a, b) => b.nrank - a.nrank);
 
     // ═══════════════════════════════════════════════════════════════
@@ -1047,14 +1102,18 @@
 
       tbody.innerHTML = filtered.map((fund, i) => {
         const tier = getNRankTier(fund.nrank);
+        const blockedBadge = fund.blocked ? '<span class="blocked-badge">🚫 Blocked</span>' : '';
+        const rowClass = fund.blocked ? 'blocked-row' : '';
         return `
-          <tr>
+          <tr class="${rowClass}">
             <td>
               <span class="nrank-badge ${tier.class}" onclick="showBreakdown(${fundsWithRank.indexOf(fund)})" title="Click for breakdown">
                 ${fund.nrank}
               </span>
             </td>
-            <td style="max-width: 280px; white-space: normal;">${fund.name}</td>
+            <td style="max-width: 280px; white-space: normal;">
+              ${fund.name}${blockedBadge}
+            </td>
             <td><span class="category-badge">${fund.category}</span></td>
             <td class="mono">₹${fund.aum.toLocaleString()}</td>
             <td class="mono">${fund.expense.toFixed(2)}%</td>
