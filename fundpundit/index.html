@@ -743,9 +743,9 @@
             <span class="breakdown-points">-5 to 15</span>
           </div>
           <div class="breakdown-row">
-            <span class="breakdown-label">Momentum Check (1Y vs 3Y)</span>
-            <span class="breakdown-value">Penalty if declining</span>
-            <span class="breakdown-points">-5 to 0</span>
+            <span class="breakdown-label">Momentum Check V3 (1Y/3Y ratio)</span>
+            <span class="breakdown-value">&gt;1.5x = spike, &lt;0.7x = fading</span>
+            <span class="breakdown-points">-10 to 0</span>
           </div>
         </div>
 
@@ -773,13 +773,18 @@
 
         <div class="breakdown-section">
           <div class="breakdown-header">
-            <span>💰 Dimension 4: Cost Efficiency</span>
-            <span class="breakdown-score">5 pts max</span>
+            <span>💰 Dimension 4: Cost Efficiency V3</span>
+            <span class="breakdown-score">5 pts max, -8 min</span>
           </div>
           <div class="breakdown-row">
             <span class="breakdown-label">Expense Ratio</span>
-            <span class="breakdown-value">&lt;0.5% = 5pts</span>
-            <span class="breakdown-points">-3 to 5</span>
+            <span class="breakdown-value">&lt;0.4% = +5, 0.4-0.7% = +3, 0.7-1% = +1</span>
+            <span class="breakdown-points">-8 to 5</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">High Expense Penalty</span>
+            <span class="breakdown-value">1-1.5% = -2, 1.5-2% = -5, &gt;2% = -8</span>
+            <span class="breakdown-points">Wealth destroyer!</span>
           </div>
         </div>
 
@@ -934,14 +939,24 @@
       breakdown.returns.items.push({ label: '5Y Return', value: `${fund.return5y.toFixed(1)}%`, points: return5yScore });
       breakdown.returns.total += return5yScore;
 
-      // D. Momentum Check (0 to -5 pts)
-      const momentumGap = fund.return3y - fund.return1y;
+      // D. Enhanced Momentum Check V3 (0 to -10 pts) - Prevents recency bias
+      const momentumRatio = fund.return1y / fund.return3y;
       let momentumScore = 0;
-      if (momentumGap > 20) momentumScore = -5;
-      else if (momentumGap > 15) momentumScore = -3;
-      else if (momentumGap > 10) momentumScore = -2;
+      let momentumLabel = '';
+      
+      if (momentumRatio > 1.5) {
+        // Unsustainable spike - too much recency bias
+        momentumScore = -10;
+        momentumLabel = `Unsustainable Spike (${momentumRatio.toFixed(1)}x)`;
+      } else if (momentumRatio < 0.7) {
+        // Losing steam - declining performance
+        momentumScore = -5;
+        momentumLabel = `Losing Steam (${momentumRatio.toFixed(1)}x)`;
+      }
+      // else: Healthy momentum (0.7x to 1.5x ratio) → 0 pts
+      
       if (momentumScore < 0) {
-        breakdown.returns.items.push({ label: 'Momentum Penalty', value: `Gap: ${momentumGap.toFixed(0)}pp`, points: momentumScore });
+        breakdown.returns.items.push({ label: 'Momentum Check', value: momentumLabel, points: momentumScore });
         breakdown.returns.total += momentumScore;
       }
 
@@ -981,14 +996,15 @@
         breakdown.riskAdjusted.total += volScore;
       }
 
-      // === DIMENSION 4: COST EFFICIENCY (5 pts max, -3 min) ===
+      // === DIMENSION 4: COST EFFICIENCY V3 (5 pts max, -8 min) ===
+      // Harsher penalties: 1.85% vs 0.82% = 1% extra drag → ~₹3.5L lost over 30 years on ₹10L!
       let expenseScore = 0;
-      if (fund.expense < 0.5) expenseScore = 5;
-      else if (fund.expense < 0.75) expenseScore = 4;
-      else if (fund.expense < 1.0) expenseScore = 3;
-      else if (fund.expense < 1.5) expenseScore = 2;
-      else if (fund.expense < 2.0) expenseScore = 0;
-      else expenseScore = -3;
+      if (fund.expense < 0.4) expenseScore = 5;
+      else if (fund.expense < 0.7) expenseScore = 3;
+      else if (fund.expense < 1.0) expenseScore = 1;
+      else if (fund.expense < 1.5) expenseScore = -2;
+      else if (fund.expense < 2.0) expenseScore = -5;
+      else expenseScore = -8;
       breakdown.cost.items.push({ label: 'Expense Ratio', value: `${fund.expense.toFixed(2)}%`, points: expenseScore });
       breakdown.cost.total += expenseScore;
 
