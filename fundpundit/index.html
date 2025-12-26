@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FundPundit - Indian Mutual Fund Research & Rankings</title>
+  <meta name="description" content="FundPundit - Smart recommendations for Indian mutual funds using the N-Rank algorithm. Research and compare funds based on returns, risk metrics, and more.">
+  <meta name="theme-color" content="#0D0D0D">
+  
+  <link rel="icon" type="image/png" href="../faviconV4.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN TOKENS (Neel Labs Design System)
+       ═══════════════════════════════════════════════════════════════ */
+    :root {
+      --color-bg-primary: #0D0D0D;
+      --color-bg-secondary: #1A1A1A;
+      --color-bg-tertiary: #242424;
+      --color-bg-hover: #333333;
+      
+      --color-text-primary: #FFFFFF;
+      --color-text-secondary: #A3A3A3;
+      --color-text-tertiary: #737373;
+      
+      --color-accent: #00D632;
+      --color-accent-hover: #00E639;
+      --color-accent-muted: rgba(0, 214, 50, 0.12);
+      
+      --color-warning: #FFB800;
+      --color-caution: #FF8C00;
+      --color-negative: #FF5A5A;
+      --color-info: #00A3FF;
+      
+      --color-border: rgba(255, 255, 255, 0.08);
+      --color-border-hover: rgba(255, 255, 255, 0.15);
+      
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+    }
+
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(13, 13, 13, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-4) var(--space-6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .logo-section img {
+      height: 48px;
+      width: auto;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.95);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .logo-text h1 span {
+      color: var(--color-accent);
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      transition: all 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--color-text-primary);
+      background: var(--color-bg-tertiary);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+
+    /* Info Banner */
+    .info-banner {
+      background: linear-gradient(135deg, var(--color-accent-muted) 0%, rgba(0, 214, 50, 0.05) 100%);
+      border: 1px solid rgba(0, 214, 50, 0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+
+    .info-banner h2 {
+      color: var(--color-accent);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+    }
+
+    .info-banner p {
+      color: var(--color-text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: var(--space-2);
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: var(--space-6);
+    }
+
+    .tab-btn {
+      padding: var(--space-3) var(--space-5);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: var(--font-sans);
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+      margin-bottom: -2px;
+      font-weight: 500;
+    }
+
+    .tab-btn:hover {
+      color: var(--color-text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Section */
+    .section {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .section h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      color: var(--color-text-primary);
+    }
+
+    /* Category Filter */
+    .category-filter {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+
+    .filter-btn {
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: var(--color-bg-hover);
+      color: var(--color-text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-accent);
+      color: var(--color-bg-primary);
+      border-color: var(--color-accent);
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+    }
+
+    thead {
+      background: var(--color-bg-tertiary);
+    }
+
+    th {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid var(--color-border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    th:hover {
+      background: var(--color-bg-hover);
+    }
+
+    th.sorted {
+      color: var(--color-accent);
+    }
+
+    td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.875rem;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+      background: var(--color-bg-tertiary);
+    }
+
+    /* N-Rank Badge */
+    .nrank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 28px;
+      padding: 0 var(--space-2);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .nrank-badge:hover {
+      transform: scale(1.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .nrank-excellent {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .nrank-good {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .nrank-caution {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+    }
+
+    .nrank-poor {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    /* Return Colors */
+    .positive {
+      color: var(--color-accent);
+      font-weight: 500;
+    }
+
+    .negative {
+      color: var(--color-negative);
+      font-weight: 500;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    /* Rating Stars */
+    .stars {
+      color: var(--color-warning);
+      letter-spacing: 2px;
+    }
+
+    /* Category Badge */
+    .category-badge {
+      display: inline-block;
+      padding: var(--space-1) var(--space-2);
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Score Breakdown Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      max-width: 500px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4) var(--space-5);
+      background: var(--color-bg-tertiary);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: var(--color-bg-tertiary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: var(--space-1) var(--space-2);
+      transition: all 0.15s;
+    }
+
+    .modal-close:hover {
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      border-color: var(--color-accent);
+    }
+
+    .modal-content {
+      padding: var(--space-5);
+    }
+
+    .breakdown-section {
+      margin-bottom: var(--space-4);
+      padding: var(--space-3);
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--color-text-primary);
+      padding-bottom: var(--space-2);
+      margin-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .breakdown-score {
+      font-family: var(--font-mono);
+      color: var(--color-accent);
+    }
+
+    .breakdown-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: var(--space-3);
+      padding: var(--space-1) 0;
+      font-size: 0.8125rem;
+      align-items: center;
+    }
+
+    .breakdown-label {
+      color: var(--color-text-secondary);
+    }
+
+    .breakdown-value {
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+
+    .breakdown-points {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-align: right;
+      min-width: 45px;
+    }
+
+    .total-score {
+      padding: var(--space-4);
+      background: linear-gradient(135deg, var(--color-accent-muted) 0%, rgba(0, 214, 50, 0.1) 100%);
+      border: 1px solid var(--color-accent);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+
+    .total-score .label {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-1);
+    }
+
+    .total-score .score {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-6);
+      text-align: center;
+      color: var(--color-text-tertiary);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+
+      .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .category-filter {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: var(--space-2);
+      }
+
+      .filter-btn {
+        flex-shrink: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <a href="/">
+          <img src="../LogoV2.png" alt="Neel Labs">
+        </a>
+        <div class="logo-text">
+          <h1>Fund<span>Pundit</span></h1>
+          <p>Indian Mutual Fund Research</p>
+        </div>
+      </div>
+      <a href="/" class="back-link">
+        ← Back to Neel Labs
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <h2>🇮🇳 N-Rank Algorithm</h2>
+      <p>
+        <strong>N-Rank (Neel Rank)</strong> is a proprietary scoring system (0-100) for evaluating Indian mutual funds. 
+        It measures funds across 5 key dimensions: Quality (20pts), Returns (50pts), Risk-Adjusted Performance (15pts), 
+        Cost Efficiency (5pts), and Strategic Fit (10pts). Click any score to see the detailed breakdown.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="research">📊 Fund Research</button>
+      <button class="tab-btn" data-tab="algorithm">📐 Algorithm Details</button>
+    </div>
+
+    <!-- Research Tab -->
+    <div id="research" class="tab-content active">
+      <!-- Category Filter -->
+      <div class="category-filter">
+        <button class="filter-btn active" data-category="all">All Funds</button>
+        <button class="filter-btn" data-category="Large Cap">Large Cap</button>
+        <button class="filter-btn" data-category="Mid Cap">Mid Cap</button>
+        <button class="filter-btn" data-category="Small Cap">Small Cap</button>
+        <button class="filter-btn" data-category="Flexi Cap">Flexi Cap</button>
+        <button class="filter-btn" data-category="ELSS">ELSS (Tax Saver)</button>
+        <button class="filter-btn" data-category="International">International</button>
+      </div>
+
+      <!-- Fund Table -->
+      <div class="section">
+        <div class="table-container">
+          <table id="fundTable">
+            <thead>
+              <tr>
+                <th data-sort="nrank" class="sorted">N-Rank ▼</th>
+                <th data-sort="name">Fund Name</th>
+                <th data-sort="category">Category</th>
+                <th data-sort="aum">AUM (Cr)</th>
+                <th data-sort="expense">Expense %</th>
+                <th data-sort="return1y">1Y Return</th>
+                <th data-sort="return3y">3Y Return</th>
+                <th data-sort="return5y">5Y Return</th>
+                <th data-sort="sharpe">Sharpe</th>
+                <th data-sort="alpha">Alpha</th>
+                <th data-sort="rating">VR Rating</th>
+              </tr>
+            </thead>
+            <tbody id="fundTableBody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Algorithm Tab -->
+    <div id="algorithm" class="tab-content">
+      <div class="section">
+        <h3>N-Rank Scoring Breakdown</h3>
+        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-4);">
+          The N-Rank algorithm evaluates funds across 5 dimensions with a maximum score of 100 points.
+          Negative scores are possible for poorly performing funds.
+        </p>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>📊 Dimension 1: Quality</span>
+            <span class="breakdown-score">20 pts max</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Value Research Rating</span>
+            <span class="breakdown-value">★★★★★ = 10pts</span>
+            <span class="breakdown-points">0-10 pts</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">AUM Size (₹10K-50K Cr optimal)</span>
+            <span class="breakdown-value">Sweet spot</span>
+            <span class="breakdown-points">0-7 pts</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Fund Age / Track Record</span>
+            <span class="breakdown-value">&gt;10 years best</span>
+            <span class="breakdown-points">0-3 pts</span>
+          </div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>📈 Dimension 2: Returns</span>
+            <span class="breakdown-score">50 pts max</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">1-Year Return</span>
+            <span class="breakdown-value">&gt;30% = 15pts</span>
+            <span class="breakdown-points">-10 to 15</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">3-Year Return</span>
+            <span class="breakdown-value">&gt;30% = 20pts</span>
+            <span class="breakdown-points">-5 to 20</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">5-Year Return</span>
+            <span class="breakdown-value">&gt;25% = 15pts</span>
+            <span class="breakdown-points">-5 to 15</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Momentum Check (1Y vs 3Y)</span>
+            <span class="breakdown-value">Penalty if declining</span>
+            <span class="breakdown-points">-5 to 0</span>
+          </div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>⚖️ Dimension 3: Risk-Adjusted</span>
+            <span class="breakdown-score">15 pts max</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Sharpe Ratio</span>
+            <span class="breakdown-value">&gt;1.5 = 10pts</span>
+            <span class="breakdown-points">-5 to 10</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Alpha</span>
+            <span class="breakdown-value">&gt;7% = 7pts</span>
+            <span class="breakdown-points">-5 to 7</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Volatility Penalty</span>
+            <span class="breakdown-value">&gt;25% StdDev</span>
+            <span class="breakdown-points">-2 to 0</span>
+          </div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>💰 Dimension 4: Cost Efficiency</span>
+            <span class="breakdown-score">5 pts max</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Expense Ratio</span>
+            <span class="breakdown-value">&lt;0.5% = 5pts</span>
+            <span class="breakdown-points">-3 to 5</span>
+          </div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>🎯 Dimension 5: Strategic Fit</span>
+            <span class="breakdown-score">10 pts max</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Sector Diversification Bonus</span>
+            <span class="breakdown-value">US Tech, Healthcare</span>
+            <span class="breakdown-points">0-5 pts</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Direct Plan Bonus</span>
+            <span class="breakdown-value">Direct = +2</span>
+            <span class="breakdown-points">0-2 pts</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Clean NAV History</span>
+            <span class="breakdown-value">10+ years</span>
+            <span class="breakdown-points">0-3 pts</span>
+          </div>
+        </div>
+
+        <div class="breakdown-section" style="margin-top: var(--space-6);">
+          <div class="breakdown-header">
+            <span>🏆 Tier Classification</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">🟢 Excellent</span>
+            <span class="breakdown-value">Score 60+</span>
+            <span class="breakdown-points">Strong Buy</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">🔵 Good</span>
+            <span class="breakdown-value">Score 45-59</span>
+            <span class="breakdown-points">Hold/Buy</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">🟠 Caution</span>
+            <span class="breakdown-value">Score 30-44</span>
+            <span class="breakdown-points">Monitor</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">🔴 Poor</span>
+            <span class="breakdown-value">Score &lt;30</span>
+            <span class="breakdown-points">Avoid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Score Breakdown Modal -->
+  <div class="modal-overlay" id="scoreModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">N-Rank Breakdown</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-content" id="modalContent">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      FundPundit by <a href="/">Neel Labs</a> · N-Rank Algorithm v3 · 
+      <em>Educational purposes only. Always do your own research.</em>
+    </p>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // N-RANK ALGORITHM IMPLEMENTATION
+    // ═══════════════════════════════════════════════════════════════
+
+    function calculateNRank(fund) {
+      let score = 0;
+      const breakdown = {
+        quality: { total: 0, items: [] },
+        returns: { total: 0, items: [] },
+        riskAdjusted: { total: 0, items: [] },
+        cost: { total: 0, items: [] },
+        strategic: { total: 0, items: [] }
+      };
+
+      // === DIMENSION 1: QUALITY (20 pts max) ===
+      
+      // A. VR Rating (10 pts)
+      const vrPoints = { 5: 10, 4: 7, 3: 4, 2: 2, 1: 0 };
+      const vrScore = vrPoints[fund.vrRating] || 0;
+      breakdown.quality.items.push({ label: 'VR Rating', value: '★'.repeat(fund.vrRating), points: vrScore });
+      breakdown.quality.total += vrScore;
+
+      // B. AUM Size (7 pts)
+      let aumScore = 0;
+      if (fund.aum < 500) aumScore = 0;
+      else if (fund.aum < 2000) aumScore = 2;
+      else if (fund.aum < 10000) aumScore = 5;
+      else if (fund.aum < 50000) aumScore = 7;
+      else aumScore = 5;
+      breakdown.quality.items.push({ label: 'AUM Size', value: `₹${fund.aum.toLocaleString()} Cr`, points: aumScore });
+      breakdown.quality.total += aumScore;
+
+      // C. Fund Age (3 pts)
+      let ageScore = 0;
+      if (fund.age >= 10) ageScore = 3;
+      else if (fund.age >= 5) ageScore = 2;
+      else if (fund.age >= 3) ageScore = 1;
+      breakdown.quality.items.push({ label: 'Fund Age', value: `${fund.age} years`, points: ageScore });
+      breakdown.quality.total += ageScore;
+
+      // === DIMENSION 2: RETURNS (50 pts max, -20 min) ===
+
+      // A. 1-Year Return (15 to -10 pts)
+      let return1yScore = 0;
+      if (fund.return1y > 30) return1yScore = 15;
+      else if (fund.return1y > 20) return1yScore = 12;
+      else if (fund.return1y > 15) return1yScore = 9;
+      else if (fund.return1y > 10) return1yScore = 6;
+      else if (fund.return1y > 5) return1yScore = 3;
+      else if (fund.return1y > 0) return1yScore = 0;
+      else if (fund.return1y > -5) return1yScore = -5;
+      else return1yScore = -10;
+      breakdown.returns.items.push({ label: '1Y Return', value: `${fund.return1y.toFixed(1)}%`, points: return1yScore });
+      breakdown.returns.total += return1yScore;
+
+      // B. 3-Year Return (20 to -5 pts)
+      let return3yScore = 0;
+      if (fund.return3y > 30) return3yScore = 20;
+      else if (fund.return3y > 25) return3yScore = 16;
+      else if (fund.return3y > 20) return3yScore = 12;
+      else if (fund.return3y > 15) return3yScore = 8;
+      else if (fund.return3y > 10) return3yScore = 4;
+      else if (fund.return3y > 5) return3yScore = 0;
+      else return3yScore = -5;
+      breakdown.returns.items.push({ label: '3Y Return', value: `${fund.return3y.toFixed(1)}%`, points: return3yScore });
+      breakdown.returns.total += return3yScore;
+
+      // C. 5-Year Return (15 to -5 pts)
+      let return5yScore = 0;
+      if (fund.return5y > 25) return5yScore = 15;
+      else if (fund.return5y > 20) return5yScore = 12;
+      else if (fund.return5y > 15) return5yScore = 8;
+      else if (fund.return5y > 10) return5yScore = 4;
+      else if (fund.return5y > 5) return5yScore = 0;
+      else return5yScore = -5;
+      breakdown.returns.items.push({ label: '5Y Return', value: `${fund.return5y.toFixed(1)}%`, points: return5yScore });
+      breakdown.returns.total += return5yScore;
+
+      // D. Momentum Check (0 to -5 pts)
+      const momentumGap = fund.return3y - fund.return1y;
+      let momentumScore = 0;
+      if (momentumGap > 20) momentumScore = -5;
+      else if (momentumGap > 15) momentumScore = -3;
+      else if (momentumGap > 10) momentumScore = -2;
+      if (momentumScore < 0) {
+        breakdown.returns.items.push({ label: 'Momentum Penalty', value: `Gap: ${momentumGap.toFixed(0)}pp`, points: momentumScore });
+        breakdown.returns.total += momentumScore;
+      }
+
+      // === DIMENSION 3: RISK-ADJUSTED (15 pts max, -10 min) ===
+
+      // A. Sharpe Ratio (10 to -5 pts)
+      let sharpeScore = 0;
+      if (fund.sharpe > 1.5) sharpeScore = 10;
+      else if (fund.sharpe > 1.0) sharpeScore = 8;
+      else if (fund.sharpe > 0.7) sharpeScore = 6;
+      else if (fund.sharpe > 0.5) sharpeScore = 4;
+      else if (fund.sharpe > 0.3) sharpeScore = 2;
+      else if (fund.sharpe > 0) sharpeScore = 0;
+      else if (fund.sharpe > -0.5) sharpeScore = -2;
+      else sharpeScore = -5;
+      breakdown.riskAdjusted.items.push({ label: 'Sharpe Ratio', value: fund.sharpe.toFixed(2), points: sharpeScore });
+      breakdown.riskAdjusted.total += sharpeScore;
+
+      // B. Alpha (7 to -5 pts)
+      let alphaScore = 0;
+      if (fund.alpha > 7) alphaScore = 7;
+      else if (fund.alpha > 5) alphaScore = 5;
+      else if (fund.alpha > 3) alphaScore = 4;
+      else if (fund.alpha > 1) alphaScore = 2;
+      else if (fund.alpha > 0) alphaScore = 1;
+      else if (fund.alpha > -3) alphaScore = -2;
+      else alphaScore = -5;
+      breakdown.riskAdjusted.items.push({ label: 'Alpha', value: `${fund.alpha.toFixed(1)}%`, points: alphaScore });
+      breakdown.riskAdjusted.total += alphaScore;
+
+      // C. Volatility (0 to -2 pts)
+      let volScore = 0;
+      if (fund.volatility > 25) volScore = -2;
+      else if (fund.volatility > 20) volScore = -1;
+      if (volScore < 0) {
+        breakdown.riskAdjusted.items.push({ label: 'Volatility Penalty', value: `${fund.volatility.toFixed(1)}%`, points: volScore });
+        breakdown.riskAdjusted.total += volScore;
+      }
+
+      // === DIMENSION 4: COST EFFICIENCY (5 pts max, -3 min) ===
+      let expenseScore = 0;
+      if (fund.expense < 0.5) expenseScore = 5;
+      else if (fund.expense < 0.75) expenseScore = 4;
+      else if (fund.expense < 1.0) expenseScore = 3;
+      else if (fund.expense < 1.5) expenseScore = 2;
+      else if (fund.expense < 2.0) expenseScore = 0;
+      else expenseScore = -3;
+      breakdown.cost.items.push({ label: 'Expense Ratio', value: `${fund.expense.toFixed(2)}%`, points: expenseScore });
+      breakdown.cost.total += expenseScore;
+
+      // === DIMENSION 5: STRATEGIC FIT (10 pts max) ===
+      
+      // Sector bonus
+      const sectorBonus = {
+        'International': 5,
+        'US Tech': 5,
+        'Healthcare': 4,
+        'Consumption': 3,
+        'Infrastructure': 2
+      };
+      const secBonus = sectorBonus[fund.sector] || 0;
+      if (secBonus > 0) {
+        breakdown.strategic.items.push({ label: 'Sector Bonus', value: fund.sector, points: secBonus });
+        breakdown.strategic.total += secBonus;
+      }
+
+      // Direct plan bonus
+      if (fund.isDirect) {
+        breakdown.strategic.items.push({ label: 'Direct Plan', value: 'Yes', points: 2 });
+        breakdown.strategic.total += 2;
+      }
+
+      // Age bonus for strategic fit
+      if (fund.age >= 10) {
+        breakdown.strategic.items.push({ label: 'Clean History', value: '10+ years', points: 3 });
+        breakdown.strategic.total += 3;
+      } else if (fund.age >= 5) {
+        breakdown.strategic.items.push({ label: 'Clean History', value: '5-10 years', points: 2 });
+        breakdown.strategic.total += 2;
+      }
+
+      // Calculate total
+      score = breakdown.quality.total + breakdown.returns.total + 
+              breakdown.riskAdjusted.total + breakdown.cost.total + breakdown.strategic.total;
+      
+      // Cap at 0 minimum for display
+      score = Math.max(0, Math.round(score));
+
+      return { score, breakdown };
+    }
+
+    function getNRankTier(score) {
+      if (score >= 60) return { class: 'nrank-excellent', label: 'Excellent' };
+      if (score >= 45) return { class: 'nrank-good', label: 'Good' };
+      if (score >= 30) return { class: 'nrank-caution', label: 'Caution' };
+      return { class: 'nrank-poor', label: 'Poor' };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // SAMPLE FUND DATA
+    // ═══════════════════════════════════════════════════════════════
+
+    const sampleFunds = [
+      { name: "Parag Parikh Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 45000, expense: 0.63, return1y: 28.5, return3y: 22.1, return5y: 21.4, sharpe: 1.42, alpha: 5.2, volatility: 14.2, vrRating: 5, age: 12, isDirect: true, sector: "International" },
+      { name: "Mirae Asset Large Cap Fund - Direct", category: "Large Cap", aum: 35000, expense: 0.52, return1y: 18.2, return3y: 15.8, return5y: 16.2, sharpe: 1.15, alpha: 2.8, volatility: 13.8, vrRating: 5, age: 15, isDirect: true },
+      { name: "Axis Small Cap Fund - Direct", category: "Small Cap", aum: 15000, expense: 0.48, return1y: 32.4, return3y: 28.6, return5y: 26.8, sharpe: 1.35, alpha: 8.1, volatility: 22.5, vrRating: 5, age: 8, isDirect: true },
+      { name: "HDFC Mid-Cap Opportunities Fund - Direct", category: "Mid Cap", aum: 42000, expense: 0.78, return1y: 35.2, return3y: 26.4, return5y: 22.1, sharpe: 1.28, alpha: 6.4, volatility: 18.2, vrRating: 5, age: 14, isDirect: true },
+      { name: "SBI Small Cap Fund - Direct", category: "Small Cap", aum: 22000, expense: 0.68, return1y: 29.8, return3y: 25.2, return5y: 24.5, sharpe: 1.22, alpha: 7.2, volatility: 23.1, vrRating: 5, age: 11, isDirect: true },
+      { name: "Kotak Emerging Equity Fund - Direct", category: "Mid Cap", aum: 28000, expense: 0.55, return1y: 38.6, return3y: 28.1, return5y: 23.8, sharpe: 1.38, alpha: 7.8, volatility: 19.5, vrRating: 5, age: 9, isDirect: true },
+      { name: "Motilal Oswal Nasdaq 100 FOF - Direct", category: "International", aum: 8500, expense: 0.48, return1y: 22.4, return3y: 12.5, return5y: 18.2, sharpe: 0.95, alpha: 1.2, volatility: 18.8, vrRating: 4, age: 6, isDirect: true, sector: "US Tech" },
+      { name: "Canara Robeco Bluechip Equity - Direct", category: "Large Cap", aum: 9800, expense: 0.42, return1y: 21.5, return3y: 17.2, return5y: 17.8, sharpe: 1.18, alpha: 3.5, volatility: 13.2, vrRating: 5, age: 10, isDirect: true },
+      { name: "UTI Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 24000, expense: 0.95, return1y: 24.2, return3y: 18.5, return5y: 17.2, sharpe: 1.08, alpha: 2.1, volatility: 15.5, vrRating: 4, age: 18, isDirect: true },
+      { name: "Nippon India Small Cap - Direct", category: "Small Cap", aum: 38000, expense: 0.82, return1y: 42.5, return3y: 32.4, return5y: 28.2, sharpe: 1.45, alpha: 9.5, volatility: 24.8, vrRating: 5, age: 12, isDirect: true },
+      { name: "Quant Active Fund - Direct", category: "Flexi Cap", aum: 6200, expense: 0.58, return1y: 48.2, return3y: 35.8, return5y: 30.5, sharpe: 1.62, alpha: 12.4, volatility: 21.2, vrRating: 4, age: 7, isDirect: true },
+      { name: "ICICI Pru Bluechip Fund - Direct", category: "Large Cap", aum: 48000, expense: 1.02, return1y: 19.8, return3y: 16.2, return5y: 15.8, sharpe: 1.05, alpha: 1.8, volatility: 14.1, vrRating: 4, age: 16, isDirect: true },
+      { name: "Axis ELSS Tax Saver - Direct", category: "ELSS", aum: 32000, expense: 0.65, return1y: 22.5, return3y: 14.2, return5y: 15.5, sharpe: 0.92, alpha: 0.8, volatility: 15.8, vrRating: 4, age: 11, isDirect: true },
+      { name: "Mirae Asset ELSS Tax Saver - Direct", category: "ELSS", aum: 18500, expense: 0.48, return1y: 26.8, return3y: 18.5, return5y: 18.2, sharpe: 1.22, alpha: 4.2, volatility: 15.2, vrRating: 5, age: 8, isDirect: true },
+      { name: "PGIM India Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 5200, expense: 0.42, return1y: 15.2, return3y: 8.5, return5y: 14.8, sharpe: 0.72, alpha: -1.2, volatility: 16.5, vrRating: 3, age: 6, isDirect: true },
+      { name: "Franklin India Healthcare - Direct", category: "Healthcare", aum: 680, expense: 1.85, return1y: 42.8, return3y: 22.5, return5y: 18.2, sharpe: 1.12, alpha: 5.8, volatility: 19.2, vrRating: 4, age: 8, isDirect: true, sector: "Healthcare" },
+    ];
+
+    // Calculate N-Rank for all funds
+    const fundsWithRank = sampleFunds.map(fund => {
+      const { score, breakdown } = calculateNRank(fund);
+      return { ...fund, nrank: score, breakdown };
+    }).sort((a, b) => b.nrank - a.nrank);
+
+    // ═══════════════════════════════════════════════════════════════
+    // UI FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    let currentCategory = 'all';
+    let currentSort = { field: 'nrank', asc: false };
+
+    function renderTable() {
+      const tbody = document.getElementById('fundTableBody');
+      let filtered = currentCategory === 'all' 
+        ? fundsWithRank 
+        : fundsWithRank.filter(f => f.category === currentCategory);
+
+      // Sort
+      filtered = [...filtered].sort((a, b) => {
+        let valA = a[currentSort.field] ?? 0;
+        let valB = b[currentSort.field] ?? 0;
+        if (currentSort.field === 'name') {
+          return currentSort.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+        return currentSort.asc ? valA - valB : valB - valA;
+      });
+
+      tbody.innerHTML = filtered.map((fund, i) => {
+        const tier = getNRankTier(fund.nrank);
+        return `
+          <tr>
+            <td>
+              <span class="nrank-badge ${tier.class}" onclick="showBreakdown(${fundsWithRank.indexOf(fund)})" title="Click for breakdown">
+                ${fund.nrank}
+              </span>
+            </td>
+            <td style="max-width: 280px; white-space: normal;">${fund.name}</td>
+            <td><span class="category-badge">${fund.category}</span></td>
+            <td class="mono">₹${fund.aum.toLocaleString()}</td>
+            <td class="mono">${fund.expense.toFixed(2)}%</td>
+            <td class="mono ${fund.return1y >= 0 ? 'positive' : 'negative'}">${fund.return1y.toFixed(1)}%</td>
+            <td class="mono ${fund.return3y >= 0 ? 'positive' : 'negative'}">${fund.return3y.toFixed(1)}%</td>
+            <td class="mono ${fund.return5y >= 0 ? 'positive' : 'negative'}">${fund.return5y.toFixed(1)}%</td>
+            <td class="mono">${fund.sharpe.toFixed(2)}</td>
+            <td class="mono ${fund.alpha >= 0 ? 'positive' : 'negative'}">${fund.alpha.toFixed(1)}%</td>
+            <td class="stars">${'★'.repeat(fund.vrRating)}${'☆'.repeat(5 - fund.vrRating)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function showBreakdown(index) {
+      const fund = fundsWithRank[index];
+      const tier = getNRankTier(fund.nrank);
+      
+      document.getElementById('modalTitle').textContent = `N-Rank: ${fund.nrank}`;
+      
+      const content = `
+        <div style="margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--color-text-secondary);">
+          ${fund.name}
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>📊 Quality</span>
+            <span class="breakdown-score">${fund.breakdown.quality.total} pts</span>
+          </div>
+          ${fund.breakdown.quality.items.map(item => `
+            <div class="breakdown-row">
+              <span class="breakdown-label">${item.label}</span>
+              <span class="breakdown-value">${item.value}</span>
+              <span class="breakdown-points">${item.points > 0 ? '+' : ''}${item.points}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>📈 Returns</span>
+            <span class="breakdown-score">${fund.breakdown.returns.total} pts</span>
+          </div>
+          ${fund.breakdown.returns.items.map(item => `
+            <div class="breakdown-row">
+              <span class="breakdown-label">${item.label}</span>
+              <span class="breakdown-value">${item.value}</span>
+              <span class="breakdown-points">${item.points > 0 ? '+' : ''}${item.points}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>⚖️ Risk-Adjusted</span>
+            <span class="breakdown-score">${fund.breakdown.riskAdjusted.total} pts</span>
+          </div>
+          ${fund.breakdown.riskAdjusted.items.map(item => `
+            <div class="breakdown-row">
+              <span class="breakdown-label">${item.label}</span>
+              <span class="breakdown-value">${item.value}</span>
+              <span class="breakdown-points">${item.points > 0 ? '+' : ''}${item.points}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-header">
+            <span>💰 Cost</span>
+            <span class="breakdown-score">${fund.breakdown.cost.total} pts</span>
+          </div>
+          ${fund.breakdown.cost.items.map(item => `
+            <div class="breakdown-row">
+              <span class="breakdown-label">${item.label}</span>
+              <span class="breakdown-value">${item.value}</span>
+              <span class="breakdown-points">${item.points > 0 ? '+' : ''}${item.points}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        ${fund.breakdown.strategic.items.length > 0 ? `
+          <div class="breakdown-section">
+            <div class="breakdown-header">
+              <span>🎯 Strategic Fit</span>
+              <span class="breakdown-score">${fund.breakdown.strategic.total} pts</span>
+            </div>
+            ${fund.breakdown.strategic.items.map(item => `
+              <div class="breakdown-row">
+                <span class="breakdown-label">${item.label}</span>
+                <span class="breakdown-value">${item.value}</span>
+                <span class="breakdown-points">${item.points > 0 ? '+' : ''}${item.points}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <div class="total-score">
+          <div class="label">Total N-Rank Score</div>
+          <div class="score">${fund.nrank}</div>
+          <div style="margin-top: var(--space-2); font-size: 0.875rem; color: var(--color-text-secondary);">
+            Tier: <strong style="color: ${tier.class.includes('excellent') ? 'var(--color-accent)' : tier.class.includes('good') ? 'var(--color-info)' : tier.class.includes('caution') ? 'var(--color-warning)' : 'var(--color-negative)'}">${tier.label}</strong>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('modalContent').innerHTML = content;
+      document.getElementById('scoreModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('scoreModal').classList.remove('active');
+    }
+
+    // Event Listeners
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.dataset.category;
+        renderTable();
+      });
+    });
+
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+      th.addEventListener('click', () => {
+        const field = th.dataset.sort;
+        const fieldMap = {
+          nrank: 'nrank', name: 'name', category: 'category',
+          aum: 'aum', expense: 'expense', return1y: 'return1y',
+          return3y: 'return3y', return5y: 'return5y', sharpe: 'sharpe',
+          alpha: 'alpha', rating: 'vrRating'
+        };
+        if (currentSort.field === fieldMap[field]) {
+          currentSort.asc = !currentSort.asc;
+        } else {
+          currentSort.field = fieldMap[field];
+          currentSort.asc = false;
+        }
+        document.querySelectorAll('th').forEach(t => t.classList.remove('sorted'));
+        th.classList.add('sorted');
+        renderTable();
+      });
+    });
+
+    document.getElementById('scoreModal').addEventListener('click', (e) => {
+      if (e.target.id === 'scoreModal') closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>
+

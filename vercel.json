@@ -3,6 +3,8 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/optionpundit", "destination": "/optionpundit/index.html" },
-    { "source": "/optionpundit/(.*)", "destination": "/optionpundit/index.html" }
+    { "source": "/optionpundit/(.*)", "destination": "/optionpundit/index.html" },
+    { "source": "/fundpundit", "destination": "/fundpundit/index.html" },
+    { "source": "/fundpundit/(.*)", "destination": "/fundpundit/index.html" }
   ]
 }
