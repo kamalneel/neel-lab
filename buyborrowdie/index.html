@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../faviconV4.png">
+  <title>Buy, Borrow, Die Calculator - Neel Labs</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --color-bg-primary: #0D0D0D;
+      --color-bg-secondary: #1A1A1A;
+      --color-bg-tertiary: #242424;
+      --color-bg-elevated: #2D2D2D;
+      --color-text-primary: #FFFFFF;
+      --color-text-secondary: #A3A3A3;
+      --color-text-tertiary: #737373;
+      --color-accent: #00D632;
+      --color-accent-hover: #00E639;
+      --color-accent-muted: rgba(0, 214, 50, 0.12);
+      --color-gold: #C9A227;
+      --color-gold-muted: rgba(201, 162, 39, 0.15);
+      --color-blue: #3B82F6;
+      --color-red: #EF4444;
+      --color-border: rgba(255, 255, 255, 0.08);
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 13, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-3) var(--space-6);
+    }
+
+    .app-header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .app-logo img {
+      height: 40px;
+      border-radius: var(--radius-md);
+    }
+
+    .app-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .app-title span {
+      color: var(--color-gold);
+    }
+
+    .back-link {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--color-accent);
+      border-color: rgba(0, 214, 50, 0.3);
+      background: var(--color-accent-muted);
+    }
+
+    /* Main Content */
+    .app-main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    /* Strategy Explanation */
+    .strategy-intro {
+      background: linear-gradient(135deg, var(--color-gold-muted) 0%, transparent 50%);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-8);
+    }
+
+    .strategy-intro h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .strategy-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .strategy-step {
+      background: var(--color-bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+    }
+
+    .strategy-step h3 {
+      color: var(--color-gold);
+      font-size: 1rem;
+      margin-bottom: var(--space-2);
+    }
+
+    .strategy-step p {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Layout */
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: var(--space-8);
+    }
+
+    @media (max-width: 1024px) {
+      .calculator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Input Panel */
+    .input-panel {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+
+    .input-panel h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .input-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg-tertiary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-muted);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    .input-suffix {
+      position: relative;
+    }
+
+    .input-suffix input {
+      padding-right: 50px;
+    }
+
+    .input-suffix::after {
+      content: attr(data-suffix);
+      position: absolute;
+      right: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-tertiary);
+      font-size: 0.875rem;
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: var(--space-4);
+      background: var(--color-accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: var(--space-6);
+    }
+
+    .calculate-btn:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Results Panel */
+    .results-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+
+    .chart-container h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      margin-bottom: var(--space-4);
+    }
+
+    .chart-wrapper {
+      height: 400px;
+      position: relative;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .summary-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+
+    .summary-card.highlight {
+      border-color: var(--color-accent);
+      background: linear-gradient(135deg, var(--color-accent-muted) 0%, var(--color-bg-secondary) 100%);
+    }
+
+    .summary-card h4 {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-2);
+    }
+
+    .summary-card .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .summary-card .value.positive {
+      color: var(--color-accent);
+    }
+
+    .summary-card .value.negative {
+      color: var(--color-red);
+    }
+
+    .summary-card .subtitle {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      margin-top: var(--space-1);
+    }
+
+    /* Year by Year Table */
+    .table-container {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      overflow-x: auto;
+    }
+
+    .table-container h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      margin-bottom: var(--space-4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      padding: var(--space-3) var(--space-4);
+      text-align: right;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    th {
+      color: var(--color-text-tertiary);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    th:first-child, td:first-child {
+      text-align: left;
+    }
+
+    td {
+      font-family: var(--font-mono);
+    }
+
+    tr:hover td {
+      background: var(--color-bg-tertiary);
+    }
+
+    .positive { color: var(--color-accent); }
+    .negative { color: var(--color-red); }
+
+    /* Footer */
+    .app-footer {
+      background: var(--color-bg-secondary);
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-6);
+      margin-top: var(--space-12);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+    }
+
+    .app-footer a {
+      color: var(--color-accent);
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-top: var(--space-6);
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    .disclaimer strong {
+      color: var(--color-red);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-header-container">
+      <div class="app-header-left">
+        <a href="/" class="app-logo">
+          <img src="../LogoV2.png" alt="Neel Labs">
+        </a>
+        <span class="app-title">Buy, Borrow, <span>Die</span></span>
+      </div>
+      <a href="/" class="back-link">← Back to Neel Labs</a>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Strategy Introduction -->
+    <div class="strategy-intro">
+      <h2>💰 The Buy, Borrow, Die Strategy</h2>
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--space-4);">
+        A wealth-building strategy used by ultra-high-net-worth individuals to grow wealth while minimizing taxes.
+      </p>
+      <div class="strategy-steps">
+        <div class="strategy-step">
+          <h3>1. BUY 📈</h3>
+          <p>Invest all capital in long-term appreciating assets (stocks). Never sell.</p>
+        </div>
+        <div class="strategy-step">
+          <h3>2. BORROW 🏦</h3>
+          <p>Use margin/line of credit for living expenses instead of selling stocks. Avoid capital gains tax.</p>
+        </div>
+        <div class="strategy-step">
+          <h3>3. DIE ⚰️</h3>
+          <p>Heirs get stepped-up cost basis, wiping out unrealized gains. Loan repaid from estate.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculator Layout -->
+    <div class="calculator-layout">
+      <!-- Input Panel -->
+      <div class="input-panel">
+        <h3>⚙️ Scenario Parameters</h3>
+        
+        <div class="input-group">
+          <label>Initial Capital ($)</label>
+          <input type="text" id="initialCapital" value="10,000,000" oninput="formatNumber(this)">
+        </div>
+        
+        <div class="input-group">
+          <label>Cost Basis ($)</label>
+          <input type="text" id="costBasis" value="2,000,000" oninput="formatNumber(this)">
+        </div>
+        
+        <div class="input-group">
+          <label>Annual Withdrawal Need ($)</label>
+          <input type="text" id="annualWithdrawal" value="300,000" oninput="formatNumber(this)">
+        </div>
+        
+        <div class="input-row">
+          <div class="input-group">
+            <label>Starting Age</label>
+            <input type="number" id="startAge" value="55" min="20" max="90">
+          </div>
+          <div class="input-group">
+            <label>End Age</label>
+            <input type="number" id="endAge" value="90" min="30" max="110">
+          </div>
+        </div>
+        
+        <div class="input-row">
+          <div class="input-group input-suffix" data-suffix="%">
+            <label>Expected ROI</label>
+            <input type="number" id="roi" value="8" min="1" max="20" step="0.5">
+          </div>
+          <div class="input-group input-suffix" data-suffix="%">
+            <label>Margin Interest</label>
+            <input type="number" id="interestRate" value="5" min="1" max="15" step="0.25">
+          </div>
+        </div>
+        
+        <div class="input-group input-suffix" data-suffix="%">
+          <label>Line of Credit Limit (% of Portfolio)</label>
+          <input type="number" id="locLimit" value="70" min="30" max="90" step="5">
+        </div>
+
+        <button class="calculate-btn" onclick="calculate()">
+          📊 Calculate Strategy
+        </button>
+
+        <div class="disclaimer">
+          <strong>⚠️ Disclaimer:</strong> This tool is for educational purposes only. 
+          The Buy, Borrow, Die strategy involves significant risks including margin calls, 
+          interest rate changes, and market downturns. Consult a financial advisor before implementing.
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="results-panel">
+        <!-- Summary Cards -->
+        <div class="summary-grid" id="summaryCards">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+          <h3>📈 Wealth Projection Over Time</h3>
+          <div class="chart-wrapper">
+            <canvas id="wealthChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Year by Year Table -->
+        <div class="table-container">
+          <h3>📋 Year-by-Year Breakdown</h3>
+          <table id="yearTable">
+            <thead>
+              <tr>
+                <th>Age</th>
+                <th>Year</th>
+                <th>Portfolio Value</th>
+                <th>Annual Borrow</th>
+                <th>Total Debt</th>
+                <th>Net Worth</th>
+                <th>LOC Usage</th>
+              </tr>
+            </thead>
+            <tbody id="yearTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>
+      Buy, Borrow, Die Calculator by <a href="/">Neel Labs</a> · 
+      <em>Educational purposes only. Not financial advice.</em>
+    </p>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITY FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+    
+    function formatNumber(input) {
+      let value = input.value.replace(/[^\d]/g, '');
+      if (value) {
+        input.value = parseInt(value).toLocaleString();
+      }
+    }
+
+    function parseNumber(str) {
+      return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+
+    function formatCurrency(num) {
+      if (Math.abs(num) >= 1e9) {
+        return '$' + (num / 1e9).toFixed(2) + 'B';
+      } else if (Math.abs(num) >= 1e6) {
+        return '$' + (num / 1e6).toFixed(2) + 'M';
+      } else if (Math.abs(num) >= 1e3) {
+        return '$' + (num / 1e3).toFixed(0) + 'K';
+      }
+      return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function formatFullCurrency(num) {
+      return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // CHART INSTANCE
+    // ═══════════════════════════════════════════════════════════════
+    
+    let wealthChart = null;
+
+    // ═══════════════════════════════════════════════════════════════
+    // CALCULATION ENGINE
+    // ═══════════════════════════════════════════════════════════════
+    
+    function calculate() {
+      // Get inputs
+      const initialCapital = parseNumber(document.getElementById('initialCapital').value);
+      const costBasis = parseNumber(document.getElementById('costBasis').value);
+      const annualWithdrawal = parseNumber(document.getElementById('annualWithdrawal').value);
+      const startAge = parseInt(document.getElementById('startAge').value);
+      const endAge = parseInt(document.getElementById('endAge').value);
+      const roi = parseFloat(document.getElementById('roi').value) / 100;
+      const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+      const locLimit = parseFloat(document.getElementById('locLimit').value) / 100;
+
+      // Calculate year by year
+      const years = [];
+      let portfolio = initialCapital;
+      let totalDebt = 0;
+      let year = 0;
+
+      for (let age = startAge; age <= endAge; age++) {
+        year++;
+        
+        // Portfolio grows by ROI
+        const portfolioGrowth = portfolio * roi;
+        portfolio += portfolioGrowth;
+        
+        // Calculate interest on existing debt
+        const interestPayment = totalDebt * interestRate;
+        
+        // Total borrowing this year = withdrawal + interest
+        const yearlyBorrow = annualWithdrawal + interestPayment;
+        
+        // Add to total debt
+        totalDebt += yearlyBorrow;
+        
+        // Calculate LOC usage
+        const maxLOC = portfolio * locLimit;
+        const locUsage = (totalDebt / maxLOC) * 100;
+        
+        // Net worth
+        const netWorth = portfolio - totalDebt;
+        
+        years.push({
+          age,
+          year,
+          portfolio,
+          portfolioGrowth,
+          yearlyBorrow,
+          interestPayment,
+          totalDebt,
+          netWorth,
+          locUsage,
+          maxLOC
+        });
+      }
+
+      // Check for danger zone (when debt exceeds LOC limit)
+      const dangerYear = years.find(y => y.locUsage >= 100);
+      
+      // Final values
+      const finalYear = years[years.length - 1];
+      const unrealizedGains = finalYear.portfolio - costBasis;
+      const taxSaved = unrealizedGains * 0.238; // ~23.8% LTCG + NIIT
+
+      // Update summary cards
+      updateSummaryCards(finalYear, initialCapital, taxSaved, dangerYear, years);
+      
+      // Update chart
+      updateChart(years);
+      
+      // Update table
+      updateTable(years);
+    }
+
+    function updateSummaryCards(final, initial, taxSaved, dangerYear, years) {
+      const summaryCards = document.getElementById('summaryCards');
+      const totalYears = years.length;
+      const growthMultiple = (final.portfolio / initial).toFixed(1);
+      
+      summaryCards.innerHTML = `
+        <div class="summary-card highlight">
+          <h4>Final Portfolio Value</h4>
+          <div class="value positive">${formatCurrency(final.portfolio)}</div>
+          <div class="subtitle">${growthMultiple}x growth over ${totalYears} years</div>
+        </div>
+        <div class="summary-card">
+          <h4>Total Debt at End</h4>
+          <div class="value negative">${formatCurrency(final.totalDebt)}</div>
+          <div class="subtitle">LOC Usage: ${final.locUsage.toFixed(1)}%</div>
+        </div>
+        <div class="summary-card highlight">
+          <h4>Final Net Worth</h4>
+          <div class="value positive">${formatCurrency(final.netWorth)}</div>
+          <div class="subtitle">Portfolio minus debt</div>
+        </div>
+        <div class="summary-card">
+          <h4>Estimated Tax Saved</h4>
+          <div class="value positive">${formatCurrency(taxSaved)}</div>
+          <div class="subtitle">Avoided capital gains tax</div>
+        </div>
+        ${dangerYear ? `
+        <div class="summary-card" style="border-color: var(--color-red); background: rgba(239, 68, 68, 0.1);">
+          <h4>⚠️ Margin Call Warning</h4>
+          <div class="value negative">Age ${dangerYear.age}</div>
+          <div class="subtitle">Debt exceeds LOC limit!</div>
+        </div>
+        ` : `
+        <div class="summary-card">
+          <h4>Strategy Status</h4>
+          <div class="value positive">✓ Safe</div>
+          <div class="subtitle">Debt stays within LOC limit</div>
+        </div>
+        `}
+      `;
+    }
+
+    function updateChart(years) {
+      const ctx = document.getElementById('wealthChart').getContext('2d');
+      
+      const labels = years.map(y => `Age ${y.age}`);
+      const portfolioData = years.map(y => y.portfolio);
+      const debtData = years.map(y => y.totalDebt);
+      const netWorthData = years.map(y => y.netWorth);
+      
+      if (wealthChart) {
+        wealthChart.destroy();
+      }
+      
+      wealthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Portfolio Value',
+              data: portfolioData,
+              borderColor: '#00D632',
+              backgroundColor: 'rgba(0, 214, 50, 0.1)',
+              borderWidth: 3,
+              fill: false,
+              tension: 0.3,
+              pointRadius: 0,
+              pointHoverRadius: 6
+            },
+            {
+              label: 'Total Debt',
+              data: debtData,
+              borderColor: '#EF4444',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderWidth: 2,
+              fill: false,
+              tension: 0.3,
+              pointRadius: 0,
+              pointHoverRadius: 6
+            },
+            {
+              label: 'Net Worth',
+              data: netWorthData,
+              borderColor: '#C9A227',
+              backgroundColor: 'rgba(201, 162, 39, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 0,
+              pointHoverRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: '#A3A3A3',
+                font: { family: 'Outfit', size: 12 },
+                usePointStyle: true,
+                padding: 20
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1A1A1A',
+              titleColor: '#FFFFFF',
+              bodyColor: '#A3A3A3',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 12,
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { 
+                color: '#737373', 
+                maxTicksLimit: 10,
+                font: { size: 11 }
+              }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { 
+                color: '#737373',
+                callback: function(value) {
+                  return formatCurrency(value);
+                },
+                font: { size: 11 }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateTable(years) {
+      const tbody = document.getElementById('yearTableBody');
+      
+      // Show every 5th year + first and last
+      const displayYears = years.filter((y, i) => 
+        i === 0 || i === years.length - 1 || y.year % 5 === 0
+      );
+      
+      tbody.innerHTML = displayYears.map(y => `
+        <tr>
+          <td>${y.age}</td>
+          <td>Year ${y.year}</td>
+          <td class="positive">${formatFullCurrency(y.portfolio)}</td>
+          <td>${formatFullCurrency(y.yearlyBorrow)}</td>
+          <td class="negative">${formatFullCurrency(y.totalDebt)}</td>
+          <td class="${y.netWorth >= 0 ? 'positive' : 'negative'}">${formatFullCurrency(y.netWorth)}</td>
+          <td class="${y.locUsage > 80 ? 'negative' : ''}">${y.locUsage.toFixed(1)}%</td>
+        </tr>
+      `).join('');
+    }
+
+    // Initial calculation on page load
+    document.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>
+
