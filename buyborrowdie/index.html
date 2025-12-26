@@ -178,13 +178,18 @@
     /* Layout */
     .calculator-layout {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 400px 1fr;
       gap: var(--space-8);
+      align-items: start;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
       .calculator-layout {
         grid-template-columns: 1fr;
+      }
+      
+      .input-panel {
+        max-width: 500px;
       }
     }
 
