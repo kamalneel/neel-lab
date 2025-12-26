@@ -648,8 +648,11 @@
         <button class="filter-btn" data-category="Large Cap">Large Cap</button>
         <button class="filter-btn" data-category="Mid Cap">Mid Cap</button>
         <button class="filter-btn" data-category="Small Cap">Small Cap</button>
+        <button class="filter-btn" data-category="Multi Cap">Multi Cap</button>
         <button class="filter-btn" data-category="Flexi Cap">Flexi Cap</button>
-        <button class="filter-btn" data-category="ELSS">ELSS (Tax Saver)</button>
+        <button class="filter-btn" data-category="Technology">Technology</button>
+        <button class="filter-btn" data-category="MNC">MNC</button>
+        <button class="filter-btn" data-category="ELSS">ELSS</button>
         <button class="filter-btn" data-category="International">International</button>
       </div>
       
@@ -1042,21 +1045,58 @@
     // ═══════════════════════════════════════════════════════════════
 
     const sampleFunds = [
-      // Active funds
-      { name: "Parag Parikh Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 45000, expense: 0.63, return1y: 28.5, return3y: 22.1, return5y: 21.4, sharpe: 1.42, alpha: 5.2, volatility: 14.2, vrRating: 5, age: 12, isDirect: true, sector: "International" },
-      { name: "Mirae Asset Large Cap Fund - Direct", category: "Large Cap", aum: 35000, expense: 0.52, return1y: 18.2, return3y: 15.8, return5y: 16.2, sharpe: 1.15, alpha: 2.8, volatility: 13.8, vrRating: 5, age: 15, isDirect: true },
-      { name: "Axis Small Cap Fund - Direct", category: "Small Cap", aum: 15000, expense: 0.48, return1y: 32.4, return3y: 28.6, return5y: 26.8, sharpe: 1.35, alpha: 8.1, volatility: 22.5, vrRating: 5, age: 8, isDirect: true },
-      { name: "HDFC Mid-Cap Opportunities Fund - Direct", category: "Mid Cap", aum: 42000, expense: 0.78, return1y: 35.2, return3y: 26.4, return5y: 22.1, sharpe: 1.28, alpha: 6.4, volatility: 18.2, vrRating: 5, age: 14, isDirect: true },
-      { name: "SBI Small Cap Fund - Direct", category: "Small Cap", aum: 22000, expense: 0.68, return1y: 29.8, return3y: 25.2, return5y: 24.5, sharpe: 1.22, alpha: 7.2, volatility: 23.1, vrRating: 5, age: 11, isDirect: true },
-      { name: "Kotak Emerging Equity Fund - Direct", category: "Mid Cap", aum: 28000, expense: 0.55, return1y: 38.6, return3y: 28.1, return5y: 23.8, sharpe: 1.38, alpha: 7.8, volatility: 19.5, vrRating: 5, age: 9, isDirect: true },
+      // ═══════════════════════════════════════════════════════════════
+      // LARGE CAP & MULTI CAP FUNDS
+      // ═══════════════════════════════════════════════════════════════
+      { name: "Mirae Asset Large Cap Fund - Direct", category: "Large Cap", aum: 40250, expense: 0.52, return1y: 21.8, return3y: 17.9, return5y: 16.2, sharpe: 1.18, alpha: 3.2, volatility: 13.8, vrRating: 5, age: 15, isDirect: true },
+      { name: "Axis Bluechip Fund - Direct", category: "Large Cap", aum: 35800, expense: 0.48, return1y: 18.5, return3y: 14.2, return5y: 15.8, sharpe: 1.05, alpha: 1.5, volatility: 13.2, vrRating: 4, age: 12, isDirect: true },
+      { name: "SBI Bluechip Fund - Direct", category: "Large Cap", aum: 52250, expense: 0.82, return1y: 24.9, return3y: 15.5, return5y: 16.8, sharpe: 1.12, alpha: 2.8, volatility: 13.5, vrRating: 5, age: 18, isDirect: true },
+      { name: "Nippon India Multi Cap Fund - Direct", category: "Multi Cap", aum: 28500, expense: 0.75, return1y: 32.5, return3y: 24.8, return5y: 20.2, sharpe: 1.28, alpha: 5.5, volatility: 16.8, vrRating: 5, age: 10, isDirect: true },
       { name: "Canara Robeco Bluechip Equity - Direct", category: "Large Cap", aum: 9800, expense: 0.42, return1y: 21.5, return3y: 17.2, return5y: 17.8, sharpe: 1.18, alpha: 3.5, volatility: 13.2, vrRating: 5, age: 10, isDirect: true },
-      { name: "UTI Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 24000, expense: 0.95, return1y: 24.2, return3y: 18.5, return5y: 17.2, sharpe: 1.08, alpha: 2.1, volatility: 15.5, vrRating: 4, age: 18, isDirect: true },
+      { name: "ICICI Pru Bluechip Fund - Direct", category: "Large Cap", aum: 68000, expense: 0.85, return1y: 29.0, return3y: 18.5, return5y: 17.2, sharpe: 1.22, alpha: 3.8, volatility: 13.4, vrRating: 5, age: 16, isDirect: true },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // MID CAP & SMALL CAP FUNDS
+      // ═══════════════════════════════════════════════════════════════
+      { name: "HDFC Mid-Cap Opportunities Fund - Direct", category: "Mid Cap", aum: 42000, expense: 0.78, return1y: 35.2, return3y: 26.4, return5y: 22.1, sharpe: 1.28, alpha: 6.4, volatility: 18.2, vrRating: 5, age: 14, isDirect: true },
+      { name: "Kotak Emerging Equity Fund - Direct", category: "Mid Cap", aum: 28000, expense: 0.55, return1y: 38.6, return3y: 28.1, return5y: 23.8, sharpe: 1.38, alpha: 7.8, volatility: 19.5, vrRating: 5, age: 9, isDirect: true },
       { name: "Nippon India Small Cap - Direct", category: "Small Cap", aum: 38000, expense: 0.82, return1y: 42.5, return3y: 32.4, return5y: 28.2, sharpe: 1.45, alpha: 9.5, volatility: 24.8, vrRating: 5, age: 12, isDirect: true },
+      { name: "SBI Small Cap Fund - Direct", category: "Small Cap", aum: 22000, expense: 0.68, return1y: 29.8, return3y: 25.2, return5y: 24.5, sharpe: 1.22, alpha: 7.2, volatility: 23.1, vrRating: 5, age: 11, isDirect: true },
+      { name: "Axis Small Cap Fund - Direct", category: "Small Cap", aum: 15000, expense: 0.48, return1y: 32.4, return3y: 28.6, return5y: 26.8, sharpe: 1.35, alpha: 8.1, volatility: 22.5, vrRating: 5, age: 8, isDirect: true },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // FLEXI CAP FUNDS
+      // ═══════════════════════════════════════════════════════════════
+      { name: "Parag Parikh Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 45000, expense: 0.63, return1y: 28.5, return3y: 22.1, return5y: 21.4, sharpe: 1.42, alpha: 5.2, volatility: 14.2, vrRating: 5, age: 12, isDirect: true, sector: "International" },
       { name: "Quant Active Fund - Direct", category: "Flexi Cap", aum: 6200, expense: 0.58, return1y: 48.2, return3y: 35.8, return5y: 30.5, sharpe: 1.62, alpha: 12.4, volatility: 21.2, vrRating: 4, age: 7, isDirect: true },
-      { name: "ICICI Pru Bluechip Fund - Direct", category: "Large Cap", aum: 48000, expense: 1.02, return1y: 19.8, return3y: 16.2, return5y: 15.8, sharpe: 1.05, alpha: 1.8, volatility: 14.1, vrRating: 4, age: 16, isDirect: true },
+      { name: "UTI Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 24000, expense: 0.95, return1y: 24.2, return3y: 18.5, return5y: 17.2, sharpe: 1.08, alpha: 2.1, volatility: 15.5, vrRating: 4, age: 18, isDirect: true },
+      { name: "PGIM India Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 5200, expense: 0.42, return1y: 15.2, return3y: 8.5, return5y: 14.8, sharpe: 0.72, alpha: -1.2, volatility: 16.5, vrRating: 3, age: 6, isDirect: true },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // TECHNOLOGY / IT SECTOR FUNDS
+      // ═══════════════════════════════════════════════════════════════
+      { name: "ICICI Prudential Technology Fund - Direct", category: "Technology", aum: 12500, expense: 0.92, return1y: 28.5, return3y: 12.8, return5y: 22.5, sharpe: 0.95, alpha: 4.2, volatility: 22.5, vrRating: 5, age: 14, isDirect: true, sector: "Technology" },
+      { name: "Tata Digital India Fund - Direct", category: "Technology", aum: 9200, expense: 0.45, return1y: 32.4, return3y: 14.5, return5y: 24.8, sharpe: 1.02, alpha: 5.8, volatility: 21.8, vrRating: 5, age: 9, isDirect: true, sector: "Technology" },
+      { name: "SBI Technology Opportunities Fund - Direct", category: "Technology", aum: 4200, expense: 0.88, return1y: 25.8, return3y: 11.2, return5y: 20.5, sharpe: 0.85, alpha: 2.5, volatility: 23.2, vrRating: 4, age: 10, isDirect: true, sector: "Technology" },
+      { name: "Nippon India IT Fund - Direct", category: "Technology", aum: 2850, expense: 0.95, return1y: 22.5, return3y: 9.8, return5y: 18.2, sharpe: 0.78, alpha: 1.2, volatility: 24.5, vrRating: 4, age: 18, isDirect: true, sector: "Technology" },
+      { name: "Aditya Birla SL Digital India Fund - Direct", category: "Technology", aum: 5800, expense: 0.72, return1y: 30.2, return3y: 13.5, return5y: 23.2, sharpe: 0.98, alpha: 4.8, volatility: 22.8, vrRating: 5, age: 11, isDirect: true, sector: "Technology" },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // MNC FUNDS
+      // ═══════════════════════════════════════════════════════════════
+      { name: "ICICI Prudential MNC Fund - Direct", category: "MNC", aum: 3850, expense: 0.82, return1y: 24.5, return3y: 18.2, return5y: 16.8, sharpe: 1.15, alpha: 3.5, volatility: 14.5, vrRating: 4, age: 12, isDirect: true, sector: "MNC" },
+      { name: "Nippon India MNC Fund - Direct", category: "MNC", aum: 2200, expense: 0.88, return1y: 22.8, return3y: 16.5, return5y: 15.2, sharpe: 1.08, alpha: 2.8, volatility: 15.2, vrRating: 4, age: 15, isDirect: true, sector: "MNC" },
+      { name: "Aditya Birla SL MNC Fund - Direct", category: "MNC", aum: 1850, expense: 0.78, return1y: 21.2, return3y: 15.8, return5y: 14.5, sharpe: 1.02, alpha: 2.2, volatility: 14.8, vrRating: 4, age: 10, isDirect: true, sector: "MNC" },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // ELSS (TAX SAVER) FUNDS
+      // ═══════════════════════════════════════════════════════════════
       { name: "Axis ELSS Tax Saver - Direct", category: "ELSS", aum: 32000, expense: 0.65, return1y: 22.5, return3y: 14.2, return5y: 15.5, sharpe: 0.92, alpha: 0.8, volatility: 15.8, vrRating: 4, age: 11, isDirect: true },
       { name: "Mirae Asset ELSS Tax Saver - Direct", category: "ELSS", aum: 18500, expense: 0.48, return1y: 26.8, return3y: 18.5, return5y: 18.2, sharpe: 1.22, alpha: 4.2, volatility: 15.2, vrRating: 5, age: 8, isDirect: true },
-      { name: "PGIM India Flexi Cap Fund - Direct", category: "Flexi Cap", aum: 5200, expense: 0.42, return1y: 15.2, return3y: 8.5, return5y: 14.8, sharpe: 0.72, alpha: -1.2, volatility: 16.5, vrRating: 3, age: 6, isDirect: true },
+      
+      // ═══════════════════════════════════════════════════════════════
+      // THEMATIC / SECTORAL FUNDS
+      // ═══════════════════════════════════════════════════════════════
       { name: "Franklin India Healthcare - Direct", category: "Healthcare", aum: 680, expense: 1.85, return1y: 42.8, return3y: 22.5, return5y: 18.2, sharpe: 1.12, alpha: 5.8, volatility: 19.2, vrRating: 4, age: 8, isDirect: true, sector: "Healthcare" },
       
       // BLOCKED FUNDS - Temporarily not available for purchase (international/US funds with RBI restrictions)
