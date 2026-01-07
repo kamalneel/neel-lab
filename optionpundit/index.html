@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="../faviconV4.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="OptionPundit - Your Options Strategy Advisor. Get smart recommendations for rolling, closing, and managing your options positions." />
+    <meta name="description" content="Neel's Lab - A collection of vibe-coded experiments. Tools built for fun, learning, and solving real problems." />
     <meta name="theme-color" content="#0D0D0D" />
     
     <!-- Fonts (matching Agrawal Estate Planner) -->
@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     
-    <title>OptionPundit - Your Options Strategy Advisor</title>
+    <title>Neel's Lab - Vibe-Coded Experiments</title>
     
     <style>
       /* Critical CSS for fast load */
@@ -24,63 +24,8 @@
         -webkit-font-smoothing: antialiased;
       }
       
-      /* Neel Labs Header */
-      .neel-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        background: rgba(13, 13, 13, 0.95);
-        backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 12px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      
-      .neel-header-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-      
-      .neel-header img {
-        height: 36px;
-        border-radius: 8px;
-      }
-      
-      .neel-header-title {
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #FFFFFF;
-      }
-      
-      .neel-header-title span {
-        color: #00D632;
-      }
-      
-      .neel-header-back {
-        color: #A3A3A3;
-        font-size: 0.875rem;
-        text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.2s ease;
-      }
-      
-      .neel-header-back:hover {
-        color: #00D632;
-        border-color: rgba(0, 214, 50, 0.3);
-        background: rgba(0, 214, 50, 0.08);
-      }
-      
       #root {
         min-height: 100vh;
-        padding-top: 60px; /* Account for fixed header */
       }
       
       /* Loading state */
@@ -89,40 +34,34 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: calc(100vh - 60px);
+        min-height: 100vh;
         color: #FFFFFF;
         background: radial-gradient(ellipse at 30% 20%, rgba(0, 214, 50, 0.06) 0%, transparent 50%), #0D0D0D;
       }
       
-      .loading-screen img {
-        animation: pulse 1.5s ease-in-out infinite;
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 3px solid rgba(0, 214, 50, 0.2);
+        border-top-color: #00D632;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
       }
       
-      @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.8; }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-Co91CcFC.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CGHaQ6Uq.css">
+    <script type="module" crossorigin src="/assets/index-DVLGify5.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BxNfwl-o.css">
   </head>
   <body>
-    <!-- Neel Labs Header -->
-    <header class="neel-header">
-      <div class="neel-header-left">
-        <a href="/">
-          <img src="../LogoV2.png" alt="Neel Labs">
-        </a>
-        <span class="neel-header-title">Option<span>Pundit</span></span>
-      </div>
-      <a href="/" class="neel-header-back">← Back to Neel Labs</a>
-    </header>
-    
     <div id="root">
       <!-- Loading state shown before React hydrates -->
       <div class="loading-screen">
-        <img src="./logo.png" alt="OptionPundit" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 16px;" />
-        <div>Loading OptionPundit...</div>
+        <div class="loading-spinner"></div>
+        <div style="font-size: 18px;">🧪 Neel's Lab</div>
       </div>
     </div>
   </body>
