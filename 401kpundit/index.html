@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="../faviconV4.png">
-  <title>401k Pundit - Retirement Target Calculator - Neel Labs</title>
+  <title>401k Pundit - When Enough is Enough - Neel Labs</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
@@ -63,10 +66,7 @@
       min-height: 100vh;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
     /* Header */
     .app-header {
@@ -80,7 +80,7 @@
     }
 
     .app-header-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -104,9 +104,7 @@
       font-weight: 600;
     }
 
-    .app-title span {
-      color: var(--color-blue);
-    }
+    .app-title span { color: var(--color-blue); }
 
     .back-link {
       color: var(--color-text-secondary);
@@ -123,86 +121,60 @@
       background: var(--color-accent-muted);
     }
 
-    /* Main Content */
+    /* Main */
     .app-main {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: var(--space-8) var(--space-6);
     }
 
-    /* Strategy Explanation */
-    .strategy-intro {
-      background: linear-gradient(135deg, var(--color-blue-muted) 0%, transparent 50%);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: var(--space-12) 0;
       margin-bottom: var(--space-8);
     }
 
-    .strategy-intro h2 {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      margin-bottom: var(--space-4);
-    }
-
-    .strategy-intro > p {
-      color: var(--color-text-secondary);
-      margin-bottom: var(--space-4);
-    }
-
-    .the-math {
-      background: var(--color-bg-secondary);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-      margin-top: var(--space-4);
-    }
-
-    .the-math h4 {
-      font-size: 0.875rem;
+    .hero-badge {
+      display: inline-block;
+      background: var(--color-blue-muted);
       color: var(--color-blue);
-      margin-bottom: var(--space-3);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .math-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: var(--space-3);
-    }
-
-    .math-item {
-      text-align: center;
-      padding: var(--space-3);
-      background: var(--color-bg-tertiary);
-      border-radius: var(--radius-md);
-    }
-
-    .math-item .value {
-      font-family: var(--font-mono);
-      font-size: 1.25rem;
+      padding: var(--space-2) var(--space-4);
+      border-radius: 100px;
+      font-size: 0.875rem;
       font-weight: 600;
-      color: var(--color-text-primary);
+      margin-bottom: var(--space-6);
     }
 
-    .math-item .label {
-      font-size: 0.7rem;
-      color: var(--color-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: var(--space-1);
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: var(--space-6);
     }
 
-    /* Calculator Card */
-    .calculator-card {
+    .hero-title .accent { color: var(--color-accent); }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto var(--space-8);
+      line-height: 1.7;
+    }
+
+    /* Input Card */
+    .input-card {
       background: var(--color-bg-secondary);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-xl);
       padding: var(--space-8);
-      margin-bottom: var(--space-6);
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .calculator-card h3 {
+    .input-card h3 {
       font-family: var(--font-display);
       font-size: 1.25rem;
       margin-bottom: var(--space-6);
@@ -217,14 +189,10 @@
     }
 
     @media (max-width: 700px) {
-      .input-grid {
-        grid-template-columns: 1fr;
-      }
+      .input-grid { grid-template-columns: 1fr; }
     }
 
-    .input-group {
-      text-align: center;
-    }
+    .input-group { text-align: center; }
 
     .input-group label {
       display: block;
@@ -282,187 +250,220 @@
     /* Results Section */
     .results-section {
       display: none;
+      margin-top: var(--space-12);
     }
 
     .results-section.visible {
       display: block;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.5s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Target vs Projected */
-    .comparison-card {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: var(--space-6);
+    /* Section Titles */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+      display: flex;
       align-items: center;
+      gap: var(--space-3);
+    }
+
+    .section-title .number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--color-blue);
+      color: #000;
+      border-radius: 50%;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    /* Cards */
+    .card {
       background: var(--color-bg-secondary);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-xl);
-      padding: var(--space-8);
-      margin-bottom: var(--space-6);
+      padding: var(--space-6);
+      margin-bottom: var(--space-8);
     }
 
-    @media (max-width: 700px) {
-      .comparison-card {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .comparison-vs {
-        transform: rotate(90deg);
-      }
+    .card h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .comparison-item {
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .data-table th {
+      color: var(--color-text-tertiary);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .data-table td {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+
+    .data-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table .total-row td {
+      border-top: 2px solid var(--color-border);
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding-top: var(--space-4);
+    }
+
+    .data-table .highlight { color: var(--color-accent); }
+    .data-table .blue { color: var(--color-blue); }
+    .data-table .gold { color: var(--color-gold); }
+    .data-table .red { color: var(--color-red); }
+
+    /* Assumptions Grid */
+    .assumptions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .assumption-item {
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
       text-align: center;
     }
 
-    .comparison-item .label {
-      font-size: 0.75rem;
+    .assumption-item .value {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .assumption-item .label {
+      font-size: 0.7rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: var(--space-1);
+    }
+
+    /* Big Number Display */
+    .big-number {
+      text-align: center;
+      padding: var(--space-6);
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+    }
+
+    .big-number .label {
+      font-size: 0.875rem;
       color: var(--color-text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: var(--space-2);
     }
 
-    .comparison-item .amount {
+    .big-number .amount {
       font-family: var(--font-mono);
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 700;
     }
 
-    .comparison-item .amount.target {
-      color: var(--color-blue);
-    }
+    .big-number .amount.green { color: var(--color-accent); }
+    .big-number .amount.blue { color: var(--color-blue); }
+    .big-number .amount.gold { color: var(--color-gold); }
+    .big-number .amount.red { color: var(--color-red); }
 
-    .comparison-item .amount.projected {
-      color: var(--color-accent);
-    }
-
-    .comparison-item .subtitle {
+    .big-number .subtitle {
       font-size: 0.875rem;
       color: var(--color-text-secondary);
       margin-top: var(--space-2);
     }
 
-    .comparison-vs {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--color-text-tertiary);
+    /* Chart */
+    .chart-container {
+      height: 400px;
+      position: relative;
+      margin-top: var(--space-6);
     }
 
-    /* Verdict Card */
-    .verdict-card {
-      border-radius: var(--radius-xl);
-      padding: var(--space-8);
+    /* Verdict */
+    .verdict-banner {
       text-align: center;
-      margin-bottom: var(--space-6);
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-8);
     }
 
-    .verdict-card.success {
-      background: linear-gradient(135deg, var(--color-accent-muted) 0%, var(--color-bg-secondary) 100%);
+    .verdict-banner.success {
+      background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-secondary));
       border: 2px solid var(--color-accent);
     }
 
-    .verdict-card.warning {
-      background: linear-gradient(135deg, var(--color-gold-muted) 0%, var(--color-bg-secondary) 100%);
+    .verdict-banner.warning {
+      background: linear-gradient(135deg, var(--color-gold-muted), var(--color-bg-secondary));
       border: 2px solid var(--color-gold);
     }
 
-    .verdict-card.danger {
-      background: linear-gradient(135deg, var(--color-red-muted) 0%, var(--color-bg-secondary) 100%);
+    .verdict-banner.danger {
+      background: linear-gradient(135deg, var(--color-red-muted), var(--color-bg-secondary));
       border: 2px solid var(--color-red);
     }
 
-    .verdict-icon {
-      font-size: 4rem;
-      margin-bottom: var(--space-4);
-    }
+    .verdict-banner .icon { font-size: 4rem; margin-bottom: var(--space-4); }
 
-    .verdict-title {
+    .verdict-banner .title {
       font-family: var(--font-display);
       font-size: 2rem;
       font-weight: 700;
-      margin-bottom: var(--space-3);
-    }
-
-    .verdict-card.success .verdict-title { color: var(--color-accent); }
-    .verdict-card.warning .verdict-title { color: var(--color-gold); }
-    .verdict-card.danger .verdict-title { color: var(--color-red); }
-
-    .verdict-message {
-      color: var(--color-text-secondary);
-      font-size: 1.125rem;
-      max-width: 600px;
-      margin: 0 auto var(--space-6);
-      line-height: 1.7;
-    }
-
-    .verdict-gap {
-      display: inline-block;
-      padding: var(--space-3) var(--space-6);
-      background: var(--color-bg-tertiary);
-      border-radius: 100px;
-      font-family: var(--font-mono);
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .verdict-card.success .verdict-gap { color: var(--color-accent); }
-    .verdict-card.warning .verdict-gap { color: var(--color-gold); }
-    .verdict-card.danger .verdict-gap { color: var(--color-red); }
-
-    /* Calculation Breakdown */
-    .breakdown-card {
-      background: var(--color-bg-secondary);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-    }
-
-    .breakdown-card h4 {
-      font-family: var(--font-display);
-      font-size: 1rem;
-      color: var(--color-text-secondary);
       margin-bottom: var(--space-4);
     }
 
-    .breakdown-table {
-      width: 100%;
-    }
+    .verdict-banner.success .title { color: var(--color-accent); }
+    .verdict-banner.warning .title { color: var(--color-gold); }
+    .verdict-banner.danger .title { color: var(--color-red); }
 
-    .breakdown-row {
-      display: flex;
-      justify-content: space-between;
-      padding: var(--space-3) 0;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .breakdown-row:last-child {
-      border-bottom: none;
-      padding-top: var(--space-4);
-      margin-top: var(--space-2);
-      border-top: 2px solid var(--color-border);
-    }
-
-    .breakdown-row .label {
-      color: var(--color-text-secondary);
-    }
-
-    .breakdown-row .value {
-      font-family: var(--font-mono);
-      font-weight: 600;
-    }
-
-    .breakdown-row:last-child .label,
-    .breakdown-row:last-child .value {
+    .verdict-banner .message {
       font-size: 1.125rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
     }
 
     /* Footer */
@@ -476,9 +477,7 @@
       color: var(--color-text-tertiary);
     }
 
-    .app-footer a {
-      color: var(--color-accent);
-    }
+    .app-footer a { color: var(--color-accent); }
 
     .disclaimer {
       max-width: 700px;
@@ -488,6 +487,13 @@
       border-radius: var(--radius-md);
       font-size: 0.75rem;
       line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2rem; }
+      .big-number .amount { font-size: 2rem; }
+      .assumptions-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -506,132 +512,249 @@
   </header>
 
   <main class="app-main">
-    <!-- Strategy Explanation -->
-    <div class="strategy-intro">
-      <h2>Your Retirement Savings Target</h2>
-      <p>
-        Most advice says "max out your 401k!" But there's an <strong>optimal ceiling</strong> —
-        a target amount beyond which additional tax-advantaged contributions become counterproductive.
-        This calculator tells you if you're on track to hit that target.
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-badge">Retirement Planning</div>
+      <h1 class="hero-title">
+        When <span class="accent">Enough</span><br>is Enough
+      </h1>
+      <p class="hero-subtitle">
+        Everyone tells you to max out your 401k. But at what point have you saved
+        <em>enough</em> for retirement? This calculator finds that magic number.
       </p>
+    </section>
 
-      <div class="the-math">
-        <h4>The Math Behind It</h4>
-        <div class="math-grid">
-          <div class="math-item">
-            <div class="value">$400K</div>
-            <div class="label">Golden Number</div>
-          </div>
-          <div class="math-item">
-            <div class="value">24%</div>
-            <div class="label">Tax Bracket</div>
-          </div>
-          <div class="math-item">
-            <div class="value">30 yrs</div>
-            <div class="label">Age 60 → 90</div>
-          </div>
-          <div class="math-item">
-            <div class="value">8%</div>
-            <div class="label">Annual Growth</div>
-          </div>
-          <div class="math-item">
-            <div class="value">$4.5M</div>
-            <div class="label">Target at 60</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calculator -->
-    <div class="calculator-card">
+    <!-- Input Card -->
+    <div class="input-card">
       <h3>Enter Your Current Retirement Savings</h3>
 
       <div class="input-grid">
         <div class="input-group">
           <label>Your Current Age</label>
           <input type="number" id="currentAge" value="46" min="25" max="59">
-          <div class="hint">Years until 60</div>
+          <div class="hint">You (or younger spouse)</div>
         </div>
 
         <div class="input-group">
           <label>Combined IRA Balance</label>
           <input type="text" id="iraBalance" value="800,000" oninput="formatNumber(this)">
-          <div class="hint">You + Spouse (Rolled 401k)</div>
+          <div class="hint">You + Spouse (rolled 401k)</div>
         </div>
 
         <div class="input-group">
-          <label>Combined Roth IRA Balance</label>
+          <label>Combined Roth IRA</label>
           <input type="text" id="rothBalance" value="50,000" oninput="formatNumber(this)">
           <div class="hint">You + Spouse</div>
         </div>
       </div>
 
       <button class="calculate-btn" onclick="calculate()">
-        Calculate My Projection
+        Show Me the Numbers
       </button>
     </div>
 
-    <!-- Results -->
-    <div class="results-section" id="results">
-      <!-- Comparison -->
-      <div class="comparison-card">
-        <div class="comparison-item">
-          <div class="label">Target at Age 60</div>
-          <div class="amount target">$4.5M</div>
-          <div class="subtitle">To withdraw $400K/yr for 30 years</div>
+    <!-- Results Section -->
+    <section class="results-section" id="results">
+
+      <!-- 1. Assumptions -->
+      <h2 class="section-title"><span class="number">1</span> Our Assumptions</h2>
+      <div class="card">
+        <div class="assumptions-grid">
+          <div class="assumption-item">
+            <div class="value">60</div>
+            <div class="label">Retirement Age</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">90</div>
+            <div class="label">Life Expectancy</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">8%</div>
+            <div class="label">Annual Growth</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">$47K</div>
+            <div class="label">Annual 401k (couple)</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">$400K</div>
+            <div class="label">Golden Number</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">~33%</div>
+            <div class="label">Tax Rate (Fed+CA)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Your Current Balances -->
+      <h2 class="section-title"><span class="number">2</span> Your Current Balances</h2>
+      <div class="card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Traditional IRA (You + Spouse)</td>
+              <td id="tableIRA">$800,000</td>
+            </tr>
+            <tr>
+              <td>Roth IRA (You + Spouse)</td>
+              <td id="tableRoth">$50,000</td>
+            </tr>
+            <tr class="total-row">
+              <td>Total Current Retirement Savings</td>
+              <td class="highlight" id="tableTotal">$850,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Projection to Age 60 -->
+      <h2 class="section-title"><span class="number">3</span> Growing Your Nest Egg to Age 60</h2>
+      <div class="card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Current Balance</td>
+              <td id="projCurrentBalance">$850,000</td>
+            </tr>
+            <tr>
+              <td>Growth on Current Balance (8% for <span id="projYears">14</span> years)</td>
+              <td class="blue" id="projGrowthOnCurrent">+$1,648,000</td>
+            </tr>
+            <tr>
+              <td>Future 401k Contributions ($47K/yr × <span id="projYears2">14</span> years)</td>
+              <td id="projContributions">$658,000</td>
+            </tr>
+            <tr>
+              <td>Growth on Contributions</td>
+              <td class="blue" id="projGrowthOnContrib">+$466,000</td>
+            </tr>
+            <tr class="total-row">
+              <td>Projected Balance at Age 60</td>
+              <td class="highlight" id="projTotal">$3,622,000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="big-number" style="margin-top: var(--space-6);">
+          <div class="label">Your Nest Egg at 60</div>
+          <div class="amount blue" id="bigNestEgg">$3.6M</div>
+        </div>
+      </div>
+
+      <!-- 4. Retirement Spending (60-90) -->
+      <h2 class="section-title"><span class="number">4</span> Your Retirement Lifestyle (Age 60-90)</h2>
+      <div class="card">
+        <h4>Annual Withdrawal Breakdown</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Annual Withdrawal (Golden Number)</td>
+              <td class="gold">$400,000</td>
+            </tr>
+            <tr>
+              <td>Federal Tax (24%)</td>
+              <td class="red">-$96,000</td>
+            </tr>
+            <tr>
+              <td>California State Tax (~9.3%)</td>
+              <td class="red">-$37,200</td>
+            </tr>
+            <tr class="total-row">
+              <td>Annual After-Tax Spending</td>
+              <td class="highlight">$266,800</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
+          <div class="big-number">
+            <div class="label">Monthly Spending</div>
+            <div class="amount green">$22,233</div>
+          </div>
+          <div class="big-number">
+            <div class="label">30-Year Total Spending</div>
+            <div class="amount gold">$8.0M</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. What's Left at 90 -->
+      <h2 class="section-title"><span class="number">5</span> What's Left at Age 90?</h2>
+      <div class="card">
+        <div class="big-number">
+          <div class="label">Remaining Balance at Age 90</div>
+          <div class="amount" id="bigRemaining">$2.1M</div>
+          <div class="subtitle" id="remainingSubtitle">You won't run out of money!</div>
         </div>
 
-        <div class="comparison-vs">vs</div>
-
-        <div class="comparison-item">
-          <div class="label">Your Projection at 60</div>
-          <div class="amount projected" id="projectedAmount">$2.5M</div>
-          <div class="subtitle" id="projectedSubtitle">Based on 8% annual growth</div>
-        </div>
+        <table class="data-table" id="decumulationSummary">
+          <thead>
+            <tr>
+              <th>Summary</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Starting Balance at 60</td>
+              <td id="summaryStart">$3,622,000</td>
+            </tr>
+            <tr>
+              <td>Total Withdrawn (30 years × $400K)</td>
+              <td class="red" id="summaryWithdrawn">-$12,000,000</td>
+            </tr>
+            <tr>
+              <td>Total Growth During Retirement</td>
+              <td class="blue" id="summaryGrowth">+$10,500,000</td>
+            </tr>
+            <tr class="total-row">
+              <td>Remaining at 90</td>
+              <td id="summaryRemaining">$2,122,000</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Verdict -->
-      <div class="verdict-card success" id="verdictCard">
-        <div class="verdict-icon" id="verdictIcon">🎯</div>
-        <div class="verdict-title" id="verdictTitle">On Track!</div>
-        <div class="verdict-message" id="verdictMessage">
-          Your projected retirement savings will exceed the target.
-          You're set for a comfortable retirement.
+      <div class="verdict-banner success" id="verdictBanner">
+        <div class="icon" id="verdictIcon">🎯</div>
+        <div class="title" id="verdictTitle">You're On Track!</div>
+        <div class="message" id="verdictMessage">
+          With your current savings and continued 401k contributions, you'll have more than enough
+          to withdraw $400K/year for 30 years. You might even consider reducing your 401k contributions
+          and investing in taxable accounts for more flexibility.
         </div>
-        <div class="verdict-gap" id="verdictGap">+$500K above target</div>
       </div>
 
-      <!-- Breakdown -->
-      <div class="breakdown-card">
-        <h4>Calculation Breakdown</h4>
-        <div class="breakdown-table">
-          <div class="breakdown-row">
-            <span class="label">Current IRA Balance</span>
-            <span class="value" id="breakdownIRA">$800,000</span>
-          </div>
-          <div class="breakdown-row">
-            <span class="label">Current Roth IRA Balance</span>
-            <span class="value" id="breakdownRoth">$50,000</span>
-          </div>
-          <div class="breakdown-row">
-            <span class="label">Total Current Balance</span>
-            <span class="value" id="breakdownTotal">$850,000</span>
-          </div>
-          <div class="breakdown-row">
-            <span class="label">Years Until Retirement (Age 60)</span>
-            <span class="value" id="breakdownYears">14 years</span>
-          </div>
-          <div class="breakdown-row">
-            <span class="label">Growth Multiplier (8% compounded)</span>
-            <span class="value" id="breakdownMultiplier">2.94x</span>
-          </div>
-          <div class="breakdown-row">
-            <span class="label">Projected Balance at 60</span>
-            <span class="value" id="breakdownProjected">$2,498,000</span>
-          </div>
+      <!-- 6. The Full Picture (Chart) -->
+      <h2 class="section-title"><span class="number">6</span> The Full Picture</h2>
+      <div class="card">
+        <h4>Your Wealth Journey: Today → 60 → 90</h4>
+        <div class="chart-container">
+          <canvas id="wealthChart"></canvas>
         </div>
       </div>
-    </div>
+
+    </section>
   </main>
 
   <!-- Footer -->
@@ -639,12 +762,12 @@
     <div class="disclaimer">
       <strong>Disclaimer:</strong> This calculator provides estimates for educational purposes only.
       Actual results depend on market conditions, tax law changes, and individual circumstances.
-      The 8% growth assumption is optimistic — actual returns may vary.
+      The 8% growth assumption is optimistic — actual returns may vary significantly.
       Consult a qualified financial advisor for personalized advice.
     </div>
     <p>
       401k Pundit by <a href="/">Neel Labs</a> ·
-      <em>Find your optimal retirement savings target</em>
+      <em>When enough is enough</em>
     </p>
   </footer>
 
@@ -653,16 +776,16 @@
     // CONSTANTS
     // ═══════════════════════════════════════════════════════════════
 
-    const GOLDEN_NUMBER = 400000;      // Annual withdrawal amount
-    const RETIREMENT_AGE = 60;         // Target retirement age
-    const LIFE_EXPECTANCY = 90;        // Planning horizon
-    const GROWTH_RATE = 0.08;          // 8% annual return
-    const YEARS_IN_RETIREMENT = LIFE_EXPECTANCY - RETIREMENT_AGE; // 30 years
+    const RETIREMENT_AGE = 60;
+    const LIFE_EXPECTANCY = 90;
+    const GROWTH_RATE = 0.08;
+    const ANNUAL_401K_CONTRIBUTION = 47000; // ~$23.5K × 2 for couple
+    const GOLDEN_NUMBER = 400000;
+    const FEDERAL_TAX_RATE = 0.24;
+    const STATE_TAX_RATE = 0.093; // California
+    const COMBINED_TAX_RATE = FEDERAL_TAX_RATE + STATE_TAX_RATE;
 
-    // Target = PV of annuity: $400K/yr for 30 years at 8%
-    // Formula: PMT × [(1 - (1 + r)^-n) / r]
-    const TARGET_BALANCE = GOLDEN_NUMBER * ((1 - Math.pow(1 + GROWTH_RATE, -YEARS_IN_RETIREMENT)) / GROWTH_RATE);
-    // ≈ $4,503,000
+    let wealthChart = null;
 
     // ═══════════════════════════════════════════════════════════════
     // UTILITY FUNCTIONS
@@ -683,17 +806,17 @@
       if (Math.abs(num) >= 1e6) {
         return '$' + (num / 1e6).toFixed(1) + 'M';
       } else if (Math.abs(num) >= 1e3) {
-        return '$' + (num / 1e3).toFixed(0) + 'K';
+        return '$' + Math.round(num / 1e3).toLocaleString() + 'K';
       }
       return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
     }
 
     function formatFullCurrency(num) {
-      return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      return '$' + Math.round(num).toLocaleString();
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // CALCULATION
+    // CALCULATION ENGINE
     // ═══════════════════════════════════════════════════════════════
 
     function calculate() {
@@ -702,74 +825,306 @@
       const iraBalance = parseNumber(document.getElementById('iraBalance').value);
       const rothBalance = parseNumber(document.getElementById('rothBalance').value);
 
-      // Calculate
       const totalCurrent = iraBalance + rothBalance;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
+      const yearsInRetirement = LIFE_EXPECTANCY - RETIREMENT_AGE;
+
+      // ─────────────────────────────────────────────────────────────
+      // PHASE 1: Accumulation (Current Age → 60)
+      // ─────────────────────────────────────────────────────────────
+
+      // Growth on existing balance
       const growthMultiplier = Math.pow(1 + GROWTH_RATE, yearsToRetirement);
-      const projectedBalance = totalCurrent * growthMultiplier;
-      const gap = projectedBalance - TARGET_BALANCE;
-      const gapPercent = (gap / TARGET_BALANCE) * 100;
+      const futureValueOfCurrent = totalCurrent * growthMultiplier;
+      const growthOnCurrent = futureValueOfCurrent - totalCurrent;
 
-      // Update comparison
-      document.getElementById('projectedAmount').textContent = formatCurrency(projectedBalance);
-      document.getElementById('projectedSubtitle').textContent =
-        `${yearsToRetirement} years of growth at 8%`;
+      // Future value of annual contributions (annuity)
+      // FV = PMT × [((1 + r)^n - 1) / r]
+      let futureValueOfContributions = 0;
+      let growthOnContributions = 0;
+      const totalContributions = ANNUAL_401K_CONTRIBUTION * yearsToRetirement;
 
-      // Update verdict
-      const verdictCard = document.getElementById('verdictCard');
+      if (yearsToRetirement > 0) {
+        futureValueOfContributions = ANNUAL_401K_CONTRIBUTION *
+          ((Math.pow(1 + GROWTH_RATE, yearsToRetirement) - 1) / GROWTH_RATE);
+        growthOnContributions = futureValueOfContributions - totalContributions;
+      }
+
+      const balanceAt60 = futureValueOfCurrent + futureValueOfContributions;
+
+      // ─────────────────────────────────────────────────────────────
+      // PHASE 2: Decumulation (60 → 90)
+      // ─────────────────────────────────────────────────────────────
+
+      // Simulate year by year
+      const yearlyData = [];
+      let balance = balanceAt60;
+      let totalWithdrawn = 0;
+      let totalGrowthInRetirement = 0;
+
+      // Add accumulation phase data points
+      let accumulationBalance = totalCurrent;
+      for (let age = currentAge; age <= RETIREMENT_AGE; age++) {
+        yearlyData.push({
+          age,
+          balance: accumulationBalance,
+          phase: 'accumulation'
+        });
+
+        if (age < RETIREMENT_AGE) {
+          accumulationBalance = accumulationBalance * (1 + GROWTH_RATE) + ANNUAL_401K_CONTRIBUTION;
+        }
+      }
+
+      // Add decumulation phase data points
+      balance = balanceAt60;
+      for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
+        if (age > RETIREMENT_AGE) {
+          // Withdraw at start of year
+          balance -= GOLDEN_NUMBER;
+          totalWithdrawn += GOLDEN_NUMBER;
+
+          // Grow remainder
+          const growth = balance * GROWTH_RATE;
+          totalGrowthInRetirement += growth;
+          balance += growth;
+        }
+
+        yearlyData.push({
+          age,
+          balance: Math.max(0, balance),
+          phase: 'decumulation'
+        });
+      }
+
+      const remainingAt90 = Math.max(0, balance);
+
+      // ─────────────────────────────────────────────────────────────
+      // UPDATE UI
+      // ─────────────────────────────────────────────────────────────
+
+      // Section 2: Current Balances
+      document.getElementById('tableIRA').textContent = formatFullCurrency(iraBalance);
+      document.getElementById('tableRoth').textContent = formatFullCurrency(rothBalance);
+      document.getElementById('tableTotal').textContent = formatFullCurrency(totalCurrent);
+
+      // Section 3: Projection to 60
+      document.getElementById('projYears').textContent = yearsToRetirement;
+      document.getElementById('projYears2').textContent = yearsToRetirement;
+      document.getElementById('projCurrentBalance').textContent = formatFullCurrency(totalCurrent);
+      document.getElementById('projGrowthOnCurrent').textContent = '+' + formatFullCurrency(growthOnCurrent);
+      document.getElementById('projContributions').textContent = formatFullCurrency(totalContributions);
+      document.getElementById('projGrowthOnContrib').textContent = '+' + formatFullCurrency(growthOnContributions);
+      document.getElementById('projTotal').textContent = formatFullCurrency(balanceAt60);
+      document.getElementById('bigNestEgg').textContent = formatCurrency(balanceAt60);
+
+      // Section 5: What's Left at 90
+      document.getElementById('summaryStart').textContent = formatFullCurrency(balanceAt60);
+      document.getElementById('summaryWithdrawn').textContent = '-' + formatFullCurrency(totalWithdrawn);
+      document.getElementById('summaryGrowth').textContent = '+' + formatFullCurrency(totalGrowthInRetirement);
+      document.getElementById('summaryRemaining').textContent = formatFullCurrency(remainingAt90);
+
+      const bigRemaining = document.getElementById('bigRemaining');
+      const remainingSubtitle = document.getElementById('remainingSubtitle');
+      bigRemaining.textContent = formatCurrency(remainingAt90);
+
+      if (remainingAt90 > 0) {
+        bigRemaining.className = 'amount green';
+        remainingSubtitle.textContent = "You won't run out of money!";
+      } else {
+        bigRemaining.className = 'amount red';
+        remainingSubtitle.textContent = "Warning: You may run out of money before 90.";
+      }
+
+      // Verdict Banner
+      const verdictBanner = document.getElementById('verdictBanner');
       const verdictIcon = document.getElementById('verdictIcon');
       const verdictTitle = document.getElementById('verdictTitle');
       const verdictMessage = document.getElementById('verdictMessage');
-      const verdictGap = document.getElementById('verdictGap');
 
-      if (gap >= 0) {
-        // On track or ahead
-        verdictCard.className = 'verdict-card success';
+      if (remainingAt90 > balanceAt60 * 0.5) {
+        // Way more than enough
+        verdictBanner.className = 'verdict-banner success';
         verdictIcon.textContent = '🎯';
-        verdictTitle.textContent = "You're Set!";
-        verdictMessage.textContent =
-          `Your projected balance at 60 exceeds the target. You'll be able to withdraw $400K/year ` +
-          `for 30 years without running out of money. Consider whether you need to keep maximizing ` +
-          `401k contributions or if those funds could work harder in taxable accounts.`;
-        verdictGap.textContent = '+' + formatCurrency(gap) + ' above target';
-      } else if (gapPercent >= -25) {
-        // Close but under
-        verdictCard.className = 'verdict-card warning';
-        verdictIcon.textContent = '⚠️';
-        verdictTitle.textContent = 'Almost There';
-        verdictMessage.textContent =
-          `You're ${Math.abs(gapPercent).toFixed(0)}% below the target. With continued contributions ` +
-          `and market growth, you can close this gap. Keep maximizing your 401k contributions ` +
-          `and stay the course.`;
-        verdictGap.textContent = formatCurrency(gap) + ' below target';
+        verdictTitle.textContent = "You're Set for Life!";
+        verdictMessage.innerHTML = `
+          With <strong>${formatCurrency(remainingAt90)}</strong> remaining at 90, you're over-saving in tax-advantaged accounts.
+          Consider reducing 401k contributions beyond the employer match and investing in taxable accounts
+          for more flexibility and lower RMDs.
+        `;
+      } else if (remainingAt90 > 0) {
+        // On track
+        verdictBanner.className = 'verdict-banner success';
+        verdictIcon.textContent = '✅';
+        verdictTitle.textContent = "You're On Track!";
+        verdictMessage.innerHTML = `
+          You'll have <strong>${formatCurrency(remainingAt90)}</strong> remaining at 90.
+          Your current savings plan will sustain $400K/year withdrawals for 30 years.
+          Keep up the good work!
+        `;
       } else {
-        // Significantly under
-        verdictCard.className = 'verdict-card danger';
-        verdictIcon.textContent = '📉';
-        verdictTitle.textContent = 'Need More Savings';
-        verdictMessage.textContent =
-          `You're ${Math.abs(gapPercent).toFixed(0)}% below the target. To close this gap, you'll need to ` +
-          `maximize 401k contributions, consider delaying retirement, or adjust your expected ` +
-          `retirement income downward.`;
-        verdictGap.textContent = formatCurrency(gap) + ' below target';
+        // Not enough
+        verdictBanner.className = 'verdict-banner danger';
+        verdictIcon.textContent = '⚠️';
+        verdictTitle.textContent = "You Need More Savings";
+        verdictMessage.innerHTML = `
+          At your current trajectory, you may run out of money before 90.
+          Consider maximizing 401k contributions, delaying retirement, or adjusting
+          your expected retirement income.
+        `;
       }
 
-      // Update breakdown
-      document.getElementById('breakdownIRA').textContent = formatFullCurrency(iraBalance);
-      document.getElementById('breakdownRoth').textContent = formatFullCurrency(rothBalance);
-      document.getElementById('breakdownTotal').textContent = formatFullCurrency(totalCurrent);
-      document.getElementById('breakdownYears').textContent = yearsToRetirement + ' years';
-      document.getElementById('breakdownMultiplier').textContent = growthMultiplier.toFixed(2) + 'x';
-      document.getElementById('breakdownProjected').textContent = formatFullCurrency(projectedBalance);
+      // Update Chart
+      updateChart(yearlyData, RETIREMENT_AGE);
 
       // Show results
       document.getElementById('results').classList.add('visible');
-
-      // Scroll to results
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Calculate on page load with default values
+    function updateChart(yearlyData, retirementAge) {
+      const ctx = document.getElementById('wealthChart').getContext('2d');
+
+      // Prepare data
+      const labels = yearlyData.map(d => d.age);
+      const balances = yearlyData.map(d => d.balance);
+
+      // Find retirement index
+      const retirementIndex = yearlyData.findIndex(d => d.age === retirementAge);
+
+      // Create gradient colors
+      const accumulationColor = '#3B82F6';
+      const decumulationColor = '#00D632';
+
+      if (wealthChart) {
+        wealthChart.destroy();
+      }
+
+      wealthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Portfolio Balance',
+            data: balances,
+            borderColor: function(context) {
+              const index = context.dataIndex;
+              return index <= retirementIndex ? accumulationColor : decumulationColor;
+            },
+            backgroundColor: function(context) {
+              const chart = context.chart;
+              const { ctx, chartArea } = chart;
+              if (!chartArea) return null;
+
+              const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+              gradient.addColorStop(0, 'rgba(0, 214, 50, 0.05)');
+              gradient.addColorStop(1, 'rgba(59, 130, 246, 0.2)');
+              return gradient;
+            },
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#FFFFFF',
+            pointHoverBorderColor: '#00D632',
+            pointHoverBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1A1A1A',
+              titleColor: '#FFFFFF',
+              bodyColor: '#A3A3A3',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false,
+              callbacks: {
+                title: function(context) {
+                  const age = context[0].label;
+                  if (age < retirementAge) {
+                    return `Age ${age} (Accumulating)`;
+                  } else if (age == retirementAge) {
+                    return `Age ${age} (Retirement!)`;
+                  } else {
+                    return `Age ${age} (Withdrawing)`;
+                  }
+                },
+                label: function(context) {
+                  return 'Balance: ' + formatCurrency(context.parsed.y);
+                }
+              }
+            },
+            annotation: {
+              annotations: {
+                retirementLine: {
+                  type: 'line',
+                  xMin: retirementAge,
+                  xMax: retirementAge,
+                  borderColor: '#C9A227',
+                  borderWidth: 2,
+                  borderDash: [6, 6],
+                  label: {
+                    display: true,
+                    content: 'Retirement',
+                    position: 'start',
+                    backgroundColor: '#C9A227',
+                    color: '#000',
+                    font: { size: 11, weight: 'bold' }
+                  }
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Age',
+                color: '#737373',
+                font: { size: 12 }
+              },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                maxTicksLimit: 12,
+                callback: function(value, index) {
+                  const age = this.getLabelForValue(value);
+                  if (age === retirementAge) return '60 ★';
+                  return age;
+                }
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Portfolio Balance',
+                color: '#737373',
+                font: { size: 12 }
+              },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                callback: function(value) {
+                  return formatCurrency(value);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Calculate on page load
     document.addEventListener('DOMContentLoaded', calculate);
   </script>
 </body>
