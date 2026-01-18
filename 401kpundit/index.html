@@ -466,6 +466,133 @@
       line-height: 1.7;
     }
 
+    /* THE BIG ANSWER - Stop Age Hero */
+    .stop-age-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #0D0D0D 100%);
+      border: 3px solid var(--color-accent);
+      border-radius: var(--radius-xl);
+      padding: var(--space-12);
+      text-align: center;
+      margin-bottom: var(--space-8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stop-age-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 214, 50, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .stop-age-label {
+      display: inline-block;
+      background: var(--color-accent);
+      color: #000;
+      padding: var(--space-2) var(--space-6);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-6);
+    }
+
+    .stop-age-question {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .stop-age-answer {
+      font-family: var(--font-mono);
+      font-size: clamp(4rem, 12vw, 7rem);
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1;
+      margin-bottom: var(--space-6);
+      text-shadow: 0 0 60px rgba(0, 214, 50, 0.5);
+    }
+
+    .stop-age-explanation {
+      font-size: 1.125rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto var(--space-8);
+      line-height: 1.7;
+    }
+
+    .stop-age-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .stop-age-stat {
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stop-age-stat .value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .stop-age-stat .label {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: var(--space-1);
+    }
+
+    .stop-age-hero.already-enough {
+      border-color: var(--color-gold);
+    }
+
+    .stop-age-hero.already-enough .stop-age-label {
+      background: var(--color-gold);
+    }
+
+    .stop-age-hero.already-enough .stop-age-answer {
+      color: var(--color-gold);
+      text-shadow: 0 0 60px rgba(201, 162, 39, 0.5);
+    }
+
+    .stop-age-hero.need-more {
+      border-color: var(--color-red);
+    }
+
+    .stop-age-hero.need-more .stop-age-label {
+      background: var(--color-red);
+    }
+
+    .stop-age-hero.need-more .stop-age-answer {
+      color: var(--color-red);
+      text-shadow: 0 0 60px rgba(239, 68, 68, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .stop-age-hero {
+        padding: var(--space-8);
+      }
+
+      .stop-age-answer {
+        font-size: 4rem;
+      }
+
+      .stop-age-stats {
+        gap: var(--space-4);
+      }
+    }
+
     /* Footer */
     .app-footer {
       background: var(--color-bg-secondary);
@@ -698,8 +825,10 @@
       </div>
 
       <!-- 5. What's Left at 90 -->
-      <h2 class="section-title"><span class="number">5</span> What's Left at Age 90?</h2>
+      <h2 class="section-title"><span class="number">5</span> Retirement: Spending + Growing (Age 60-90)</h2>
       <div class="card">
+        <h4>Each Year: Withdraw $400K, Then Grow Remainder at 8%</h4>
+
         <div class="big-number">
           <div class="label">Remaining Balance at Age 90</div>
           <div class="amount" id="bigRemaining">$2.1M</div>
@@ -709,7 +838,7 @@
         <table class="data-table" id="decumulationSummary">
           <thead>
             <tr>
-              <th>Summary</th>
+              <th>30 Years of Retirement</th>
               <th>Amount</th>
             </tr>
           </thead>
@@ -723,7 +852,7 @@
               <td class="red" id="summaryWithdrawn">-$12,000,000</td>
             </tr>
             <tr>
-              <td>Total Growth During Retirement</td>
+              <td>Total Growth During Retirement (8%/yr on remainder)</td>
               <td class="blue" id="summaryGrowth">+$10,500,000</td>
             </tr>
             <tr class="total-row">
@@ -732,6 +861,37 @@
             </tr>
           </tbody>
         </table>
+
+        <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--color-text-secondary);">
+          <strong>How it works:</strong> Each year you withdraw $400K for living expenses,
+          then your remaining balance grows 8%. This is why you can withdraw more than your starting balance —
+          your money keeps working for you even in retirement.
+        </div>
+      </div>
+
+      <!-- THE BIG ANSWER -->
+      <div class="stop-age-hero" id="stopAgeHero">
+        <div class="stop-age-label">THE ANSWER</div>
+        <div class="stop-age-question">When Should You Stop Contributing?</div>
+        <div class="stop-age-answer" id="stopAgeAnswer">Age 52</div>
+        <div class="stop-age-explanation" id="stopAgeExplanation">
+          If you stop 401k contributions at age 52, you'll have just enough to withdraw $400K/year
+          until age 90 and end with near-zero balance. Every year you contribute beyond this is gravy.
+        </div>
+        <div class="stop-age-stats">
+          <div class="stop-age-stat">
+            <div class="value" id="stopAgeYearsLeft">6 years</div>
+            <div class="label">More to Contribute</div>
+          </div>
+          <div class="stop-age-stat">
+            <div class="value" id="stopAgeSavings">$282K</div>
+            <div class="label">401k Savings After Stop</div>
+          </div>
+          <div class="stop-age-stat">
+            <div class="value" id="stopAgeBalance60">$3.2M</div>
+            <div class="label">Balance at 60</div>
+          </div>
+        </div>
       </div>
 
       <!-- Verdict -->
@@ -816,6 +976,99 @@
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // STOP AGE CALCULATION
+    // ═══════════════════════════════════════════════════════════════
+
+    function simulateWithStopAge(totalCurrent, currentAge, stopAge) {
+      // Phase 1: Accumulation with contributions until stopAge, then just growth
+      let balance = totalCurrent;
+
+      for (let age = currentAge; age < RETIREMENT_AGE; age++) {
+        // Add contribution only if before stop age
+        const contribution = age < stopAge ? ANNUAL_401K_CONTRIBUTION : 0;
+        balance = balance * (1 + GROWTH_RATE) + contribution;
+      }
+
+      const balanceAt60 = balance;
+
+      // Phase 2: Decumulation from 60 to 90
+      // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
+      for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
+        balance *= (1 + GROWTH_RATE);  // Grow first
+        balance -= GOLDEN_NUMBER;       // Then withdraw
+        if (balance <= 0) return { balanceAt60, remaining: 0, ranOut: true, ranOutAge: age };
+      }
+
+      return { balanceAt60, remaining: balance, ranOut: false };
+    }
+
+    function findOptimalStopAge(totalCurrent, currentAge) {
+      // Binary search for the stop age that results in near-zero at 90
+      // We want the earliest age where remaining >= 0
+
+      let bestStopAge = currentAge;
+      let bestRemaining = Infinity;
+
+      // Check if already enough (stop contributing now)
+      const ifStopNow = simulateWithStopAge(totalCurrent, currentAge, currentAge);
+      if (ifStopNow.remaining > 0) {
+        // Already have enough! Find earliest stop age
+        bestStopAge = currentAge;
+        bestRemaining = ifStopNow.remaining;
+
+        // But maybe we had enough even earlier - check if current balance alone works
+        // This means "you already have enough, could have stopped years ago"
+        return {
+          stopAge: currentAge,
+          status: 'already-enough',
+          balanceAt60: ifStopNow.balanceAt60,
+          remaining: ifStopNow.remaining
+        };
+      }
+
+      // Need to find when to stop
+      // Search from current age to 60
+      for (let stopAge = currentAge; stopAge <= RETIREMENT_AGE; stopAge++) {
+        const result = simulateWithStopAge(totalCurrent, currentAge, stopAge);
+
+        if (result.remaining >= 0 && result.remaining < bestRemaining) {
+          bestStopAge = stopAge;
+          bestRemaining = result.remaining;
+        }
+
+        // If we found a stop age that works (remaining >= 0),
+        // and it's close to zero, that's our answer
+        if (result.remaining >= 0 && result.remaining < 500000) {
+          return {
+            stopAge: stopAge,
+            status: 'found',
+            balanceAt60: result.balanceAt60,
+            remaining: result.remaining
+          };
+        }
+      }
+
+      // Check if even contributing till 60 isn't enough
+      const ifContributeTill60 = simulateWithStopAge(totalCurrent, currentAge, RETIREMENT_AGE);
+      if (ifContributeTill60.remaining <= 0) {
+        return {
+          stopAge: RETIREMENT_AGE,
+          status: 'need-more',
+          balanceAt60: ifContributeTill60.balanceAt60,
+          remaining: ifContributeTill60.remaining
+        };
+      }
+
+      // Return best found
+      return {
+        stopAge: bestStopAge,
+        status: 'found',
+        balanceAt60: simulateWithStopAge(totalCurrent, currentAge, bestStopAge).balanceAt60,
+        remaining: bestRemaining
+      };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // CALCULATION ENGINE
     // ═══════════════════════════════════════════════════════════════
 
@@ -880,14 +1133,14 @@
       balance = balanceAt60;
       for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
         if (age > RETIREMENT_AGE) {
-          // Withdraw at start of year
-          balance -= GOLDEN_NUMBER;
-          totalWithdrawn += GOLDEN_NUMBER;
-
-          // Grow remainder
+          // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
           const growth = balance * GROWTH_RATE;
           totalGrowthInRetirement += growth;
           balance += growth;
+
+          // Then withdraw
+          balance -= GOLDEN_NUMBER;
+          totalWithdrawn += GOLDEN_NUMBER;
         }
 
         yearlyData.push({
@@ -934,6 +1187,58 @@
       } else {
         bigRemaining.className = 'amount red';
         remainingSubtitle.textContent = "Warning: You may run out of money before 90.";
+      }
+
+      // ─────────────────────────────────────────────────────────────
+      // THE BIG ANSWER: When to Stop Contributing
+      // ─────────────────────────────────────────────────────────────
+
+      const stopAgeResult = findOptimalStopAge(totalCurrent, currentAge);
+      const stopAgeHero = document.getElementById('stopAgeHero');
+      const stopAgeAnswer = document.getElementById('stopAgeAnswer');
+      const stopAgeExplanation = document.getElementById('stopAgeExplanation');
+      const stopAgeYearsLeft = document.getElementById('stopAgeYearsLeft');
+      const stopAgeSavings = document.getElementById('stopAgeSavings');
+      const stopAgeBalance60 = document.getElementById('stopAgeBalance60');
+
+      if (stopAgeResult.status === 'already-enough') {
+        // Already have enough - could stop now!
+        stopAgeHero.className = 'stop-age-hero already-enough';
+        stopAgeAnswer.textContent = 'NOW!';
+        stopAgeExplanation.innerHTML = `
+          <strong>Congratulations!</strong> You already have enough saved. If you stopped contributing today,
+          you'd still have <strong>${formatCurrency(stopAgeResult.remaining)}</strong> left at age 90.
+          Consider redirecting 401k contributions to taxable accounts for more flexibility.
+        `;
+        stopAgeYearsLeft.textContent = '0 years';
+        stopAgeSavings.textContent = '$0';
+        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
+      } else if (stopAgeResult.status === 'need-more') {
+        // Need to keep contributing past 60
+        stopAgeHero.className = 'stop-age-hero need-more';
+        stopAgeAnswer.textContent = 'Keep Going';
+        stopAgeExplanation.innerHTML = `
+          Even with maximum contributions until 60, you may not have enough to withdraw $400K/year for 30 years.
+          Consider increasing savings, delaying retirement, or adjusting your income expectations.
+        `;
+        stopAgeYearsLeft.textContent = `${RETIREMENT_AGE - currentAge} years`;
+        stopAgeSavings.textContent = formatCurrency(ANNUAL_401K_CONTRIBUTION * (RETIREMENT_AGE - currentAge));
+        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
+      } else {
+        // Found optimal stop age
+        const yearsToContribute = stopAgeResult.stopAge - currentAge;
+        const savingsAfterStop = ANNUAL_401K_CONTRIBUTION * yearsToContribute;
+
+        stopAgeHero.className = 'stop-age-hero';
+        stopAgeAnswer.textContent = `Age ${stopAgeResult.stopAge}`;
+        stopAgeExplanation.innerHTML = `
+          If you stop 401k contributions at <strong>age ${stopAgeResult.stopAge}</strong>, you'll have just enough
+          to withdraw $400K/year until age 90 and end with <strong>${formatCurrency(stopAgeResult.remaining)}</strong>.
+          Every year you contribute beyond this is bonus money!
+        `;
+        stopAgeYearsLeft.textContent = `${yearsToContribute} years`;
+        stopAgeSavings.textContent = formatCurrency(savingsAfterStop);
+        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
       }
 
       // Verdict Banner
