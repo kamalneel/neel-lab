@@ -1450,26 +1450,45 @@
       const totalAt60 = ira + roth;
 
       // Phase 2: Decumulation from 60 to 90 (monthly simulation)
+      const totalMonthlyWithdrawal = monthlyIraWithdrawal + monthlyRothWithdrawal;
+
       for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
         for (let month = 0; month < 12; month++) {
           // Grow first
           ira *= (1 + MONTHLY_GROWTH_RATE);
           roth *= (1 + MONTHLY_GROWTH_RATE);
 
-          // Then withdraw (80/20 split)
-          ira -= monthlyIraWithdrawal;
-          roth -= monthlyRothWithdrawal;
+          // Withdraw with flexible ratio - if one account runs low, take more from the other
+          let iraWithdraw = monthlyIraWithdrawal;
+          let rothWithdraw = monthlyRothWithdrawal;
 
-          // Check if either runs out
-          if (ira <= 0 || roth <= 0) {
-            const ranOutAge = age + (month / 12); // Fractional age
+          // If Roth can't cover its share, take more from IRA
+          if (roth < rothWithdraw) {
+            const shortfall = rothWithdraw - roth;
+            rothWithdraw = Math.max(0, roth);
+            iraWithdraw += shortfall;
+          }
+
+          // If IRA can't cover its share, take more from Roth
+          if (ira < iraWithdraw) {
+            const shortfall = iraWithdraw - ira;
+            iraWithdraw = Math.max(0, ira);
+            rothWithdraw += shortfall;
+          }
+
+          ira -= iraWithdraw;
+          roth -= rothWithdraw;
+
+          // Only "ran out" if BOTH accounts are depleted
+          if (ira <= 0 && roth <= 0) {
+            const ranOutAge = age + (month / 12);
             return {
               iraAt60, rothAt60, totalAt60,
-              iraRemaining: Math.max(0, ira),
-              rothRemaining: Math.max(0, roth),
-              totalRemaining: Math.max(0, ira) + Math.max(0, roth),
+              iraRemaining: 0,
+              rothRemaining: 0,
+              totalRemaining: 0,
               ranOut: true,
-              ranOutAge: Math.ceil(ranOutAge) // Round up to nearest year
+              ranOutAge: Math.ceil(ranOutAge)
             };
           }
         }
@@ -1627,9 +1646,23 @@
             ira += iraGrowth;
             roth += rothGrowth;
 
-            // Withdraw from each (80/20 split)
-            ira -= monthlyIraWithdrawal;
-            roth -= monthlyRothWithdrawal;
+            // Withdraw with flexible ratio - if one account runs low, take more from the other
+            let iraWithdraw = monthlyIraWithdrawal;
+            let rothWithdraw = monthlyRothWithdrawal;
+
+            if (roth < rothWithdraw) {
+              const shortfall = rothWithdraw - roth;
+              rothWithdraw = Math.max(0, roth);
+              iraWithdraw += shortfall;
+            }
+            if (ira < iraWithdraw) {
+              const shortfall = iraWithdraw - ira;
+              iraWithdraw = Math.max(0, ira);
+              rothWithdraw += shortfall;
+            }
+
+            ira -= iraWithdraw;
+            roth -= rothWithdraw;
           }
 
           yearWithdrawal = totalWithdrawalPerYear;
