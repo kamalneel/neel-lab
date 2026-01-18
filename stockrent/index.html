@@ -346,78 +346,117 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Summary Cards */
+    /* Summary - Unified Card */
     .summary-section {
       margin-bottom: var(--space-8);
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-4);
-    }
-
-    @media (max-width: 700px) {
-      .summary-grid { grid-template-columns: 1fr; }
-    }
-
-    .summary-card {
-      background: var(--color-bg-secondary);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      text-align: center;
-    }
-
-    .summary-card.highlight {
-      border-color: var(--color-accent);
+    .summary-unified {
       background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-secondary));
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
     }
 
-    .summary-card .label {
-      font-size: 0.875rem;
-      color: var(--color-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .summary-header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .summary-badge {
+      display: inline-block;
+      background: var(--color-accent);
+      color: #000;
+      padding: var(--space-2) var(--space-6);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
       margin-bottom: var(--space-3);
     }
 
-    .summary-card .comparison {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-6);
-    }
-
-    .summary-card .scenario {
-      text-align: center;
-    }
-
-    .summary-card .scenario-label {
-      font-size: 0.7rem;
-      color: var(--color-text-tertiary);
-      margin-bottom: var(--space-1);
-    }
-
-    .summary-card .scenario-value {
-      font-family: var(--font-mono);
+    .summary-header h2 {
+      font-family: var(--font-display);
       font-size: 1.5rem;
-      font-weight: 700;
+      color: var(--color-text-primary);
     }
 
-    .summary-card .scenario-value.sell { color: var(--color-red); }
-    .summary-card .scenario-value.rent { color: var(--color-accent); }
-
-    .summary-card .single-value {
-      font-family: var(--font-mono);
-      font-size: 2rem;
-      font-weight: 700;
+    .summary-header h2 span {
       color: var(--color-accent);
     }
 
-    .summary-card .subtitle {
-      font-size: 0.8rem;
+    .strategy-comparison {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .strategy-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .strategy-row.sell-strategy {
+      border-left: 4px solid var(--color-red);
+    }
+
+    .strategy-row.rent-strategy {
+      border-left: 4px solid var(--color-accent);
+    }
+
+    .strategy-name {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .strategy-icon {
+      font-size: 1.25rem;
+    }
+
+    .strategy-result {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .strategy-result.sell { color: var(--color-red); }
+    .strategy-result.rent { color: var(--color-accent); }
+
+    .summary-note {
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-6);
+      font-size: 0.9rem;
       color: var(--color-text-secondary);
-      margin-top: var(--space-2);
+      text-align: center;
+    }
+
+    .summary-note strong {
+      color: var(--color-gold);
+    }
+
+    .summary-note span {
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .strategy-row {
+        flex-direction: column;
+        gap: var(--space-2);
+        text-align: center;
+      }
+      .strategy-result {
+        font-size: 1.5rem;
+      }
     }
 
     /* Section Titles */
@@ -622,7 +661,7 @@
       </div>
 
       <div class="philosophy-solution">
-        <h3>The Solution: Rent Your Stocks</h3>
+        <h3>The Solution: The Rent Your Stock Strategy</h3>
         <p>
           Generate monthly income by selling covered calls against your holdings.
           You keep your shares, earn ~1% per month, and your portfolio keeps growing.
@@ -656,49 +695,42 @@
       </div>
 
       <button class="calculate-btn" onclick="calculate()">
-        Compare Buy & Sell vs. Rent
+        Compare Both Strategies
       </button>
     </div>
 
     <!-- Results Section -->
     <section class="results-section" id="results">
 
-      <!-- Summary Cards -->
+      <!-- Summary Card - Unified Comparison -->
       <div class="summary-section">
-        <div class="summary-grid">
-          <div class="summary-card highlight">
-            <div class="label">Portfolio at Age 60</div>
-            <div class="comparison">
-              <div class="scenario">
-                <div class="scenario-label">Buy & Sell</div>
-                <div class="scenario-value sell" id="summaryPortfolioSell">$0</div>
+        <div class="summary-unified">
+          <div class="summary-header">
+            <div class="summary-badge">THE BOTTOM LINE</div>
+            <h2>Your Portfolio at Age <span id="summaryEndAge">60</span></h2>
+          </div>
+
+          <div class="strategy-comparison">
+            <div class="strategy-row sell-strategy">
+              <div class="strategy-name">
+                <span class="strategy-icon">📉</span>
+                <span>Buy & Sell Strategy</span>
               </div>
-              <div class="scenario">
-                <div class="scenario-label">Rent Mode</div>
-                <div class="scenario-value rent" id="summaryPortfolioRent">$4.66M</div>
+              <div class="strategy-result sell" id="summaryPortfolioSell">$0</div>
+            </div>
+
+            <div class="strategy-row rent-strategy">
+              <div class="strategy-name">
+                <span class="strategy-icon">📈</span>
+                <span>Rent Your Stock Strategy</span>
               </div>
+              <div class="strategy-result rent" id="summaryPortfolioRent">$4.66M</div>
             </div>
           </div>
 
-          <div class="summary-card">
-            <div class="label">Rent Income Surpasses Sell</div>
-            <div class="single-value" id="summaryCrossoverYear">Year 4</div>
-            <div class="subtitle">When renting beats selling</div>
-          </div>
-
-          <div class="summary-card">
-            <div class="label">Legacy for Your Heirs</div>
-            <div class="comparison">
-              <div class="scenario">
-                <div class="scenario-label">Buy & Sell</div>
-                <div class="scenario-value sell" id="summaryLegacySell">$0</div>
-              </div>
-              <div class="scenario">
-                <div class="scenario-label">Rent Mode</div>
-                <div class="scenario-value rent" id="summaryLegacyRent">$4.66M</div>
-              </div>
-            </div>
-            <div class="subtitle">Tax-free via step-up basis</div>
+          <div class="summary-note" id="summaryNote">
+            <strong>Note:</strong> The Rent Your Stock Strategy income surpasses Buy & Sell in <span id="summaryCrossoverYear">Year 4</span>.
+            Your heirs inherit the full <span id="summaryLegacyRent">$4.66M</span> tax-free via step-up basis.
           </div>
         </div>
       </div>
@@ -711,11 +743,11 @@
         <div class="chart-legend">
           <div class="legend-item">
             <span class="legend-dot sell"></span>
-            <span>Buy & Sell Mode</span>
+            <span>Buy & Sell Strategy</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot rent"></span>
-            <span>Rent Mode (Covered Calls)</span>
+            <span>Rent Your Stock Strategy</span>
           </div>
         </div>
 
@@ -725,8 +757,8 @@
 
         <div class="insight-box">
           <p>
-            <strong>The Insight:</strong> Buy & Sell gives you fixed income until your portfolio runs out.
-            Rent Mode starts lower but <strong>grows every year</strong> as your portfolio compounds.
+            <strong>The Insight:</strong> The Buy & Sell Strategy gives you fixed income until your portfolio runs out.
+            The Rent Your Stock Strategy starts lower but <strong>grows every year</strong> as your portfolio compounds.
             By <span id="insightCrossover">Year 4</span>, renting generates more income—and it never stops.
           </p>
         </div>
@@ -740,11 +772,11 @@
         <div class="chart-legend">
           <div class="legend-item">
             <span class="legend-dot sell"></span>
-            <span>Buy & Sell Mode</span>
+            <span>Buy & Sell Strategy</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot rent"></span>
-            <span>Rent Mode (Never Sell)</span>
+            <span>Rent Your Stock Strategy</span>
           </div>
         </div>
 
@@ -755,7 +787,7 @@
         <div class="insight-box">
           <p>
             <strong>The Insight:</strong> When you sell stocks for income, you're eating into your principal.
-            In Rent Mode, your portfolio <strong>never shrinks</strong>—it compounds to
+            With the Rent Your Stock Strategy, your portfolio <strong>never shrinks</strong>—it compounds to
             <strong id="insightFinalPortfolio">$4.66M</strong> and passes to your heirs tax-free.
           </p>
         </div>
@@ -881,7 +913,7 @@
       }
 
       // Update UI
-      updateSummary(sellData, rentData, crossoverYear);
+      updateSummary(sellData, rentData, crossoverYear, END_AGE);
       updateCharts(sellData, rentData, currentAge, years);
 
       // Show results
@@ -969,19 +1001,18 @@
     // UI UPDATES
     // ═══════════════════════════════════════════════════════════════
 
-    function updateSummary(sellData, rentData, crossoverYear) {
-      // Portfolio at 60
+    function updateSummary(sellData, rentData, crossoverYear, endAge) {
+      // End age
+      document.getElementById('summaryEndAge').textContent = endAge;
+
+      // Portfolio values
       document.getElementById('summaryPortfolioSell').textContent =
         sellData.finalPortfolio > 0 ? formatCurrency(sellData.finalPortfolio) : '$0';
       document.getElementById('summaryPortfolioRent').textContent = formatCurrency(rentData.finalPortfolio);
 
-      // Crossover year
+      // Crossover year and legacy
       document.getElementById('summaryCrossoverYear').textContent =
         crossoverYear ? `Year ${crossoverYear}` : 'Year 1';
-
-      // Legacy
-      document.getElementById('summaryLegacySell').textContent =
-        sellData.finalPortfolio > 0 ? formatCurrency(sellData.finalPortfolio) : '$0';
       document.getElementById('summaryLegacyRent').textContent = formatCurrency(rentData.finalPortfolio);
 
       // Insight boxes
@@ -1011,7 +1042,7 @@
           labels: incomeLabels,
           datasets: [
             {
-              label: 'Buy & Sell',
+              label: 'Buy & Sell Strategy',
               data: sellData.incomeByYear,
               borderColor: '#EF4444',
               backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -1022,7 +1053,7 @@
               pointBackgroundColor: '#EF4444'
             },
             {
-              label: 'Rent Mode',
+              label: 'Rent Your Stock Strategy',
               data: rentData.incomeByYear,
               borderColor: '#00D632',
               backgroundColor: 'rgba(0, 214, 50, 0.1)',
@@ -1088,7 +1119,7 @@
           labels: labels,
           datasets: [
             {
-              label: 'Buy & Sell',
+              label: 'Buy & Sell Strategy',
               data: sellData.portfolioByYear,
               borderColor: '#EF4444',
               backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -1099,7 +1130,7 @@
               pointBackgroundColor: '#EF4444'
             },
             {
-              label: 'Rent Mode',
+              label: 'Rent Your Stock Strategy',
               data: rentData.portfolioByYear,
               borderColor: '#00D632',
               backgroundColor: 'rgba(0, 214, 50, 0.1)',
