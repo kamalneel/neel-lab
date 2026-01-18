@@ -355,107 +355,125 @@
       background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-secondary));
       border: 2px solid var(--color-accent);
       border-radius: var(--radius-xl);
-      padding: var(--space-8);
-    }
-
-    .summary-header {
+      padding: var(--space-6);
       text-align: center;
-      margin-bottom: var(--space-6);
     }
 
     .summary-badge {
       display: inline-block;
       background: var(--color-accent);
       color: #000;
-      padding: var(--space-2) var(--space-6);
+      padding: var(--space-1) var(--space-4);
       border-radius: 100px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.1em;
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--space-2);
     }
 
-    .summary-header h2 {
+    .summary-title {
       font-family: var(--font-display);
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: var(--color-text-primary);
+      margin-bottom: var(--space-6);
     }
 
-    .summary-header h2 span {
+    .summary-title span {
       color: var(--color-accent);
     }
 
-    .strategy-comparison {
+    .strategy-vs {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       gap: var(--space-4);
       margin-bottom: var(--space-6);
     }
 
-    .strategy-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--color-bg-tertiary);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4) var(--space-6);
+    .strategy-box {
+      flex: 1;
+      max-width: 200px;
     }
 
-    .strategy-row.sell-strategy {
-      border-left: 4px solid var(--color-red);
+    .strategy-box .strategy-label {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2);
     }
 
-    .strategy-row.rent-strategy {
-      border-left: 4px solid var(--color-accent);
-    }
-
-    .strategy-name {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      font-size: 1rem;
-      font-weight: 500;
-    }
-
-    .strategy-icon {
-      font-size: 1.25rem;
-    }
-
-    .strategy-result {
+    .strategy-box .strategy-value {
       font-family: var(--font-mono);
-      font-size: 1.75rem;
+      font-size: 2.5rem;
       font-weight: 700;
     }
 
-    .strategy-result.sell { color: var(--color-red); }
-    .strategy-result.rent { color: var(--color-accent); }
-
-    .summary-note {
-      background: var(--color-bg-tertiary);
-      border-radius: var(--radius-md);
-      padding: var(--space-4) var(--space-6);
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
-      text-align: center;
+    .strategy-box.sell .strategy-value {
+      color: var(--color-red);
     }
 
-    .summary-note strong {
-      color: var(--color-gold);
-    }
-
-    .summary-note span {
+    .strategy-box.rent .strategy-value {
       color: var(--color-accent);
-      font-weight: 600;
     }
 
-    @media (max-width: 600px) {
-      .strategy-row {
+    .vs-divider {
+      font-size: 1rem;
+      color: var(--color-text-tertiary);
+      font-weight: 500;
+    }
+
+    .summary-insight {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+
+    .insight-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .insight-label {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .insight-value {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
+
+    .insight-divider {
+      color: var(--color-text-tertiary);
+      font-size: 1.25rem;
+    }
+
+    @media (max-width: 500px) {
+      .strategy-vs {
         flex-direction: column;
         gap: var(--space-2);
-        text-align: center;
       }
-      .strategy-result {
-        font-size: 1.5rem;
+      .vs-divider {
+        display: none;
+      }
+      .strategy-box .strategy-value {
+        font-size: 2rem;
+      }
+      .summary-insight {
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+      .insight-divider {
+        display: none;
       }
     }
 
@@ -705,32 +723,31 @@
       <!-- Summary Card - Unified Comparison -->
       <div class="summary-section">
         <div class="summary-unified">
-          <div class="summary-header">
-            <div class="summary-badge">THE BOTTOM LINE</div>
-            <h2>Your Portfolio at Age <span id="summaryEndAge">60</span></h2>
-          </div>
+          <div class="summary-badge">THE BOTTOM LINE</div>
+          <h2 class="summary-title">Your Portfolio at Age <span id="summaryEndAge">60</span></h2>
 
-          <div class="strategy-comparison">
-            <div class="strategy-row sell-strategy">
-              <div class="strategy-name">
-                <span class="strategy-icon">📉</span>
-                <span>Buy & Sell Strategy</span>
-              </div>
-              <div class="strategy-result sell" id="summaryPortfolioSell">$0</div>
+          <div class="strategy-vs">
+            <div class="strategy-box sell">
+              <div class="strategy-label">Buy & Sell Strategy</div>
+              <div class="strategy-value" id="summaryPortfolioSell">$0</div>
             </div>
-
-            <div class="strategy-row rent-strategy">
-              <div class="strategy-name">
-                <span class="strategy-icon">📈</span>
-                <span>Rent Your Stock Strategy</span>
-              </div>
-              <div class="strategy-result rent" id="summaryPortfolioRent">$4.66M</div>
+            <div class="vs-divider">vs</div>
+            <div class="strategy-box rent">
+              <div class="strategy-label">Rent Your Stock Strategy</div>
+              <div class="strategy-value" id="summaryPortfolioRent">$4.66M</div>
             </div>
           </div>
 
-          <div class="summary-note" id="summaryNote">
-            <strong>Note:</strong> The Rent Your Stock Strategy income surpasses Buy & Sell in <span id="summaryCrossoverYear">Year 4</span>.
-            Your heirs inherit the full <span id="summaryLegacyRent">$4.66M</span> tax-free via step-up basis.
+          <div class="summary-insight">
+            <div class="insight-item">
+              <span class="insight-label">Rent beats Sell by</span>
+              <span class="insight-value" id="summaryCrossoverYear">Year 4</span>
+            </div>
+            <div class="insight-divider">•</div>
+            <div class="insight-item">
+              <span class="insight-label">Tax-free inheritance</span>
+              <span class="insight-value" id="summaryLegacyRent">$4.66M</span>
+            </div>
           </div>
         </div>
       </div>
