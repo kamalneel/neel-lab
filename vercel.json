@@ -7,6 +7,8 @@
     { "source": "/fundpundit", "destination": "/fundpundit/index.html" },
     { "source": "/fundpundit/(.*)", "destination": "/fundpundit/index.html" },
     { "source": "/buyborrowdie", "destination": "/buyborrowdie/index.html" },
-    { "source": "/buyborrowdie/(.*)", "destination": "/buyborrowdie/index.html" }
+    { "source": "/buyborrowdie/(.*)", "destination": "/buyborrowdie/index.html" },
+    { "source": "/401kpundit", "destination": "/401kpundit/index.html" },
+    { "source": "/401kpundit/(.*)", "destination": "/401kpundit/index.html" }
   ]
 }
