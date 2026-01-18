@@ -227,6 +227,79 @@
       margin-top: var(--space-2);
     }
 
+    /* Withdrawal Input Section */
+    .withdrawal-input-section {
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .withdrawal-input-section label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+      text-align: center;
+    }
+
+    .withdrawal-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      justify-content: center;
+    }
+
+    .withdrawal-btn {
+      width: 80px;
+      padding: var(--space-3);
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      color: var(--color-text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .withdrawal-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: var(--color-accent-muted);
+    }
+
+    .withdrawal-controls input {
+      width: 180px;
+      padding: var(--space-3);
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-gold);
+      border-radius: var(--radius-lg);
+      color: var(--color-gold);
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .withdrawal-controls input:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.2);
+    }
+
+    .monthly-equivalent {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+      margin-top: var(--space-3);
+    }
+
+    .monthly-equivalent strong {
+      color: var(--color-gold);
+      font-family: var(--font-mono);
+    }
+
     .calculate-btn {
       width: 100%;
       padding: var(--space-4);
@@ -675,6 +748,18 @@
         </div>
       </div>
 
+      <div class="withdrawal-input-section">
+        <label>Annual Withdrawal Goal (Golden Number)</label>
+        <div class="withdrawal-controls">
+          <button class="withdrawal-btn" onclick="adjustWithdrawal(-50000)">−$50K</button>
+          <input type="text" id="withdrawalAmount" value="400,000" oninput="formatNumber(this); updateMonthlyDisplay()">
+          <button class="withdrawal-btn" onclick="adjustWithdrawal(50000)">+$50K</button>
+        </div>
+        <div class="monthly-equivalent">
+          That's <strong id="monthlyEquivalent">$33,333</strong>/month before taxes
+        </div>
+      </div>
+
       <button class="calculate-btn" onclick="calculate()">
         Show Me the Numbers
       </button>
@@ -704,7 +789,7 @@
             <div class="label">Annual 401k (couple)</div>
           </div>
           <div class="assumption-item">
-            <div class="value">$400K</div>
+            <div class="value" id="assumptionGolden">$400K</div>
             <div class="label">Golden Number</div>
           </div>
           <div class="assumption-item">
@@ -795,19 +880,19 @@
           <tbody>
             <tr>
               <td>Annual Withdrawal (Golden Number)</td>
-              <td class="gold">$400,000</td>
+              <td class="gold" id="taxGrossWithdrawal">$400,000</td>
             </tr>
             <tr>
               <td>Federal Tax (24%)</td>
-              <td class="red">-$96,000</td>
+              <td class="red" id="taxFederal">-$96,000</td>
             </tr>
             <tr>
               <td>California State Tax (~9.3%)</td>
-              <td class="red">-$37,200</td>
+              <td class="red" id="taxState">-$37,200</td>
             </tr>
             <tr class="total-row">
               <td>Annual After-Tax Spending</td>
-              <td class="highlight">$266,800</td>
+              <td class="highlight" id="taxNetSpending">$266,800</td>
             </tr>
           </tbody>
         </table>
@@ -815,11 +900,11 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
           <div class="big-number">
             <div class="label">Monthly Spending</div>
-            <div class="amount green">$22,233</div>
+            <div class="amount green" id="monthlySpending">$22,233</div>
           </div>
           <div class="big-number">
             <div class="label">30-Year Total Spending</div>
-            <div class="amount gold">$8.0M</div>
+            <div class="amount gold" id="totalSpending30yr">$8.0M</div>
           </div>
         </div>
       </div>
@@ -827,7 +912,7 @@
       <!-- 5. What's Left at 90 -->
       <h2 class="section-title"><span class="number">5</span> Retirement: Spending + Growing (Age 60-90)</h2>
       <div class="card">
-        <h4>Each Year: Withdraw $400K, Then Grow Remainder at 8%</h4>
+        <h4 id="section5Title">Each Year: Withdraw $400K, Then Grow Remainder at 8%</h4>
 
         <div class="big-number">
           <div class="label">Remaining Balance at Age 90</div>
@@ -848,7 +933,7 @@
               <td id="summaryStart">$3,622,000</td>
             </tr>
             <tr>
-              <td>Total Withdrawn (30 years × $400K)</td>
+              <td id="summaryWithdrawnLabel">Total Withdrawn (30 years × $400K)</td>
               <td class="red" id="summaryWithdrawn">-$12,000,000</td>
             </tr>
             <tr>
@@ -862,8 +947,8 @@
           </tbody>
         </table>
 
-        <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--color-text-secondary);">
-          <strong>How it works:</strong> Each year you withdraw $400K for living expenses,
+        <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--color-text-secondary);" id="howItWorksBox">
+          <strong>How it works:</strong> Each year you withdraw <span id="howItWorksAmount">$400K</span> for living expenses,
           then your remaining balance grows 8%. This is why you can withdraw more than your starting balance —
           your money keeps working for you even in retirement.
         </div>
@@ -940,7 +1025,7 @@
     const LIFE_EXPECTANCY = 90;
     const GROWTH_RATE = 0.08;
     const ANNUAL_401K_CONTRIBUTION = 47000; // ~$23.5K × 2 for couple
-    const GOLDEN_NUMBER = 400000;
+    const DEFAULT_GOLDEN_NUMBER = 400000;
     const FEDERAL_TAX_RATE = 0.24;
     const STATE_TAX_RATE = 0.093; // California
     const COMBINED_TAX_RATE = FEDERAL_TAX_RATE + STATE_TAX_RATE;
@@ -962,6 +1047,24 @@
       return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
     }
 
+    function getGoldenNumber() {
+      return parseNumber(document.getElementById('withdrawalAmount').value) || DEFAULT_GOLDEN_NUMBER;
+    }
+
+    function adjustWithdrawal(amount) {
+      const input = document.getElementById('withdrawalAmount');
+      let current = parseNumber(input.value);
+      current = Math.max(100000, Math.min(1000000, current + amount)); // Min $100K, Max $1M
+      input.value = current.toLocaleString();
+      updateMonthlyDisplay();
+    }
+
+    function updateMonthlyDisplay() {
+      const annual = getGoldenNumber();
+      const monthly = Math.round(annual / 12);
+      document.getElementById('monthlyEquivalent').textContent = '$' + monthly.toLocaleString();
+    }
+
     function formatCurrency(num) {
       if (Math.abs(num) >= 1e6) {
         return '$' + (num / 1e6).toFixed(1) + 'M';
@@ -979,7 +1082,7 @@
     // STOP AGE CALCULATION
     // ═══════════════════════════════════════════════════════════════
 
-    function simulateWithStopAge(totalCurrent, currentAge, stopAge) {
+    function simulateWithStopAge(totalCurrent, currentAge, stopAge, goldenNumber) {
       // Phase 1: Accumulation with contributions until stopAge, then just growth
       let balance = totalCurrent;
 
@@ -992,17 +1095,17 @@
       const balanceAt60 = balance;
 
       // Phase 2: Decumulation from 60 to 90
-      // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
+      // Each year: FIRST grow the full balance at 8%, THEN withdraw
       for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
         balance *= (1 + GROWTH_RATE);  // Grow first
-        balance -= GOLDEN_NUMBER;       // Then withdraw
+        balance -= goldenNumber;        // Then withdraw
         if (balance <= 0) return { balanceAt60, remaining: 0, ranOut: true, ranOutAge: age };
       }
 
       return { balanceAt60, remaining: balance, ranOut: false };
     }
 
-    function findOptimalStopAge(totalCurrent, currentAge) {
+    function findOptimalStopAge(totalCurrent, currentAge, goldenNumber) {
       // Binary search for the stop age that results in near-zero at 90
       // We want the earliest age where remaining >= 0
 
@@ -1010,7 +1113,7 @@
       let bestRemaining = Infinity;
 
       // Check if already enough (stop contributing now)
-      const ifStopNow = simulateWithStopAge(totalCurrent, currentAge, currentAge);
+      const ifStopNow = simulateWithStopAge(totalCurrent, currentAge, currentAge, goldenNumber);
       if (ifStopNow.remaining > 0) {
         // Already have enough! Find earliest stop age
         bestStopAge = currentAge;
@@ -1029,7 +1132,7 @@
       // Need to find when to stop
       // Search from current age to 60
       for (let stopAge = currentAge; stopAge <= RETIREMENT_AGE; stopAge++) {
-        const result = simulateWithStopAge(totalCurrent, currentAge, stopAge);
+        const result = simulateWithStopAge(totalCurrent, currentAge, stopAge, goldenNumber);
 
         if (result.remaining >= 0 && result.remaining < bestRemaining) {
           bestStopAge = stopAge;
@@ -1049,7 +1152,7 @@
       }
 
       // Check if even contributing till 60 isn't enough
-      const ifContributeTill60 = simulateWithStopAge(totalCurrent, currentAge, RETIREMENT_AGE);
+      const ifContributeTill60 = simulateWithStopAge(totalCurrent, currentAge, RETIREMENT_AGE, goldenNumber);
       if (ifContributeTill60.remaining <= 0) {
         return {
           stopAge: RETIREMENT_AGE,
@@ -1063,7 +1166,7 @@
       return {
         stopAge: bestStopAge,
         status: 'found',
-        balanceAt60: simulateWithStopAge(totalCurrent, currentAge, bestStopAge).balanceAt60,
+        balanceAt60: simulateWithStopAge(totalCurrent, currentAge, bestStopAge, goldenNumber).balanceAt60,
         remaining: bestRemaining
       };
     }
@@ -1077,6 +1180,7 @@
       const currentAge = parseInt(document.getElementById('currentAge').value);
       const iraBalance = parseNumber(document.getElementById('iraBalance').value);
       const rothBalance = parseNumber(document.getElementById('rothBalance').value);
+      const goldenNumber = getGoldenNumber();
 
       const totalCurrent = iraBalance + rothBalance;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
@@ -1133,14 +1237,14 @@
       balance = balanceAt60;
       for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
         if (age > RETIREMENT_AGE) {
-          // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
+          // Each year: FIRST grow the full balance at 8%, THEN withdraw
           const growth = balance * GROWTH_RATE;
           totalGrowthInRetirement += growth;
           balance += growth;
 
           // Then withdraw
-          balance -= GOLDEN_NUMBER;
-          totalWithdrawn += GOLDEN_NUMBER;
+          balance -= goldenNumber;
+          totalWithdrawn += goldenNumber;
         }
 
         yearlyData.push({
@@ -1171,6 +1275,24 @@
       document.getElementById('projTotal').textContent = formatFullCurrency(balanceAt60);
       document.getElementById('bigNestEgg').textContent = formatCurrency(balanceAt60);
 
+      // Section 1 & 4: Update golden number displays
+      const federalTax = goldenNumber * FEDERAL_TAX_RATE;
+      const stateTax = goldenNumber * STATE_TAX_RATE;
+      const afterTaxSpending = goldenNumber - federalTax - stateTax;
+      const monthlyAfterTax = afterTaxSpending / 12;
+      const total30yrSpending = afterTaxSpending * 30;
+
+      document.getElementById('assumptionGolden').textContent = formatCurrency(goldenNumber);
+      document.getElementById('taxGrossWithdrawal').textContent = formatFullCurrency(goldenNumber);
+      document.getElementById('taxFederal').textContent = '-' + formatFullCurrency(federalTax);
+      document.getElementById('taxState').textContent = '-' + formatFullCurrency(stateTax);
+      document.getElementById('taxNetSpending').textContent = formatFullCurrency(afterTaxSpending);
+      document.getElementById('monthlySpending').textContent = formatFullCurrency(monthlyAfterTax);
+      document.getElementById('totalSpending30yr').textContent = formatCurrency(total30yrSpending);
+      document.getElementById('section5Title').textContent = `Each Year: Withdraw ${formatCurrency(goldenNumber)}, Then Grow Remainder at 8%`;
+      document.getElementById('summaryWithdrawnLabel').textContent = `Total Withdrawn (30 years × ${formatCurrency(goldenNumber)})`;
+      document.getElementById('howItWorksAmount').textContent = formatCurrency(goldenNumber);
+
       // Section 5: What's Left at 90
       document.getElementById('summaryStart').textContent = formatFullCurrency(balanceAt60);
       document.getElementById('summaryWithdrawn').textContent = '-' + formatFullCurrency(totalWithdrawn);
@@ -1193,13 +1315,14 @@
       // THE BIG ANSWER: When to Stop Contributing
       // ─────────────────────────────────────────────────────────────
 
-      const stopAgeResult = findOptimalStopAge(totalCurrent, currentAge);
+      const stopAgeResult = findOptimalStopAge(totalCurrent, currentAge, goldenNumber);
       const stopAgeHero = document.getElementById('stopAgeHero');
       const stopAgeAnswer = document.getElementById('stopAgeAnswer');
       const stopAgeExplanation = document.getElementById('stopAgeExplanation');
       const stopAgeYearsLeft = document.getElementById('stopAgeYearsLeft');
       const stopAgeSavings = document.getElementById('stopAgeSavings');
       const stopAgeBalance60 = document.getElementById('stopAgeBalance60');
+      const withdrawalDisplay = formatCurrency(goldenNumber);
 
       if (stopAgeResult.status === 'already-enough') {
         // Already have enough - could stop now!
@@ -1218,7 +1341,7 @@
         stopAgeHero.className = 'stop-age-hero need-more';
         stopAgeAnswer.textContent = 'Keep Going';
         stopAgeExplanation.innerHTML = `
-          Even with maximum contributions until 60, you may not have enough to withdraw $400K/year for 30 years.
+          Even with maximum contributions until 60, you may not have enough to withdraw ${withdrawalDisplay}/year for 30 years.
           Consider increasing savings, delaying retirement, or adjusting your income expectations.
         `;
         stopAgeYearsLeft.textContent = `${RETIREMENT_AGE - currentAge} years`;
@@ -1233,7 +1356,7 @@
         stopAgeAnswer.textContent = `Age ${stopAgeResult.stopAge}`;
         stopAgeExplanation.innerHTML = `
           If you stop 401k contributions at <strong>age ${stopAgeResult.stopAge}</strong>, you'll have just enough
-          to withdraw $400K/year until age 90 and end with <strong>${formatCurrency(stopAgeResult.remaining)}</strong>.
+          to withdraw ${withdrawalDisplay}/year until age 90 and end with <strong>${formatCurrency(stopAgeResult.remaining)}</strong>.
           Every year you contribute beyond this is bonus money!
         `;
         stopAgeYearsLeft.textContent = `${yearsToContribute} years`;
@@ -1264,7 +1387,7 @@
         verdictTitle.textContent = "You're On Track!";
         verdictMessage.innerHTML = `
           You'll have <strong>${formatCurrency(remainingAt90)}</strong> remaining at 90.
-          Your current savings plan will sustain $400K/year withdrawals for 30 years.
+          Your current savings plan will sustain ${withdrawalDisplay}/year withdrawals for 30 years.
           Keep up the good work!
         `;
       } else {
