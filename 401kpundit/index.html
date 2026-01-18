@@ -273,11 +273,11 @@
       width: 180px;
       padding: var(--space-3);
       background: var(--color-bg-tertiary);
-      border: 2px solid var(--color-gold);
+      border: 2px solid var(--color-accent);
       border-radius: var(--radius-lg);
-      color: var(--color-gold);
+      color: var(--color-accent);
       font-family: var(--font-mono);
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       font-weight: 700;
       text-align: center;
       transition: all 0.2s ease;
@@ -285,19 +285,68 @@
 
     .withdrawal-controls input:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.2);
+      box-shadow: 0 0 0 4px var(--color-accent-muted);
     }
 
-    .monthly-equivalent {
+    .withdrawal-breakdown {
       text-align: center;
-      font-size: 0.875rem;
+      font-size: 0.8rem;
       color: var(--color-text-tertiary);
       margin-top: var(--space-3);
     }
 
-    .monthly-equivalent strong {
-      color: var(--color-gold);
+    .withdrawal-breakdown span {
+      color: var(--color-text-secondary);
       font-family: var(--font-mono);
+    }
+
+    /* Quick Presets (Compact) */
+    .quick-presets {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .quick-presets-label {
+      font-size: 0.8rem;
+      color: var(--color-text-tertiary);
+    }
+
+    .quick-preset-btn {
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-bg-tertiary);
+      border: 1px solid var(--color-border);
+      border-radius: 100px;
+      color: var(--color-text-secondary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-preset-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: var(--color-accent-muted);
+    }
+
+    .quick-preset-btn.active {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: var(--color-accent-muted);
+    }
+
+    .quick-preset-btn.recommended {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+
+    .quick-preset-btn.recommended:hover,
+    .quick-preset-btn.recommended.active {
+      background: var(--color-gold-muted);
     }
 
     .calculate-btn {
@@ -495,175 +544,225 @@
       margin-top: var(--space-6);
     }
 
-    /* Verdict */
-    .verdict-banner {
-      text-align: center;
-      padding: var(--space-8);
-      border-radius: var(--radius-xl);
-      margin-bottom: var(--space-8);
-    }
-
-    .verdict-banner.success {
-      background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-secondary));
-      border: 2px solid var(--color-accent);
-    }
-
-    .verdict-banner.warning {
-      background: linear-gradient(135deg, var(--color-gold-muted), var(--color-bg-secondary));
-      border: 2px solid var(--color-gold);
-    }
-
-    .verdict-banner.danger {
-      background: linear-gradient(135deg, var(--color-red-muted), var(--color-bg-secondary));
-      border: 2px solid var(--color-red);
-    }
-
-    .verdict-banner .icon { font-size: 4rem; margin-bottom: var(--space-4); }
-
-    .verdict-banner .title {
-      font-family: var(--font-display);
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: var(--space-4);
-    }
-
-    .verdict-banner.success .title { color: var(--color-accent); }
-    .verdict-banner.warning .title { color: var(--color-gold); }
-    .verdict-banner.danger .title { color: var(--color-red); }
-
-    .verdict-banner .message {
-      font-size: 1.125rem;
-      color: var(--color-text-secondary);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* THE BIG ANSWER - Stop Age Hero */
-    .stop-age-hero {
+    /* THE ANSWER - 3 Scenarios Section */
+    .answer-section {
       background: linear-gradient(135deg, #1a1a2e 0%, #0D0D0D 100%);
-      border: 3px solid var(--color-accent);
+      border: 2px solid var(--color-border);
       border-radius: var(--radius-xl);
-      padding: var(--space-12);
+      padding: var(--space-8);
+      margin-bottom: var(--space-8);
+    }
+
+    .answer-header {
       text-align: center;
       margin-bottom: var(--space-8);
-      position: relative;
-      overflow: hidden;
     }
 
-    .stop-age-hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(0, 214, 50, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    .stop-age-label {
+    .answer-badge {
       display: inline-block;
       background: var(--color-accent);
       color: #000;
       padding: var(--space-2) var(--space-6);
       border-radius: 100px;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.1em;
+      margin-bottom: var(--space-4);
+    }
+
+    .answer-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--color-text-secondary);
+      margin: 0;
+    }
+
+    .scenarios-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
       margin-bottom: var(--space-6);
     }
 
-    .stop-age-question {
-      font-family: var(--font-display);
+    @media (max-width: 800px) {
+      .scenarios-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .scenario-card {
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      text-align: center;
+      position: relative;
+    }
+
+    .scenario-card.primary {
+      border-color: var(--color-accent);
+      background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-card.warning {
+      border-color: var(--color-red);
+      background: linear-gradient(135deg, var(--color-red-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-card.danger {
+      border-color: var(--color-red);
+      background: linear-gradient(135deg, var(--color-red-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-card.danger .scenario-recommend-badge {
+      background: var(--color-red);
+    }
+
+    .scenario-card.danger .scenario-main-answer {
+      color: var(--color-red);
+    }
+
+    .scenario-card.bonus {
+      border-color: var(--color-gold);
+      background: linear-gradient(135deg, var(--color-gold-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-card.success {
+      border-color: var(--color-accent);
+      background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-recommend-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-accent);
+      color: #000;
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .scenario-title {
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+
+    .scenario-result {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .scenario-result .result-icon {
       font-size: 1.5rem;
+    }
+
+    .scenario-result .result-text {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-red);
+    }
+
+    .scenario-result.bonus .result-text {
+      color: var(--color-gold);
+    }
+
+    .scenario-result .result-text.success {
+      color: var(--color-accent);
+    }
+
+    .scenario-result.success .result-text {
+      color: var(--color-accent);
+    }
+
+    .scenario-main-answer {
+      font-family: var(--font-mono);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      line-height: 1;
+      margin-bottom: var(--space-2);
+    }
+
+    .scenario-subtext {
+      font-size: 0.875rem;
       color: var(--color-text-secondary);
       margin-bottom: var(--space-4);
     }
 
-    .stop-age-answer {
-      font-family: var(--font-mono);
-      font-size: clamp(4rem, 12vw, 7rem);
-      font-weight: 700;
-      color: var(--color-accent);
-      line-height: 1;
-      margin-bottom: var(--space-6);
-      text-shadow: 0 0 60px rgba(0, 214, 50, 0.5);
-    }
-
-    .stop-age-explanation {
-      font-size: 1.125rem;
-      color: var(--color-text-secondary);
-      max-width: 600px;
-      margin: 0 auto var(--space-8);
-      line-height: 1.7;
-    }
-
-    .stop-age-stats {
+    .scenario-stats {
       display: flex;
-      justify-content: center;
-      gap: var(--space-8);
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: var(--space-2);
     }
 
-    .stop-age-stat {
-      text-align: center;
-      min-width: 120px;
+    .scenario-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
     }
 
-    .stop-age-stat .value {
+    .scenario-stat .stat-label {
+      color: var(--color-text-tertiary);
+    }
+
+    .scenario-stat .stat-value {
       font-family: var(--font-mono);
-      font-size: 1.5rem;
       font-weight: 600;
       color: var(--color-text-primary);
     }
 
-    .stop-age-stat .label {
-      font-size: 0.75rem;
+    .answer-footer {
+      text-align: center;
+      font-size: 0.875rem;
       color: var(--color-text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: var(--space-1);
     }
 
-    .stop-age-hero.already-enough {
-      border-color: var(--color-gold);
-    }
-
-    .stop-age-hero.already-enough .stop-age-label {
-      background: var(--color-gold);
-    }
-
-    .stop-age-hero.already-enough .stop-age-answer {
+    .answer-footer strong {
       color: var(--color-gold);
-      text-shadow: 0 0 60px rgba(201, 162, 39, 0.5);
     }
 
-    .stop-age-hero.need-more {
-      border-color: var(--color-red);
+    /* Details Toggle */
+    .details-toggle {
+      text-align: center;
+      margin-bottom: var(--space-6);
     }
 
-    .stop-age-hero.need-more .stop-age-label {
-      background: var(--color-red);
+    .toggle-details-btn {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .stop-age-hero.need-more .stop-age-answer {
-      color: var(--color-red);
-      text-shadow: 0 0 60px rgba(239, 68, 68, 0.5);
+    .toggle-details-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
-    @media (max-width: 600px) {
-      .stop-age-hero {
-        padding: var(--space-8);
-      }
+    .detailed-calculations {
+      display: none;
+    }
 
-      .stop-age-answer {
-        font-size: 4rem;
-      }
-
-      .stop-age-stats {
-        gap: var(--space-4);
-      }
+    .detailed-calculations.visible {
+      display: block;
+      animation: fadeIn 0.3s ease;
     }
 
     /* Footer */
@@ -731,33 +830,42 @@
       <div class="input-grid">
         <div class="input-group">
           <label>Your Current Age</label>
-          <input type="number" id="currentAge" value="46" min="25" max="59">
+          <input type="number" id="currentAge" value="40" min="25" max="59">
           <div class="hint">You (or younger spouse)</div>
         </div>
 
         <div class="input-group">
           <label>Combined IRA Balance</label>
-          <input type="text" id="iraBalance" value="800,000" oninput="formatNumber(this)">
+          <input type="text" id="iraBalance" value="400,000" oninput="formatNumber(this)">
           <div class="hint">You + Spouse (rolled 401k)</div>
         </div>
 
         <div class="input-group">
           <label>Combined Roth IRA</label>
-          <input type="text" id="rothBalance" value="50,000" oninput="formatNumber(this)">
+          <input type="text" id="rothBalance" value="100,000" oninput="formatNumber(this)">
           <div class="hint">You + Spouse</div>
         </div>
       </div>
 
       <div class="withdrawal-input-section">
-        <label>Annual Withdrawal Goal (Golden Number)</label>
+        <label>Monthly Spending in Retirement (After Taxes)</label>
         <div class="withdrawal-controls">
-          <button class="withdrawal-btn" onclick="adjustWithdrawal(-50000)">−$50K</button>
-          <input type="text" id="withdrawalAmount" value="400,000" oninput="formatNumber(this); updateMonthlyDisplay()">
-          <button class="withdrawal-btn" onclick="adjustWithdrawal(50000)">+$50K</button>
+          <button class="withdrawal-btn" onclick="adjustMonthlySpending(-1000)">−$1K</button>
+          <input type="text" id="monthlySpendingInput" value="20,000" class="monthly-input" oninput="formatNumber(this); clearPresetSelection(); updateFromMonthlyInput()">
+          <button class="withdrawal-btn" onclick="adjustMonthlySpending(1000)">+$1K</button>
         </div>
-        <div class="monthly-equivalent">
-          That's <strong id="monthlyEquivalent">$33,333</strong>/month before taxes
+        <div class="withdrawal-breakdown">
+          Requires: <span id="iraWithdrawalDisplay">$230K</span> IRA + <span id="rothWithdrawalDisplay">$58K</span> Roth = <span id="totalWithdrawalDisplay">$288K</span>/year
         </div>
+      </div>
+
+      <!-- Quick Presets (Compact) -->
+      <div class="quick-presets">
+        <span class="quick-presets-label">Quick pick:</span>
+        <button class="quick-preset-btn" onclick="setMonthlyPreset(5000, this)" title="10% tax bracket">$5K/mo</button>
+        <button class="quick-preset-btn" onclick="setMonthlyPreset(10000, this)" title="12% tax bracket">$10K/mo</button>
+        <button class="quick-preset-btn recommended" onclick="setMonthlyPreset(15000, this)" title="Sweet spot">$15K/mo</button>
+        <button class="quick-preset-btn" onclick="setMonthlyPreset(20000, this)" title="22% tax bracket">$20K/mo</button>
       </div>
 
       <button class="calculate-btn" onclick="calculate()">
@@ -767,6 +875,85 @@
 
     <!-- Results Section -->
     <section class="results-section" id="results">
+
+      <!-- THE ANSWER - 3 Scenarios Comparison -->
+      <div class="answer-section" id="answerSection">
+        <div class="answer-header">
+          <span class="answer-badge">THE ANSWER</span>
+          <h2>When Should You Stop Contributing?</h2>
+        </div>
+
+        <div class="scenarios-grid">
+          <!-- Scenario 1: If You Stop Now -->
+          <div class="scenario-card" id="scenarioStopNow">
+            <div class="scenario-title">If You Stop Today</div>
+            <div class="scenario-result" id="stopNowResult">
+              <span class="result-icon">⚠️</span>
+              <span class="result-text">Run out at age 87</span>
+            </div>
+            <div class="scenario-stats">
+              <div class="scenario-stat">
+                <span class="stat-label">Balance at 60</span>
+                <span class="stat-value" id="stopNowBalance60">$2.5M</span>
+              </div>
+              <div class="scenario-stat">
+                <span class="stat-label">Remaining at 90</span>
+                <span class="stat-value" id="stopNowRemaining90">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 2: Minimum Needed (THE ANSWER) -->
+          <div class="scenario-card primary" id="scenarioMinimum">
+            <div class="scenario-recommend-badge">Minimum Needed</div>
+            <div class="scenario-title">Contribute Until</div>
+            <div class="scenario-main-answer" id="minimumAnswer">Age 47</div>
+            <div class="scenario-subtext" id="minimumSubtext">1 more year of contributions</div>
+            <div class="scenario-stats">
+              <div class="scenario-stat">
+                <span class="stat-label">Balance at 60</span>
+                <span class="stat-value" id="minimumBalance60">$2.6M</span>
+              </div>
+              <div class="scenario-stat">
+                <span class="stat-label">Remaining at 90</span>
+                <span class="stat-value" id="minimumRemaining90">$354K</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 3: If You Continue to 60 -->
+          <div class="scenario-card" id="scenarioContinue">
+            <div class="scenario-title">If You Continue to 60</div>
+            <div class="scenario-result bonus" id="continueResult">
+              <span class="result-icon">🎯</span>
+              <span class="result-text">$10.5M cushion</span>
+            </div>
+            <div class="scenario-stats">
+              <div class="scenario-stat">
+                <span class="stat-label">Balance at 60</span>
+                <span class="stat-value" id="continueBalance60">$3.6M</span>
+              </div>
+              <div class="scenario-stat">
+                <span class="stat-label">Remaining at 90</span>
+                <span class="stat-value" id="continueRemaining90">$10.5M</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="answer-footer" id="answerFooter">
+          Based on <strong id="answerMonthlySpending">$20K</strong>/month spending (<span id="answerWithdrawal">$288K</span>/yr withdrawal) from age 60-90
+        </div>
+      </div>
+
+      <!-- Detailed Calculations Below -->
+      <div class="details-toggle">
+        <button class="toggle-details-btn" onclick="toggleDetails()">
+          <span id="toggleIcon">▼</span> Show Detailed Calculations
+        </button>
+      </div>
+
+      <div class="detailed-calculations" id="detailedCalculations">
 
       <!-- 1. Assumptions -->
       <h2 class="section-title"><span class="number">1</span> Our Assumptions</h2>
@@ -786,15 +973,19 @@
           </div>
           <div class="assumption-item">
             <div class="value">$47K</div>
-            <div class="label">Annual 401k (couple)</div>
+            <div class="label">Annual IRA/401k</div>
           </div>
           <div class="assumption-item">
-            <div class="value" id="assumptionGolden">$400K</div>
-            <div class="label">Golden Number</div>
+            <div class="value">$14K</div>
+            <div class="label">Annual Roth IRA</div>
           </div>
           <div class="assumption-item">
-            <div class="value">~33%</div>
-            <div class="label">Tax Rate (Fed+CA)</div>
+            <div class="value">80/20</div>
+            <div class="label">IRA/Roth Withdrawal</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value" id="assumptionTaxRate">~33%</div>
+            <div class="label">Effective Tax (Fed+CA)</div>
           </div>
         </div>
       </div>
@@ -846,7 +1037,7 @@
               <td class="blue" id="projGrowthOnCurrent">+$1,648,000</td>
             </tr>
             <tr>
-              <td>Future 401k Contributions ($47K/yr × <span id="projYears2">14</span> years)</td>
+              <td>Future Contributions ($61K/yr × <span id="projYears2">14</span> years)</td>
               <td id="projContributions">$658,000</td>
             </tr>
             <tr>
@@ -869,7 +1060,7 @@
       <!-- 4. Retirement Spending (60-90) -->
       <h2 class="section-title"><span class="number">4</span> Your Retirement Lifestyle (Age 60-90)</h2>
       <div class="card">
-        <h4>Annual Withdrawal Breakdown</h4>
+        <h4>Annual Withdrawal Breakdown (Married Filing Jointly)</h4>
         <table class="data-table">
           <thead>
             <tr>
@@ -883,28 +1074,33 @@
               <td class="gold" id="taxGrossWithdrawal">$400,000</td>
             </tr>
             <tr>
-              <td>Federal Tax (24%)</td>
-              <td class="red" id="taxFederal">-$96,000</td>
+              <td id="taxFederalLabel">Federal Tax (Bracket: 32%, Effective: 20.8%)</td>
+              <td class="red" id="taxFederal">-$83,373</td>
             </tr>
             <tr>
-              <td>California State Tax (~9.3%)</td>
-              <td class="red" id="taxState">-$37,200</td>
+              <td id="taxStateLabel">California Tax (Bracket: 9.3%, Effective: 7.6%)</td>
+              <td class="red" id="taxState">-$30,506</td>
             </tr>
             <tr class="total-row">
-              <td>Annual After-Tax Spending</td>
-              <td class="highlight" id="taxNetSpending">$266,800</td>
+              <td id="taxEffectiveLabel">Annual After-Tax Spending (Effective Rate: 28.5%)</td>
+              <td class="highlight" id="taxNetSpending">$286,121</td>
             </tr>
           </tbody>
         </table>
 
+        <div style="margin-top: var(--space-4); padding: var(--space-4); background: var(--color-bg-tertiary); border-radius: var(--radius-md); font-size: 0.8rem; color: var(--color-text-tertiary);">
+          <strong>Progressive Tax Note:</strong> Tax brackets show your marginal rate (rate on the last dollar).
+          Effective rate is what you actually pay overall due to progressive taxation.
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
           <div class="big-number">
             <div class="label">Monthly Spending</div>
-            <div class="amount green" id="monthlySpending">$22,233</div>
+            <div class="amount green" id="monthlySpending">$23,843</div>
           </div>
           <div class="big-number">
             <div class="label">30-Year Total Spending</div>
-            <div class="amount gold" id="totalSpending30yr">$8.0M</div>
+            <div class="amount gold" id="totalSpending30yr">$8.6M</div>
           </div>
         </div>
       </div>
@@ -952,41 +1148,13 @@
           then your remaining balance grows 8%. This is why you can withdraw more than your starting balance —
           your money keeps working for you even in retirement.
         </div>
-      </div>
 
-      <!-- THE BIG ANSWER -->
-      <div class="stop-age-hero" id="stopAgeHero">
-        <div class="stop-age-label">THE ANSWER</div>
-        <div class="stop-age-question">When Should You Stop Contributing?</div>
-        <div class="stop-age-answer" id="stopAgeAnswer">Age 52</div>
-        <div class="stop-age-explanation" id="stopAgeExplanation">
-          If you stop 401k contributions at age 52, you'll have just enough to withdraw $400K/year
-          until age 90 and end with near-zero balance. Every year you contribute beyond this is gravy.
-        </div>
-        <div class="stop-age-stats">
-          <div class="stop-age-stat">
-            <div class="value" id="stopAgeYearsLeft">6 years</div>
-            <div class="label">More to Contribute</div>
+        <!-- Decumulation Chart -->
+        <div style="margin-top: var(--space-6);">
+          <h4>Year-by-Year Balance (Age 60-90)</h4>
+          <div class="chart-container" style="height: 350px;">
+            <canvas id="decumulationChart"></canvas>
           </div>
-          <div class="stop-age-stat">
-            <div class="value" id="stopAgeSavings">$282K</div>
-            <div class="label">401k Savings After Stop</div>
-          </div>
-          <div class="stop-age-stat">
-            <div class="value" id="stopAgeBalance60">$3.2M</div>
-            <div class="label">Balance at 60</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verdict -->
-      <div class="verdict-banner success" id="verdictBanner">
-        <div class="icon" id="verdictIcon">🎯</div>
-        <div class="title" id="verdictTitle">You're On Track!</div>
-        <div class="message" id="verdictMessage">
-          With your current savings and continued 401k contributions, you'll have more than enough
-          to withdraw $400K/year for 30 years. You might even consider reducing your 401k contributions
-          and investing in taxable accounts for more flexibility.
         </div>
       </div>
 
@@ -998,6 +1166,8 @@
           <canvas id="wealthChart"></canvas>
         </div>
       </div>
+
+      </div><!-- End detailed-calculations -->
 
     </section>
   </main>
@@ -1023,14 +1193,115 @@
 
     const RETIREMENT_AGE = 60;
     const LIFE_EXPECTANCY = 90;
-    const GROWTH_RATE = 0.08;
-    const ANNUAL_401K_CONTRIBUTION = 47000; // ~$23.5K × 2 for couple
-    const DEFAULT_GOLDEN_NUMBER = 400000;
-    const FEDERAL_TAX_RATE = 0.24;
-    const STATE_TAX_RATE = 0.093; // California
-    const COMBINED_TAX_RATE = FEDERAL_TAX_RATE + STATE_TAX_RATE;
+    const ANNUAL_GROWTH_RATE = 0.08;
+    const MONTHLY_GROWTH_RATE = ANNUAL_GROWTH_RATE / 12; // ~0.00667
+    const ANNUAL_IRA_CONTRIBUTION = 47000; // ~$23.5K × 2 for couple (401k/IRA)
+    const ANNUAL_ROTH_CONTRIBUTION = 14000; // $7K × 2 for couple (Roth IRA)
+    const MONTHLY_IRA_CONTRIBUTION = ANNUAL_IRA_CONTRIBUTION / 12;
+    const MONTHLY_ROTH_CONTRIBUTION = ANNUAL_ROTH_CONTRIBUTION / 12;
+
+    // Withdrawal ratios (80% IRA, 20% Roth)
+    const IRA_WITHDRAWAL_RATIO = 0.80;
+    const ROTH_WITHDRAWAL_RATIO = 0.20;
+
+    // 2024 Federal Tax Brackets - Married Filing Jointly
+    const FEDERAL_BRACKETS = [
+      { min: 0, max: 23200, rate: 0.10 },
+      { min: 23200, max: 94300, rate: 0.12 },
+      { min: 94300, max: 201050, rate: 0.22 },
+      { min: 201050, max: 383900, rate: 0.24 },
+      { min: 383900, max: 487450, rate: 0.32 },
+      { min: 487450, max: 731200, rate: 0.35 },
+      { min: 731200, max: Infinity, rate: 0.37 }
+    ];
+
+    // 2024 California Tax Brackets - Married Filing Jointly
+    const CA_BRACKETS = [
+      { min: 0, max: 20824, rate: 0.01 },
+      { min: 20824, max: 49368, rate: 0.02 },
+      { min: 49368, max: 77918, rate: 0.04 },
+      { min: 77918, max: 108162, rate: 0.06 },
+      { min: 108162, max: 136700, rate: 0.08 },
+      { min: 136700, max: 698274, rate: 0.093 },
+      { min: 698274, max: 837922, rate: 0.103 },
+      { min: 837922, max: 1000000, rate: 0.113 },
+      { min: 1000000, max: Infinity, rate: 0.123 }
+    ];
 
     let wealthChart = null;
+    let decumulationChart = null;
+
+    // ═══════════════════════════════════════════════════════════════
+    // TAX CALCULATION FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Calculate tax using progressive brackets
+     * Returns { tax, effectiveRate, bracketBreakdown }
+     */
+    function calculateProgressiveTax(income, brackets) {
+      let totalTax = 0;
+      const breakdown = [];
+
+      for (const bracket of brackets) {
+        if (income <= bracket.min) break;
+
+        const taxableInBracket = Math.min(income, bracket.max) - bracket.min;
+        const taxInBracket = taxableInBracket * bracket.rate;
+        totalTax += taxInBracket;
+
+        if (taxableInBracket > 0) {
+          breakdown.push({
+            range: `$${bracket.min.toLocaleString()} - $${bracket.max === Infinity ? '∞' : bracket.max.toLocaleString()}`,
+            rate: bracket.rate,
+            taxable: taxableInBracket,
+            tax: taxInBracket
+          });
+        }
+      }
+
+      return {
+        tax: totalTax,
+        effectiveRate: income > 0 ? totalTax / income : 0,
+        breakdown
+      };
+    }
+
+    /**
+     * Calculate both federal and state taxes
+     */
+    function calculateTotalTax(income) {
+      const federal = calculateProgressiveTax(income, FEDERAL_BRACKETS);
+      const state = calculateProgressiveTax(income, CA_BRACKETS);
+
+      return {
+        federal,
+        state,
+        totalTax: federal.tax + state.tax,
+        effectiveRate: income > 0 ? (federal.tax + state.tax) / income : 0,
+        afterTax: income - federal.tax - state.tax
+      };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // UI FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    function toggleDetails() {
+      const details = document.getElementById('detailedCalculations');
+      const icon = document.getElementById('toggleIcon');
+      const btn = document.querySelector('.toggle-details-btn');
+
+      if (details.classList.contains('visible')) {
+        details.classList.remove('visible');
+        icon.textContent = '▼';
+        btn.innerHTML = '<span id="toggleIcon">▼</span> Show Detailed Calculations';
+      } else {
+        details.classList.add('visible');
+        icon.textContent = '▲';
+        btn.innerHTML = '<span id="toggleIcon">▲</span> Hide Detailed Calculations';
+      }
+    }
 
     // ═══════════════════════════════════════════════════════════════
     // UTILITY FUNCTIONS
@@ -1047,22 +1318,88 @@
       return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
     }
 
-    function getGoldenNumber() {
-      return parseNumber(document.getElementById('withdrawalAmount').value) || DEFAULT_GOLDEN_NUMBER;
+    // Store the calculated IRA withdrawal amount
+    let calculatedIraWithdrawal = 230000; // Default
+
+    function getDesiredMonthlySpending() {
+      return parseNumber(document.getElementById('monthlySpendingInput').value) || 20000;
     }
 
-    function adjustWithdrawal(amount) {
-      const input = document.getElementById('withdrawalAmount');
+    function getIraWithdrawal() {
+      return calculatedIraWithdrawal;
+    }
+
+    /**
+     * Calculate the IRA withdrawal needed to achieve a desired after-tax monthly spending
+     * Uses binary search since tax is progressive
+     */
+    function calculateIraFromMonthlySpending(desiredMonthlyAfterTax) {
+      const desiredAnnualAfterTax = desiredMonthlyAfterTax * 12;
+
+      // Binary search for the IRA withdrawal that gives us the desired after-tax amount
+      let low = 0;
+      let high = 2000000; // $2M max
+      let iterations = 0;
+      const maxIterations = 50;
+
+      while (high - low > 100 && iterations < maxIterations) { // Within $100 precision
+        const mid = (low + high) / 2;
+        const iraWithdrawal = mid;
+        const rothWithdrawal = iraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+
+        // Calculate after-tax: IRA (taxed) + Roth (tax-free)
+        const taxResult = calculateTotalTax(iraWithdrawal);
+        const afterTax = taxResult.afterTax + rothWithdrawal;
+
+        if (afterTax < desiredAnnualAfterTax) {
+          low = mid;
+        } else {
+          high = mid;
+        }
+        iterations++;
+      }
+
+      return Math.round((low + high) / 2);
+    }
+
+    function updateFromMonthlyInput() {
+      const monthlySpending = getDesiredMonthlySpending();
+
+      // Calculate the IRA withdrawal needed
+      calculatedIraWithdrawal = calculateIraFromMonthlySpending(monthlySpending);
+      const rothWithdrawal = calculatedIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+      const totalWithdrawal = calculatedIraWithdrawal + rothWithdrawal;
+
+      // Update breakdown display
+      document.getElementById('iraWithdrawalDisplay').textContent = formatCurrency(calculatedIraWithdrawal);
+      document.getElementById('rothWithdrawalDisplay').textContent = formatCurrency(rothWithdrawal);
+      document.getElementById('totalWithdrawalDisplay').textContent = formatCurrency(totalWithdrawal);
+    }
+
+    function adjustMonthlySpending(amount) {
+      const input = document.getElementById('monthlySpendingInput');
       let current = parseNumber(input.value);
-      current = Math.max(100000, Math.min(1000000, current + amount)); // Min $100K, Max $1M
+      current = Math.max(2000, Math.min(50000, current + amount)); // Min $2K, Max $50K/month
       input.value = current.toLocaleString();
-      updateMonthlyDisplay();
+      clearPresetSelection();
+      updateFromMonthlyInput();
     }
 
-    function updateMonthlyDisplay() {
-      const annual = getGoldenNumber();
-      const monthly = Math.round(annual / 12);
-      document.getElementById('monthlyEquivalent').textContent = '$' + monthly.toLocaleString();
+    function setMonthlyPreset(amount, buttonElement) {
+      const input = document.getElementById('monthlySpendingInput');
+      input.value = amount.toLocaleString();
+
+      // Update button states
+      document.querySelectorAll('.quick-preset-btn').forEach(btn => btn.classList.remove('active'));
+      if (buttonElement) {
+        buttonElement.classList.add('active');
+      }
+
+      updateFromMonthlyInput();
+    }
+
+    function clearPresetSelection() {
+      document.querySelectorAll('.quick-preset-btn').forEach(btn => btn.classList.remove('active'));
     }
 
     function formatCurrency(num) {
@@ -1082,92 +1419,103 @@
     // STOP AGE CALCULATION
     // ═══════════════════════════════════════════════════════════════
 
-    function simulateWithStopAge(totalCurrent, currentAge, stopAge, goldenNumber) {
-      // Phase 1: Accumulation with contributions until stopAge, then just growth
-      let balance = totalCurrent;
+    function simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, annualIraWithdrawal) {
+      // Uses MONTHLY simulation for more accurate results
+      // annualIraWithdrawal is the yearly 401k/IRA portion (80% of total)
 
+      let ira = iraBalance;
+      let roth = rothBalance;
+
+      // Monthly withdrawal amounts
+      const monthlyIraWithdrawal = annualIraWithdrawal / 12;
+      const monthlyRothWithdrawal = monthlyIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+
+      // Phase 1: Accumulation (monthly simulation)
       for (let age = currentAge; age < RETIREMENT_AGE; age++) {
-        // Add contribution only if before stop age
-        const contribution = age < stopAge ? ANNUAL_401K_CONTRIBUTION : 0;
-        balance = balance * (1 + GROWTH_RATE) + contribution;
+        for (let month = 0; month < 12; month++) {
+          // Grow first, then add contributions
+          ira *= (1 + MONTHLY_GROWTH_RATE);
+          roth *= (1 + MONTHLY_GROWTH_RATE);
+
+          // Add contributions only if before stop age
+          if (age < stopAge) {
+            ira += MONTHLY_IRA_CONTRIBUTION;
+            roth += MONTHLY_ROTH_CONTRIBUTION;
+          }
+        }
       }
 
-      const balanceAt60 = balance;
+      const iraAt60 = ira;
+      const rothAt60 = roth;
+      const totalAt60 = ira + roth;
 
-      // Phase 2: Decumulation from 60 to 90
-      // Each year: FIRST grow the full balance at 8%, THEN withdraw
+      // Phase 2: Decumulation from 60 to 90 (monthly simulation)
       for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
-        balance *= (1 + GROWTH_RATE);  // Grow first
-        balance -= goldenNumber;        // Then withdraw
-        if (balance <= 0) return { balanceAt60, remaining: 0, ranOut: true, ranOutAge: age };
+        for (let month = 0; month < 12; month++) {
+          // Grow first
+          ira *= (1 + MONTHLY_GROWTH_RATE);
+          roth *= (1 + MONTHLY_GROWTH_RATE);
+
+          // Then withdraw (80/20 split)
+          ira -= monthlyIraWithdrawal;
+          roth -= monthlyRothWithdrawal;
+
+          // Check if either runs out
+          if (ira <= 0 || roth <= 0) {
+            const ranOutAge = age + (month / 12); // Fractional age
+            return {
+              iraAt60, rothAt60, totalAt60,
+              iraRemaining: Math.max(0, ira),
+              rothRemaining: Math.max(0, roth),
+              totalRemaining: Math.max(0, ira) + Math.max(0, roth),
+              ranOut: true,
+              ranOutAge: Math.ceil(ranOutAge) // Round up to nearest year
+            };
+          }
+        }
       }
 
-      return { balanceAt60, remaining: balance, ranOut: false };
+      return {
+        iraAt60, rothAt60, totalAt60,
+        iraRemaining: ira,
+        rothRemaining: roth,
+        totalRemaining: ira + roth,
+        ranOut: false
+      };
     }
 
-    function findOptimalStopAge(totalCurrent, currentAge, goldenNumber) {
-      // Binary search for the stop age that results in near-zero at 90
-      // We want the earliest age where remaining >= 0
-
-      let bestStopAge = currentAge;
-      let bestRemaining = Infinity;
+    function findOptimalStopAge(iraBalance, rothBalance, currentAge, iraWithdrawal) {
+      // Find the earliest age where you can stop contributing and still have money at 90
 
       // Check if already enough (stop contributing now)
-      const ifStopNow = simulateWithStopAge(totalCurrent, currentAge, currentAge, goldenNumber);
-      if (ifStopNow.remaining > 0) {
-        // Already have enough! Find earliest stop age
-        bestStopAge = currentAge;
-        bestRemaining = ifStopNow.remaining;
-
-        // But maybe we had enough even earlier - check if current balance alone works
-        // This means "you already have enough, could have stopped years ago"
+      const ifStopNow = simulateWithStopAge(iraBalance, rothBalance, currentAge, currentAge, iraWithdrawal);
+      if (!ifStopNow.ranOut && ifStopNow.totalRemaining > 0) {
         return {
           stopAge: currentAge,
           status: 'already-enough',
-          balanceAt60: ifStopNow.balanceAt60,
-          remaining: ifStopNow.remaining
+          ...ifStopNow
         };
       }
 
-      // Need to find when to stop
-      // Search from current age to 60
+      // Search from current age to 60 to find the earliest stop age that works
       for (let stopAge = currentAge; stopAge <= RETIREMENT_AGE; stopAge++) {
-        const result = simulateWithStopAge(totalCurrent, currentAge, stopAge, goldenNumber);
+        const result = simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, iraWithdrawal);
 
-        if (result.remaining >= 0 && result.remaining < bestRemaining) {
-          bestStopAge = stopAge;
-          bestRemaining = result.remaining;
-        }
-
-        // If we found a stop age that works (remaining >= 0),
-        // and it's close to zero, that's our answer
-        if (result.remaining >= 0 && result.remaining < 500000) {
+        if (!result.ranOut && result.totalRemaining > 0) {
           return {
             stopAge: stopAge,
             status: 'found',
-            balanceAt60: result.balanceAt60,
-            remaining: result.remaining
+            ...result
           };
         }
       }
 
-      // Check if even contributing till 60 isn't enough
-      const ifContributeTill60 = simulateWithStopAge(totalCurrent, currentAge, RETIREMENT_AGE, goldenNumber);
-      if (ifContributeTill60.remaining <= 0) {
-        return {
-          stopAge: RETIREMENT_AGE,
-          status: 'need-more',
-          balanceAt60: ifContributeTill60.balanceAt60,
-          remaining: ifContributeTill60.remaining
-        };
-      }
-
-      // Return best found
+      // If we get here, even contributing till 60 isn't enough
+      const ifContributeTill60 = simulateWithStopAge(iraBalance, rothBalance, currentAge, RETIREMENT_AGE, iraWithdrawal);
       return {
-        stopAge: bestStopAge,
-        status: 'found',
-        balanceAt60: simulateWithStopAge(totalCurrent, currentAge, bestStopAge, goldenNumber).balanceAt60,
-        remaining: bestRemaining
+        stopAge: RETIREMENT_AGE,
+        status: 'need-more',
+        ...ifContributeTill60
       };
     }
 
@@ -1176,93 +1524,151 @@
     // ═══════════════════════════════════════════════════════════════
 
     function calculate() {
+      // First, ensure we have the latest IRA withdrawal calculated from monthly input
+      updateFromMonthlyInput();
+
       // Get inputs
       const currentAge = parseInt(document.getElementById('currentAge').value);
-      const iraBalance = parseNumber(document.getElementById('iraBalance').value);
-      const rothBalance = parseNumber(document.getElementById('rothBalance').value);
-      const goldenNumber = getGoldenNumber();
+      const iraBalanceStart = parseNumber(document.getElementById('iraBalance').value);
+      const rothBalanceStart = parseNumber(document.getElementById('rothBalance').value);
+      const iraWithdrawal = getIraWithdrawal(); // Calculated from desired monthly spending
 
-      const totalCurrent = iraBalance + rothBalance;
+      const totalCurrent = iraBalanceStart + rothBalanceStart;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
       const yearsInRetirement = LIFE_EXPECTANCY - RETIREMENT_AGE;
 
-      // ─────────────────────────────────────────────────────────────
-      // PHASE 1: Accumulation (Current Age → 60)
-      // ─────────────────────────────────────────────────────────────
-
-      // Growth on existing balance
-      const growthMultiplier = Math.pow(1 + GROWTH_RATE, yearsToRetirement);
-      const futureValueOfCurrent = totalCurrent * growthMultiplier;
-      const growthOnCurrent = futureValueOfCurrent - totalCurrent;
-
-      // Future value of annual contributions (annuity)
-      // FV = PMT × [((1 + r)^n - 1) / r]
-      let futureValueOfContributions = 0;
-      let growthOnContributions = 0;
-      const totalContributions = ANNUAL_401K_CONTRIBUTION * yearsToRetirement;
-
-      if (yearsToRetirement > 0) {
-        futureValueOfContributions = ANNUAL_401K_CONTRIBUTION *
-          ((Math.pow(1 + GROWTH_RATE, yearsToRetirement) - 1) / GROWTH_RATE);
-        growthOnContributions = futureValueOfContributions - totalContributions;
-      }
-
-      const balanceAt60 = futureValueOfCurrent + futureValueOfContributions;
+      // Calculate withdrawal amounts (80% IRA, 20% Roth)
+      const rothWithdrawal = iraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+      const totalWithdrawalPerYear = iraWithdrawal + rothWithdrawal;
 
       // ─────────────────────────────────────────────────────────────
-      // PHASE 2: Decumulation (60 → 90)
+      // PHASE 1: Accumulation (Current Age → 60) - MONTHLY SIMULATION
       // ─────────────────────────────────────────────────────────────
 
-      // Simulate year by year
+      // Track IRA and Roth separately
+      let ira = iraBalanceStart;
+      let roth = rothBalanceStart;
+
+      // Total contributions for display
+      const totalIraContributions = ANNUAL_IRA_CONTRIBUTION * yearsToRetirement;
+      const totalRothContributions = ANNUAL_ROTH_CONTRIBUTION * yearsToRetirement;
+      const totalContributions = totalIraContributions + totalRothContributions;
+
+      // Simulate accumulation MONTHLY, but record yearly data for charts
       const yearlyData = [];
-      let balance = balanceAt60;
-      let totalWithdrawn = 0;
-      let totalGrowthInRetirement = 0;
-
-      // Add accumulation phase data points
-      let accumulationBalance = totalCurrent;
       for (let age = currentAge; age <= RETIREMENT_AGE; age++) {
+        // Record data at start of each year
         yearlyData.push({
           age,
-          balance: accumulationBalance,
+          balance: ira + roth,
+          iraBalance: ira,
+          rothBalance: roth,
           phase: 'accumulation'
         });
 
+        // Simulate 12 months of growth and contributions
         if (age < RETIREMENT_AGE) {
-          accumulationBalance = accumulationBalance * (1 + GROWTH_RATE) + ANNUAL_401K_CONTRIBUTION;
+          for (let month = 0; month < 12; month++) {
+            ira *= (1 + MONTHLY_GROWTH_RATE);
+            roth *= (1 + MONTHLY_GROWTH_RATE);
+            ira += MONTHLY_IRA_CONTRIBUTION;
+            roth += MONTHLY_ROTH_CONTRIBUTION;
+          }
         }
       }
 
-      // Add decumulation phase data points
-      balance = balanceAt60;
-      for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
-        if (age > RETIREMENT_AGE) {
-          // Each year: FIRST grow the full balance at 8%, THEN withdraw
-          const growth = balance * GROWTH_RATE;
-          totalGrowthInRetirement += growth;
-          balance += growth;
+      const iraAt60 = ira;
+      const rothAt60 = roth;
+      const balanceAt60 = ira + roth;
 
-          // Then withdraw
-          balance -= goldenNumber;
-          totalWithdrawn += goldenNumber;
+      // Calculate growth amounts for display (using monthly compounding formula)
+      const monthsToRetirement = yearsToRetirement * 12;
+      const iraGrowthOnCurrent = iraBalanceStart * Math.pow(1 + MONTHLY_GROWTH_RATE, monthsToRetirement) - iraBalanceStart;
+      const rothGrowthOnCurrent = rothBalanceStart * Math.pow(1 + MONTHLY_GROWTH_RATE, monthsToRetirement) - rothBalanceStart;
+      const growthOnCurrent = iraGrowthOnCurrent + rothGrowthOnCurrent;
+
+      // Future value of monthly contributions (annuity formula with monthly compounding)
+      let futureValueOfContributions = 0;
+      let growthOnContributions = 0;
+      if (monthsToRetirement > 0) {
+        const monthlyAnnuityFactor = ((Math.pow(1 + MONTHLY_GROWTH_RATE, monthsToRetirement) - 1) / MONTHLY_GROWTH_RATE);
+        const iraFV = MONTHLY_IRA_CONTRIBUTION * monthlyAnnuityFactor;
+        const rothFV = MONTHLY_ROTH_CONTRIBUTION * monthlyAnnuityFactor;
+        futureValueOfContributions = iraFV + rothFV;
+        growthOnContributions = futureValueOfContributions - totalContributions;
+      }
+
+      // ─────────────────────────────────────────────────────────────
+      // PHASE 2: Decumulation (60 → 90) - MONTHLY SIMULATION
+      // ─────────────────────────────────────────────────────────────
+
+      let totalWithdrawn = 0;
+      let totalGrowthInRetirement = 0;
+      const decumulationData = [];
+
+      // Monthly withdrawal amounts
+      const monthlyIraWithdrawal = iraWithdrawal / 12;
+      const monthlyRothWithdrawal = rothWithdrawal / 12;
+
+      for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
+        const startIra = ira;
+        const startRoth = roth;
+        const startBalance = ira + roth;
+        let yearGrowth = 0;
+        let yearWithdrawal = 0;
+
+        if (age > RETIREMENT_AGE) {
+          // Simulate 12 months: grow then withdraw each month
+          for (let month = 0; month < 12; month++) {
+            // Grow both accounts
+            const iraGrowth = ira * MONTHLY_GROWTH_RATE;
+            const rothGrowth = roth * MONTHLY_GROWTH_RATE;
+            yearGrowth += iraGrowth + rothGrowth;
+            ira += iraGrowth;
+            roth += rothGrowth;
+
+            // Withdraw from each (80/20 split)
+            ira -= monthlyIraWithdrawal;
+            roth -= monthlyRothWithdrawal;
+          }
+
+          yearWithdrawal = totalWithdrawalPerYear;
+          totalWithdrawn += totalWithdrawalPerYear;
+          totalGrowthInRetirement += yearGrowth;
         }
+
+        const endBalance = Math.max(0, ira) + Math.max(0, roth);
 
         yearlyData.push({
           age,
-          balance: Math.max(0, balance),
+          balance: endBalance,
+          iraBalance: Math.max(0, ira),
+          rothBalance: Math.max(0, roth),
           phase: 'decumulation'
+        });
+
+        decumulationData.push({
+          age,
+          startBalance: age === RETIREMENT_AGE ? balanceAt60 : startBalance,
+          growth: yearGrowth,
+          withdrawal: yearWithdrawal,
+          endBalance,
+          iraBalance: Math.max(0, ira),
+          rothBalance: Math.max(0, roth)
         });
       }
 
-      const remainingAt90 = Math.max(0, balance);
+      const remainingAt90 = Math.max(0, ira) + Math.max(0, roth);
+      const iraRemaining = Math.max(0, ira);
+      const rothRemaining = Math.max(0, roth);
 
       // ─────────────────────────────────────────────────────────────
       // UPDATE UI
       // ─────────────────────────────────────────────────────────────
 
       // Section 2: Current Balances
-      document.getElementById('tableIRA').textContent = formatFullCurrency(iraBalance);
-      document.getElementById('tableRoth').textContent = formatFullCurrency(rothBalance);
+      document.getElementById('tableIRA').textContent = formatFullCurrency(iraBalanceStart);
+      document.getElementById('tableRoth').textContent = formatFullCurrency(rothBalanceStart);
       document.getElementById('tableTotal').textContent = formatFullCurrency(totalCurrent);
 
       // Section 3: Projection to 60
@@ -1275,23 +1681,46 @@
       document.getElementById('projTotal').textContent = formatFullCurrency(balanceAt60);
       document.getElementById('bigNestEgg').textContent = formatCurrency(balanceAt60);
 
-      // Section 1 & 4: Update golden number displays
-      const federalTax = goldenNumber * FEDERAL_TAX_RATE;
-      const stateTax = goldenNumber * STATE_TAX_RATE;
-      const afterTaxSpending = goldenNumber - federalTax - stateTax;
+      // Section 1 & 4: Tax calculation
+      // Only IRA withdrawal is taxed; Roth is tax-free
+      const taxResult = calculateTotalTax(iraWithdrawal);
+      const federalTax = taxResult.federal.tax;
+      const stateTax = taxResult.state.tax;
+      const iraAfterTax = taxResult.afterTax; // IRA after taxes
+      const afterTaxSpending = iraAfterTax + rothWithdrawal; // IRA (taxed) + Roth (tax-free)
       const monthlyAfterTax = afterTaxSpending / 12;
       const total30yrSpending = afterTaxSpending * 30;
 
-      document.getElementById('assumptionGolden').textContent = formatCurrency(goldenNumber);
-      document.getElementById('taxGrossWithdrawal').textContent = formatFullCurrency(goldenNumber);
+      // Effective rate on total withdrawal (including tax-free Roth)
+      const totalTaxPaid = federalTax + stateTax;
+      const effectiveRateOnTotal = totalWithdrawalPerYear > 0 ? totalTaxPaid / totalWithdrawalPerYear : 0;
+
+      // Find marginal (bracket) rates - the rate on the last dollar
+      const federalMarginalRate = taxResult.federal.breakdown.length > 0
+        ? taxResult.federal.breakdown[taxResult.federal.breakdown.length - 1].rate
+        : 0;
+      const stateMarginalRate = taxResult.state.breakdown.length > 0
+        ? taxResult.state.breakdown[taxResult.state.breakdown.length - 1].rate
+        : 0;
+
+      document.getElementById('assumptionTaxRate').textContent = (effectiveRateOnTotal * 100).toFixed(1) + '%';
+      document.getElementById('taxGrossWithdrawal').textContent = formatFullCurrency(totalWithdrawalPerYear);
       document.getElementById('taxFederal').textContent = '-' + formatFullCurrency(federalTax);
       document.getElementById('taxState').textContent = '-' + formatFullCurrency(stateTax);
       document.getElementById('taxNetSpending').textContent = formatFullCurrency(afterTaxSpending);
       document.getElementById('monthlySpending').textContent = formatFullCurrency(monthlyAfterTax);
       document.getElementById('totalSpending30yr').textContent = formatCurrency(total30yrSpending);
-      document.getElementById('section5Title').textContent = `Each Year: Withdraw ${formatCurrency(goldenNumber)}, Then Grow Remainder at 8%`;
-      document.getElementById('summaryWithdrawnLabel').textContent = `Total Withdrawn (30 years × ${formatCurrency(goldenNumber)})`;
-      document.getElementById('howItWorksAmount').textContent = formatCurrency(goldenNumber);
+
+      // Update tax labels with bracket and effective rates
+      document.getElementById('taxFederalLabel').textContent =
+        `Federal Tax on IRA (Bracket: ${(federalMarginalRate * 100).toFixed(0)}%, Effective: ${(taxResult.federal.effectiveRate * 100).toFixed(1)}%)`;
+      document.getElementById('taxStateLabel').textContent =
+        `CA Tax on IRA (Bracket: ${(stateMarginalRate * 100).toFixed(1)}%, Effective: ${(taxResult.state.effectiveRate * 100).toFixed(1)}%)`;
+      document.getElementById('taxEffectiveLabel').textContent =
+        `After-Tax Spending (IRA: ${formatCurrency(iraWithdrawal)} taxed + Roth: ${formatCurrency(rothWithdrawal)} tax-free)`;
+      document.getElementById('section5Title').textContent = `Each Year: Withdraw ${formatCurrency(totalWithdrawalPerYear)} (${formatCurrency(iraWithdrawal)} IRA + ${formatCurrency(rothWithdrawal)} Roth)`;
+      document.getElementById('summaryWithdrawnLabel').textContent = `Total Withdrawn (30 years × ${formatCurrency(totalWithdrawalPerYear)})`;
+      document.getElementById('howItWorksAmount').textContent = formatCurrency(totalWithdrawalPerYear);
 
       // Section 5: What's Left at 90
       document.getElementById('summaryStart').textContent = formatFullCurrency(balanceAt60);
@@ -1312,98 +1741,93 @@
       }
 
       // ─────────────────────────────────────────────────────────────
-      // THE BIG ANSWER: When to Stop Contributing
+      // THE ANSWER: 3 Scenarios Comparison
       // ─────────────────────────────────────────────────────────────
 
-      const stopAgeResult = findOptimalStopAge(totalCurrent, currentAge, goldenNumber);
-      const stopAgeHero = document.getElementById('stopAgeHero');
-      const stopAgeAnswer = document.getElementById('stopAgeAnswer');
-      const stopAgeExplanation = document.getElementById('stopAgeExplanation');
-      const stopAgeYearsLeft = document.getElementById('stopAgeYearsLeft');
-      const stopAgeSavings = document.getElementById('stopAgeSavings');
-      const stopAgeBalance60 = document.getElementById('stopAgeBalance60');
-      const withdrawalDisplay = formatCurrency(goldenNumber);
+      const withdrawalDisplay = formatCurrency(totalWithdrawalPerYear);
+
+      // Scenario 1: What happens if you stop contributing TODAY
+      const stopNowResult = simulateWithStopAge(iraBalanceStart, rothBalanceStart, currentAge, currentAge, iraWithdrawal);
+
+      // Scenario 2: Find the minimum stop age needed
+      const stopAgeResult = findOptimalStopAge(iraBalanceStart, rothBalanceStart, currentAge, iraWithdrawal);
+
+      // Scenario 3: Continue to 60 (already calculated as balanceAt60 and remainingAt90)
+
+      // Update Scenario 1: Stop Now
+      const scenarioStopNow = document.getElementById('scenarioStopNow');
+      const stopNowResultEl = document.getElementById('stopNowResult');
+      const stopNowBalance60El = document.getElementById('stopNowBalance60');
+      const stopNowRemaining90El = document.getElementById('stopNowRemaining90');
+
+      if (stopNowResult.ranOut) {
+        scenarioStopNow.className = 'scenario-card warning';
+        stopNowResultEl.innerHTML = `<span class="result-icon">⚠️</span><span class="result-text">Run out at age ${stopNowResult.ranOutAge}</span>`;
+        stopNowRemaining90El.textContent = '$0';
+      } else {
+        scenarioStopNow.className = 'scenario-card success';
+        stopNowResultEl.innerHTML = `<span class="result-icon">✓</span><span class="result-text success">${formatCurrency(stopNowResult.totalRemaining)} left</span>`;
+        stopNowRemaining90El.textContent = formatCurrency(stopNowResult.totalRemaining);
+      }
+      stopNowBalance60El.textContent = formatCurrency(stopNowResult.totalAt60);
+
+      // Update Scenario 2: Minimum Needed
+      const minimumAnswerEl = document.getElementById('minimumAnswer');
+      const minimumSubtextEl = document.getElementById('minimumSubtext');
+      const minimumBalance60El = document.getElementById('minimumBalance60');
+      const minimumRemaining90El = document.getElementById('minimumRemaining90');
+      const scenarioMinimum = document.getElementById('scenarioMinimum');
 
       if (stopAgeResult.status === 'already-enough') {
-        // Already have enough - could stop now!
-        stopAgeHero.className = 'stop-age-hero already-enough';
-        stopAgeAnswer.textContent = 'NOW!';
-        stopAgeExplanation.innerHTML = `
-          <strong>Congratulations!</strong> You already have enough saved. If you stopped contributing today,
-          you'd still have <strong>${formatCurrency(stopAgeResult.remaining)}</strong> left at age 90.
-          Consider redirecting 401k contributions to taxable accounts for more flexibility.
-        `;
-        stopAgeYearsLeft.textContent = '0 years';
-        stopAgeSavings.textContent = '$0';
-        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
+        minimumAnswerEl.textContent = 'NOW!';
+        minimumSubtextEl.textContent = 'You already have enough!';
+        minimumBalance60El.textContent = formatCurrency(stopAgeResult.totalAt60);
+        minimumRemaining90El.textContent = formatCurrency(stopAgeResult.totalRemaining);
+        scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'Great News!';
+        scenarioMinimum.className = 'scenario-card primary'; // Green - good news
       } else if (stopAgeResult.status === 'need-more') {
-        // Need to keep contributing past 60
-        stopAgeHero.className = 'stop-age-hero need-more';
-        stopAgeAnswer.textContent = 'Keep Going';
-        stopAgeExplanation.innerHTML = `
-          Even with maximum contributions until 60, you may not have enough to withdraw ${withdrawalDisplay}/year for 30 years.
-          Consider increasing savings, delaying retirement, or adjusting your income expectations.
-        `;
-        stopAgeYearsLeft.textContent = `${RETIREMENT_AGE - currentAge} years`;
-        stopAgeSavings.textContent = formatCurrency(ANNUAL_401K_CONTRIBUTION * (RETIREMENT_AGE - currentAge));
-        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
+        minimumAnswerEl.textContent = 'Age 60+';
+        minimumSubtextEl.textContent = 'Need more savings or lower goal';
+        minimumBalance60El.textContent = formatCurrency(stopAgeResult.totalAt60);
+        minimumRemaining90El.textContent = stopAgeResult.ranOutAge ? `Run out at ${stopAgeResult.ranOutAge}` : '$0';
+        scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'Warning';
+        scenarioMinimum.className = 'scenario-card danger'; // Red - can't achieve goal
       } else {
-        // Found optimal stop age
         const yearsToContribute = stopAgeResult.stopAge - currentAge;
-        const savingsAfterStop = ANNUAL_401K_CONTRIBUTION * yearsToContribute;
-
-        stopAgeHero.className = 'stop-age-hero';
-        stopAgeAnswer.textContent = `Age ${stopAgeResult.stopAge}`;
-        stopAgeExplanation.innerHTML = `
-          If you stop 401k contributions at <strong>age ${stopAgeResult.stopAge}</strong>, you'll have just enough
-          to withdraw ${withdrawalDisplay}/year until age 90 and end with <strong>${formatCurrency(stopAgeResult.remaining)}</strong>.
-          Every year you contribute beyond this is bonus money!
-        `;
-        stopAgeYearsLeft.textContent = `${yearsToContribute} years`;
-        stopAgeSavings.textContent = formatCurrency(savingsAfterStop);
-        stopAgeBalance60.textContent = formatCurrency(stopAgeResult.balanceAt60);
+        minimumAnswerEl.textContent = `Age ${stopAgeResult.stopAge}`;
+        minimumSubtextEl.textContent = yearsToContribute === 0 ? 'Stop now!' :
+          yearsToContribute === 1 ? '1 more year' : `${yearsToContribute} more years`;
+        minimumBalance60El.textContent = formatCurrency(stopAgeResult.totalAt60);
+        minimumRemaining90El.textContent = formatCurrency(stopAgeResult.totalRemaining);
+        scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'Minimum Needed';
+        scenarioMinimum.className = 'scenario-card primary'; // Green - found the answer
       }
 
-      // Verdict Banner
-      const verdictBanner = document.getElementById('verdictBanner');
-      const verdictIcon = document.getElementById('verdictIcon');
-      const verdictTitle = document.getElementById('verdictTitle');
-      const verdictMessage = document.getElementById('verdictMessage');
+      // Update Scenario 3: Continue to 60
+      const scenarioContinue = document.getElementById('scenarioContinue');
+      const continueResultEl = document.getElementById('continueResult');
+      const continueBalance60El = document.getElementById('continueBalance60');
+      const continueRemaining90El = document.getElementById('continueRemaining90');
 
-      if (remainingAt90 > balanceAt60 * 0.5) {
-        // Way more than enough
-        verdictBanner.className = 'verdict-banner success';
-        verdictIcon.textContent = '🎯';
-        verdictTitle.textContent = "You're Set for Life!";
-        verdictMessage.innerHTML = `
-          With <strong>${formatCurrency(remainingAt90)}</strong> remaining at 90, you're over-saving in tax-advantaged accounts.
-          Consider reducing 401k contributions beyond the employer match and investing in taxable accounts
-          for more flexibility and lower RMDs.
-        `;
-      } else if (remainingAt90 > 0) {
-        // On track
-        verdictBanner.className = 'verdict-banner success';
-        verdictIcon.textContent = '✅';
-        verdictTitle.textContent = "You're On Track!";
-        verdictMessage.innerHTML = `
-          You'll have <strong>${formatCurrency(remainingAt90)}</strong> remaining at 90.
-          Your current savings plan will sustain ${withdrawalDisplay}/year withdrawals for 30 years.
-          Keep up the good work!
-        `;
+      continueBalance60El.textContent = formatCurrency(balanceAt60);
+      continueRemaining90El.textContent = formatCurrency(remainingAt90);
+
+      if (remainingAt90 > 0) {
+        continueResultEl.innerHTML = `<span class="result-icon">🎯</span><span class="result-text bonus">${formatCurrency(remainingAt90)} cushion</span>`;
+        scenarioContinue.className = 'scenario-card bonus'; // Gold - extra cushion
       } else {
-        // Not enough
-        verdictBanner.className = 'verdict-banner danger';
-        verdictIcon.textContent = '⚠️';
-        verdictTitle.textContent = "You Need More Savings";
-        verdictMessage.innerHTML = `
-          At your current trajectory, you may run out of money before 90.
-          Consider maximizing 401k contributions, delaying retirement, or adjusting
-          your expected retirement income.
-        `;
+        continueResultEl.innerHTML = `<span class="result-icon">⚠️</span><span class="result-text">Still not enough</span>`;
+        scenarioContinue.className = 'scenario-card warning'; // Red - even max isn't enough
       }
 
-      // Update Chart
+      // Update footer with monthly spending focus
+      const monthlySpending = getDesiredMonthlySpending();
+      document.getElementById('answerMonthlySpending').textContent = formatCurrency(monthlySpending);
+      document.getElementById('answerWithdrawal').textContent = formatCurrency(totalWithdrawalPerYear);
+
+      // Update Charts
       updateChart(yearlyData, RETIREMENT_AGE);
+      updateDecumulationChart(decumulationData, totalWithdrawalPerYear);
 
       // Show results
       document.getElementById('results').classList.add('visible');
@@ -1552,8 +1976,144 @@
       });
     }
 
-    // Calculate on page load
-    document.addEventListener('DOMContentLoaded', calculate);
+    function updateDecumulationChart(decumulationData, goldenNumber) {
+      const ctx = document.getElementById('decumulationChart').getContext('2d');
+
+      // Prepare data - only ages 60-90
+      const labels = decumulationData.map(d => d.age);
+      const endBalances = decumulationData.map(d => d.endBalance);
+
+      if (decumulationChart) {
+        decumulationChart.destroy();
+      }
+
+      decumulationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'End of Year Balance',
+            data: endBalances,
+            borderColor: '#00D632',
+            backgroundColor: function(context) {
+              const chart = context.chart;
+              const { ctx, chartArea } = chart;
+              if (!chartArea) return null;
+
+              const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+              gradient.addColorStop(0, 'rgba(0, 214, 50, 0.02)');
+              gradient.addColorStop(1, 'rgba(0, 214, 50, 0.15)');
+              return gradient;
+            },
+            borderWidth: 3,
+            fill: true,
+            tension: 0.2,
+            pointRadius: 4,
+            pointBackgroundColor: '#00D632',
+            pointBorderColor: '#0D0D0D',
+            pointBorderWidth: 2,
+            pointHoverRadius: 8,
+            pointHoverBackgroundColor: '#FFFFFF',
+            pointHoverBorderColor: '#00D632',
+            pointHoverBorderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1A1A1A',
+              titleColor: '#FFFFFF',
+              bodyColor: '#A3A3A3',
+              borderColor: 'rgba(0, 214, 50, 0.3)',
+              borderWidth: 1,
+              padding: 16,
+              displayColors: false,
+              bodySpacing: 6,
+              callbacks: {
+                title: function(context) {
+                  const index = context[0].dataIndex;
+                  const age = decumulationData[index].age;
+                  if (age === 60) return `Age ${age} — Retirement Begins`;
+                  if (age === 90) return `Age ${age} — End of Projection`;
+                  return `Age ${age}`;
+                },
+                label: function(context) {
+                  return null; // We'll use afterBody for custom formatting
+                },
+                afterBody: function(context) {
+                  const index = context[0].dataIndex;
+                  const data = decumulationData[index];
+                  const lines = [];
+
+                  if (data.age === 60) {
+                    lines.push(`Starting Balance: ${formatFullCurrency(data.startBalance)}`);
+                  } else {
+                    lines.push(`Start of Year: ${formatFullCurrency(data.startBalance)}`);
+                    lines.push(`+ Growth (8%): ${formatFullCurrency(data.growth)}`);
+                    lines.push(`− Withdrawal: ${formatFullCurrency(data.withdrawal)}`);
+                    lines.push('─────────────────');
+                    lines.push(`End of Year: ${formatFullCurrency(data.endBalance)}`);
+                  }
+
+                  return lines;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Age',
+                color: '#737373',
+                font: { size: 12 }
+              },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                maxTicksLimit: 16,
+                callback: function(value, index) {
+                  const age = this.getLabelForValue(value);
+                  if (age === 60) return '60 ★';
+                  if (age === 90) return '90';
+                  if (age % 5 === 0) return age;
+                  return '';
+                }
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Portfolio Balance',
+                color: '#737373',
+                font: { size: 12 }
+              },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                callback: function(value) {
+                  return formatCurrency(value);
+                }
+              },
+              min: 0
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateFromMonthlyInput(); // Initialize the withdrawal breakdown display
+      calculate();
+    });
   </script>
 </body>
 </html>
