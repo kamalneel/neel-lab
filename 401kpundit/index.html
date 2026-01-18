@@ -992,10 +992,11 @@
       const balanceAt60 = balance;
 
       // Phase 2: Decumulation from 60 to 90
+      // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
       for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
-        balance -= GOLDEN_NUMBER;
+        balance *= (1 + GROWTH_RATE);  // Grow first
+        balance -= GOLDEN_NUMBER;       // Then withdraw
         if (balance <= 0) return { balanceAt60, remaining: 0, ranOut: true, ranOutAge: age };
-        balance *= (1 + GROWTH_RATE);
       }
 
       return { balanceAt60, remaining: balance, ranOut: false };
@@ -1132,14 +1133,14 @@
       balance = balanceAt60;
       for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
         if (age > RETIREMENT_AGE) {
-          // Withdraw at start of year
-          balance -= GOLDEN_NUMBER;
-          totalWithdrawn += GOLDEN_NUMBER;
-
-          // Grow remainder
+          // Each year: FIRST grow the full balance at 8%, THEN withdraw $400K
           const growth = balance * GROWTH_RATE;
           totalGrowthInRetirement += growth;
           balance += growth;
+
+          // Then withdraw
+          balance -= GOLDEN_NUMBER;
+          totalWithdrawn += GOLDEN_NUMBER;
         }
 
         yearlyData.push({
