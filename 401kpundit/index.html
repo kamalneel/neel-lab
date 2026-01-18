@@ -352,27 +352,35 @@
     /* Inflation Toggle */
     .inflation-toggle {
       margin-top: var(--space-4);
-      text-align: center;
+      padding: var(--space-4);
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
     }
 
     .toggle-label {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: var(--space-3);
+      justify-content: center;
+      gap: var(--space-4);
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--color-text-secondary);
     }
 
     .toggle-label input {
-      display: none;
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
     }
 
     .toggle-slider {
       position: relative;
-      width: 44px;
-      height: 24px;
-      background: var(--color-bg-tertiary);
+      flex-shrink: 0;
+      width: 52px;
+      height: 28px;
+      background: var(--color-bg-primary);
       border: 2px solid var(--color-border);
       border-radius: 100px;
       transition: all 0.2s ease;
@@ -381,10 +389,10 @@
     .toggle-slider::before {
       content: '';
       position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
       background: var(--color-text-tertiary);
       border-radius: 50%;
       transition: all 0.2s ease;
@@ -396,12 +404,17 @@
     }
 
     .toggle-label input:checked + .toggle-slider::before {
-      transform: translateX(20px);
+      transform: translateX(24px);
       background: var(--color-accent);
     }
 
     .toggle-text {
       user-select: none;
+      line-height: 1.3;
+    }
+
+    .toggle-label:hover .toggle-slider {
+      border-color: var(--color-accent);
     }
 
     .calculate-btn {
@@ -909,20 +922,21 @@
           <input type="text" id="monthlySpendingInput" value="20,000" class="monthly-input" oninput="formatNumber(this); clearPresetSelection(); updateFromMonthlyInput()">
           <button class="withdrawal-btn" onclick="adjustMonthlySpending(1000)">+$1K</button>
         </div>
+
+        <!-- Inflation Toggle - Prominent position -->
+        <div class="inflation-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" id="inflationToggle" checked onchange="updateFromMonthlyInput(); calculate();">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Inflation-Adjusted<br><small style="color: var(--color-text-tertiary);">Spending increases 3%/year during retirement</small></span>
+          </label>
+        </div>
+
         <div class="withdrawal-breakdown" id="inflationNote">
           At 3% inflation → <span id="futureMonthlyDisplay">$36K</span>/mo in <span id="yearsToRetireDisplay">20</span> years
         </div>
         <div class="withdrawal-breakdown">
           Requires: <span id="iraWithdrawalDisplay">$230K</span> IRA + <span id="rothWithdrawalDisplay">$58K</span> Roth = <span id="totalWithdrawalDisplay">$288K</span>/year
-        </div>
-
-        <!-- Inflation Toggle -->
-        <div class="inflation-toggle">
-          <label class="toggle-label">
-            <input type="checkbox" id="inflationToggle" checked onchange="updateFromMonthlyInput()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-text">Inflation-Adjusted (spending increases 3%/year in retirement)</span>
-          </label>
         </div>
       </div>
 
