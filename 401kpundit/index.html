@@ -830,7 +830,7 @@
       <div class="input-grid">
         <div class="input-group">
           <label>Your Current Age</label>
-          <input type="number" id="currentAge" value="40" min="25" max="59">
+          <input type="number" id="currentAge" value="40" min="25" max="59" onchange="updateFromMonthlyInput()">
           <div class="hint">You (or younger spouse)</div>
         </div>
 
@@ -848,11 +848,14 @@
       </div>
 
       <div class="withdrawal-input-section">
-        <label>Monthly Spending in Retirement (After Taxes)</label>
+        <label>Monthly Spending in Retirement (Today's Dollars, After Taxes)</label>
         <div class="withdrawal-controls">
           <button class="withdrawal-btn" onclick="adjustMonthlySpending(-1000)">−$1K</button>
           <input type="text" id="monthlySpendingInput" value="20,000" class="monthly-input" oninput="formatNumber(this); clearPresetSelection(); updateFromMonthlyInput()">
           <button class="withdrawal-btn" onclick="adjustMonthlySpending(1000)">+$1K</button>
+        </div>
+        <div class="withdrawal-breakdown" id="inflationNote">
+          At 3% inflation → <span id="futureMonthlyDisplay">$36K</span>/mo in <span id="yearsToRetireDisplay">20</span> years
         </div>
         <div class="withdrawal-breakdown">
           Requires: <span id="iraWithdrawalDisplay">$230K</span> IRA + <span id="rothWithdrawalDisplay">$58K</span> Roth = <span id="totalWithdrawalDisplay">$288K</span>/year
@@ -942,7 +945,7 @@
         </div>
 
         <div class="answer-footer" id="answerFooter">
-          Based on <strong id="answerMonthlySpending">$20K</strong>/month spending (<span id="answerWithdrawal">$288K</span>/yr withdrawal) from age 60-90
+          Based on <strong id="answerMonthlySpending">$20K</strong>/month in today's dollars (<span id="answerFutureMonthly">$36K</span>/mo at 60 after 3% inflation) from age 60-90
         </div>
       </div>
 
@@ -970,6 +973,10 @@
           <div class="assumption-item">
             <div class="value">8%</div>
             <div class="label">Annual Growth</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">3%</div>
+            <div class="label">Inflation Rate</div>
           </div>
           <div class="assumption-item">
             <div class="value">$47K</div>
@@ -1060,6 +1067,10 @@
       <!-- 4. Retirement Spending (60-90) -->
       <h2 class="section-title"><span class="number">4</span> Your Retirement Lifestyle (Age 60-90)</h2>
       <div class="card">
+        <div style="margin-bottom: var(--space-4); padding: var(--space-4); background: var(--color-gold-muted); border-radius: var(--radius-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+          <strong style="color: var(--color-gold);">Inflation Adjustment:</strong> You entered <span id="inflationNoteToday">$20K</span>/month in today's dollars.
+          With 3% annual inflation over <span id="inflationNoteYears">20</span> years, that becomes <span id="inflationNoteFuture">$36K</span>/month at retirement.
+        </div>
         <h4>Annual Withdrawal Breakdown (Married Filing Jointly)</h4>
         <table class="data-table">
           <thead>
@@ -1095,8 +1106,9 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
           <div class="big-number">
-            <div class="label">Monthly Spending</div>
+            <div class="label">Monthly (Future Dollars at 60)</div>
             <div class="amount green" id="monthlySpending">$23,843</div>
+            <div class="subtitle" id="monthlyTodayEquiv">≈ $20K in today's dollars</div>
           </div>
           <div class="big-number">
             <div class="label">30-Year Total Spending</div>
@@ -1195,6 +1207,7 @@
     const LIFE_EXPECTANCY = 90;
     const ANNUAL_GROWTH_RATE = 0.08;
     const MONTHLY_GROWTH_RATE = ANNUAL_GROWTH_RATE / 12; // ~0.00667
+    const INFLATION_RATE = 0.03; // 3% historical average inflation
     const ANNUAL_IRA_CONTRIBUTION = 47000; // ~$23.5K × 2 for couple (401k/IRA)
     const ANNUAL_ROTH_CONTRIBUTION = 14000; // $7K × 2 for couple (Roth IRA)
     const MONTHLY_IRA_CONTRIBUTION = ANNUAL_IRA_CONTRIBUTION / 12;
@@ -1322,7 +1335,19 @@
     let calculatedIraWithdrawal = 230000; // Default
 
     function getDesiredMonthlySpending() {
+      // Returns monthly spending in TODAY's dollars (what user entered)
       return parseNumber(document.getElementById('monthlySpendingInput').value) || 20000;
+    }
+
+    function getInflationAdjustedMonthlySpending() {
+      // Returns monthly spending in FUTURE dollars (at retirement)
+      const currentAge = parseInt(document.getElementById('currentAge').value) || 40;
+      const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
+      const todaysDollars = getDesiredMonthlySpending();
+
+      // Apply inflation: Future $ = Today's $ × (1 + inflation)^years
+      const futureDollars = todaysDollars * Math.pow(1 + INFLATION_RATE, yearsToRetirement);
+      return futureDollars;
     }
 
     function getIraWithdrawal() {
@@ -1363,12 +1388,21 @@
     }
 
     function updateFromMonthlyInput() {
-      const monthlySpending = getDesiredMonthlySpending();
+      const currentAge = parseInt(document.getElementById('currentAge').value) || 40;
+      const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
 
-      // Calculate the IRA withdrawal needed
-      calculatedIraWithdrawal = calculateIraFromMonthlySpending(monthlySpending);
+      // Get today's dollars and convert to future dollars
+      const monthlyTodaysDollars = getDesiredMonthlySpending();
+      const monthlyFutureDollars = getInflationAdjustedMonthlySpending();
+
+      // Calculate the IRA withdrawal needed based on FUTURE dollars
+      calculatedIraWithdrawal = calculateIraFromMonthlySpending(monthlyFutureDollars);
       const rothWithdrawal = calculatedIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
       const totalWithdrawal = calculatedIraWithdrawal + rothWithdrawal;
+
+      // Update inflation display
+      document.getElementById('futureMonthlyDisplay').textContent = formatCurrency(monthlyFutureDollars);
+      document.getElementById('yearsToRetireDisplay').textContent = yearsToRetirement;
 
       // Update breakdown display
       document.getElementById('iraWithdrawalDisplay').textContent = formatCurrency(calculatedIraWithdrawal);
@@ -1715,6 +1749,13 @@
       document.getElementById('bigNestEgg').textContent = formatCurrency(balanceAt60);
 
       // Section 1 & 4: Tax calculation
+      // Update inflation note in Section 4
+      const monthlyTodayDollars = getDesiredMonthlySpending();
+      const monthlyFutureDollars = getInflationAdjustedMonthlySpending();
+      document.getElementById('inflationNoteToday').textContent = formatCurrency(monthlyTodayDollars);
+      document.getElementById('inflationNoteYears').textContent = yearsToRetirement;
+      document.getElementById('inflationNoteFuture').textContent = formatCurrency(monthlyFutureDollars);
+
       // Only IRA withdrawal is taxed; Roth is tax-free
       const taxResult = calculateTotalTax(iraWithdrawal);
       const federalTax = taxResult.federal.tax;
@@ -1742,6 +1783,7 @@
       document.getElementById('taxState').textContent = '-' + formatFullCurrency(stateTax);
       document.getElementById('taxNetSpending').textContent = formatFullCurrency(afterTaxSpending);
       document.getElementById('monthlySpending').textContent = formatFullCurrency(monthlyAfterTax);
+      document.getElementById('monthlyTodayEquiv').textContent = `≈ ${formatCurrency(getDesiredMonthlySpending())} in today's dollars`;
       document.getElementById('totalSpending30yr').textContent = formatCurrency(total30yrSpending);
 
       // Update tax labels with bracket and effective rates
@@ -1854,9 +1896,10 @@
       }
 
       // Update footer with monthly spending focus
-      const monthlySpending = getDesiredMonthlySpending();
-      document.getElementById('answerMonthlySpending').textContent = formatCurrency(monthlySpending);
-      document.getElementById('answerWithdrawal').textContent = formatCurrency(totalWithdrawalPerYear);
+      const monthlySpendingToday = getDesiredMonthlySpending();
+      const monthlySpendingFuture = getInflationAdjustedMonthlySpending();
+      document.getElementById('answerMonthlySpending').textContent = formatCurrency(monthlySpendingToday);
+      document.getElementById('answerFutureMonthly').textContent = formatCurrency(monthlySpendingFuture);
 
       // Update Charts
       updateChart(yearlyData, RETIREMENT_AGE);
