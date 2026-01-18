@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../faviconV4.png">
+  <title>StockRent - Never Sell, Always Rent - Neel Labs</title>
+  <meta name="description" content="Stop selling your stocks. Start renting them. Compare the wealth difference between traditional buy-and-sell investing versus generating income through covered calls.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --color-bg-primary: #0D0D0D;
+      --color-bg-secondary: #1A1A1A;
+      --color-bg-tertiary: #242424;
+      --color-text-primary: #FFFFFF;
+      --color-text-secondary: #A3A3A3;
+      --color-text-tertiary: #737373;
+      --color-accent: #00D632;
+      --color-accent-hover: #00E639;
+      --color-accent-muted: rgba(0, 214, 50, 0.12);
+      --color-gold: #C9A227;
+      --color-gold-muted: rgba(201, 162, 39, 0.15);
+      --color-blue: #3B82F6;
+      --color-blue-muted: rgba(59, 130, 246, 0.15);
+      --color-red: #EF4444;
+      --color-red-muted: rgba(239, 68, 68, 0.12);
+      --color-purple: #8B5CF6;
+      --color-purple-muted: rgba(139, 92, 246, 0.15);
+      --color-border: rgba(255, 255, 255, 0.08);
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 13, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-3) var(--space-6);
+    }
+
+    .app-header-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .app-logo img {
+      height: 40px;
+      border-radius: var(--radius-md);
+    }
+
+    .app-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .app-title span { color: var(--color-gold); }
+
+    .back-link {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--color-accent);
+      border-color: rgba(0, 214, 50, 0.3);
+      background: var(--color-accent-muted);
+    }
+
+    /* Main */
+    .app-main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: var(--space-12) 0;
+      margin-bottom: var(--space-8);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--color-gold-muted);
+      color: var(--color-gold);
+      padding: var(--space-2) var(--space-4);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-title .accent { color: var(--color-accent); }
+    .hero-title .gold { color: var(--color-gold); }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      max-width: 700px;
+      margin: 0 auto var(--space-8);
+      line-height: 1.7;
+    }
+
+    /* Philosophy Section */
+    .philosophy-section {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      margin-bottom: var(--space-8);
+    }
+
+    .philosophy-header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .philosophy-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: var(--space-2);
+    }
+
+    .philosophy-header p {
+      color: var(--color-text-secondary);
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    @media (max-width: 700px) {
+      .philosophy-grid { grid-template-columns: 1fr; }
+    }
+
+    .philosophy-card {
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      text-align: center;
+    }
+
+    .philosophy-card .icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-3);
+    }
+
+    .philosophy-card h3 {
+      font-size: 1rem;
+      margin-bottom: var(--space-2);
+      color: var(--color-red);
+    }
+
+    .philosophy-card p {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+
+    .philosophy-solution {
+      background: var(--color-accent-muted);
+      border: 1px solid rgba(0, 214, 50, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      text-align: center;
+    }
+
+    .philosophy-solution h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--color-accent);
+      margin-bottom: var(--space-2);
+    }
+
+    .philosophy-solution p {
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Input Card */
+    .input-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      max-width: 700px;
+      margin: 0 auto var(--space-8);
+    }
+
+    .input-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    @media (max-width: 700px) {
+      .input-grid { grid-template-columns: 1fr; }
+    }
+
+    .input-group { text-align: center; }
+
+    .input-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: var(--space-4);
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 4px var(--color-accent-muted);
+    }
+
+    .input-group .hint {
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      margin-top: var(--space-2);
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: var(--space-4);
+      background: var(--color-accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-family: var(--font-sans);
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .calculate-btn:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 214, 50, 0.3);
+    }
+
+    /* Results Section */
+    .results-section {
+      display: none;
+      margin-top: var(--space-12);
+    }
+
+    .results-section.visible {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Summary Cards */
+    .summary-section {
+      margin-bottom: var(--space-8);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 700px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    .summary-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      text-align: center;
+    }
+
+    .summary-card.highlight {
+      border-color: var(--color-accent);
+      background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-secondary));
+    }
+
+    .summary-card .label {
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+
+    .summary-card .comparison {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+    }
+
+    .summary-card .scenario {
+      text-align: center;
+    }
+
+    .summary-card .scenario-label {
+      font-size: 0.7rem;
+      color: var(--color-text-tertiary);
+      margin-bottom: var(--space-1);
+    }
+
+    .summary-card .scenario-value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .summary-card .scenario-value.sell { color: var(--color-red); }
+    .summary-card .scenario-value.rent { color: var(--color-accent); }
+
+    .summary-card .single-value {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
+
+    .summary-card .subtitle {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      margin-top: var(--space-2);
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .section-title .number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--color-gold);
+      color: #000;
+      border-radius: 50%;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-8);
+    }
+
+    .card h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    /* Chart */
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+
+    /* Legend */
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.875rem;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.sell { background: var(--color-red); }
+    .legend-dot.rent { background: var(--color-accent); }
+
+    /* Insight Box */
+    .insight-box {
+      background: var(--color-bg-tertiary);
+      border-left: 4px solid var(--color-gold);
+      padding: var(--space-4) var(--space-6);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-top: var(--space-6);
+    }
+
+    .insight-box p {
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .insight-box strong {
+      color: var(--color-gold);
+    }
+
+    /* Assumptions */
+    .assumptions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .assumption-item {
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      text-align: center;
+    }
+
+    .assumption-item .value {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .assumption-item .label {
+      font-size: 0.65rem;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: var(--space-1);
+    }
+
+    /* Footer */
+    .app-footer {
+      background: var(--color-bg-secondary);
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-6);
+      margin-top: var(--space-12);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--color-text-tertiary);
+    }
+
+    .app-footer a { color: var(--color-accent); }
+
+    .disclaimer {
+      max-width: 700px;
+      margin: 0 auto var(--space-4);
+      padding: var(--space-4);
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2rem; }
+      .summary-card .scenario-value { font-size: 1.25rem; }
+      .summary-card .single-value { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-header-container">
+      <div class="app-header-left">
+        <a href="/" class="app-logo">
+          <img src="../LogoV2.png" alt="Neel Labs">
+        </a>
+        <span class="app-title">Stock<span>Rent</span></span>
+      </div>
+      <a href="/" class="back-link">Back to Neel Labs</a>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-badge">The Never Sell Philosophy</div>
+      <h1 class="hero-title">
+        Stop <span class="gold">Selling</span> Your Stocks.<br>
+        Start <span class="accent">Renting</span> Them.
+      </h1>
+      <p class="hero-subtitle">
+        Every time you sell a stock, you create a tax event and bet against the market.
+        There's a better way: generate income from your portfolio without ever selling a share.
+      </p>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section class="philosophy-section">
+      <div class="philosophy-header">
+        <h2>Why I Stopped Selling Stocks</h2>
+        <p>Three reasons that changed how I think about wealth</p>
+      </div>
+
+      <div class="philosophy-grid">
+        <div class="philosophy-card">
+          <div class="icon">🎯</div>
+          <h3>You Can't Time the Market</h3>
+          <p>By the time news reaches you—earnings, policy changes, global events—it's already priced in. Sophisticated players moved first.</p>
+        </div>
+        <div class="philosophy-card">
+          <div class="icon">💸</div>
+          <h3>Selling = Tax Event</h3>
+          <p>In California, selling triggers ~30% in taxes on gains. Every sale erodes your wealth, even on "good" trades.</p>
+        </div>
+        <div class="philosophy-card">
+          <div class="icon">👨‍👩‍👧‍👦</div>
+          <h3>Step-Up Basis at Death</h3>
+          <p>If you never sell, your heirs inherit at current value—tax-free. Generations of gains, zero tax.</p>
+        </div>
+      </div>
+
+      <div class="philosophy-solution">
+        <h3>The Solution: Rent Your Stocks</h3>
+        <p>
+          Generate monthly income by selling covered calls against your holdings.
+          You keep your shares, earn ~1% per month, and your portfolio keeps growing.
+          Worst case? Your stock gets sold at a profit—which is what you'd do anyway.
+        </p>
+      </div>
+    </section>
+
+    <!-- Input Card -->
+    <div class="input-card">
+      <h3>See the Difference for Yourself</h3>
+
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Portfolio Value</label>
+          <input type="text" id="portfolioValue" value="1,000,000" oninput="formatNumber(this)">
+          <div class="hint">Your stock holdings</div>
+        </div>
+
+        <div class="input-group">
+          <label>Annual Income Need</label>
+          <input type="text" id="incomeNeed" value="100,000" oninput="formatNumber(this)">
+          <div class="hint">After-tax spending goal</div>
+        </div>
+
+        <div class="input-group">
+          <label>Current Age</label>
+          <input type="number" id="currentAge" value="40" min="25" max="55">
+          <div class="hint">Until age 60 (401k kicks in)</div>
+        </div>
+      </div>
+
+      <button class="calculate-btn" onclick="calculate()">
+        Compare Buy & Sell vs. Rent
+      </button>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results">
+
+      <!-- Summary Cards -->
+      <div class="summary-section">
+        <div class="summary-grid">
+          <div class="summary-card highlight">
+            <div class="label">Portfolio at Age 60</div>
+            <div class="comparison">
+              <div class="scenario">
+                <div class="scenario-label">Buy & Sell</div>
+                <div class="scenario-value sell" id="summaryPortfolioSell">$0</div>
+              </div>
+              <div class="scenario">
+                <div class="scenario-label">Rent Mode</div>
+                <div class="scenario-value rent" id="summaryPortfolioRent">$4.66M</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">Rent Income Surpasses Sell</div>
+            <div class="single-value" id="summaryCrossoverYear">Year 4</div>
+            <div class="subtitle">When renting beats selling</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="label">Legacy for Your Heirs</div>
+            <div class="comparison">
+              <div class="scenario">
+                <div class="scenario-label">Buy & Sell</div>
+                <div class="scenario-value sell" id="summaryLegacySell">$0</div>
+              </div>
+              <div class="scenario">
+                <div class="scenario-label">Rent Mode</div>
+                <div class="scenario-value rent" id="summaryLegacyRent">$4.66M</div>
+              </div>
+            </div>
+            <div class="subtitle">Tax-free via step-up basis</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 1: Income Comparison -->
+      <h2 class="section-title"><span class="number">1</span> Annual Disposable Income</h2>
+      <div class="card">
+        <h4>How much money do you have to spend each year?</h4>
+
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-dot sell"></span>
+            <span>Buy & Sell Mode</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot rent"></span>
+            <span>Rent Mode (Covered Calls)</span>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="incomeChart"></canvas>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <strong>The Insight:</strong> Buy & Sell gives you fixed income until your portfolio runs out.
+            Rent Mode starts lower but <strong>grows every year</strong> as your portfolio compounds.
+            By <span id="insightCrossover">Year 4</span>, renting generates more income—and it never stops.
+          </p>
+        </div>
+      </div>
+
+      <!-- Chart 2: Portfolio Value -->
+      <h2 class="section-title"><span class="number">2</span> Portfolio Value Over Time</h2>
+      <div class="card">
+        <h4>What happens to your wealth?</h4>
+
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-dot sell"></span>
+            <span>Buy & Sell Mode</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot rent"></span>
+            <span>Rent Mode (Never Sell)</span>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="portfolioChart"></canvas>
+        </div>
+
+        <div class="insight-box">
+          <p>
+            <strong>The Insight:</strong> When you sell stocks for income, you're eating into your principal.
+            In Rent Mode, your portfolio <strong>never shrinks</strong>—it compounds to
+            <strong id="insightFinalPortfolio">$4.66M</strong> and passes to your heirs tax-free.
+          </p>
+        </div>
+      </div>
+
+      <!-- Assumptions -->
+      <h2 class="section-title"><span class="number">3</span> Assumptions Used</h2>
+      <div class="card">
+        <div class="assumptions-grid">
+          <div class="assumption-item">
+            <div class="value">8%</div>
+            <div class="label">Stock Growth</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">12%</div>
+            <div class="label">Option Income</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">30%</div>
+            <div class="label">Tax Rate</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">20%</div>
+            <div class="label">Cost Basis</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">Age 60</div>
+            <div class="label">End Point</div>
+          </div>
+          <div class="assumption-item">
+            <div class="value">0%</div>
+            <div class="label">Assignment Risk</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> This calculator provides estimates for educational purposes only.
+      Covered call income varies based on market conditions, volatility, and strike selection.
+      The 12% annual return from options is optimistic and not guaranteed.
+      Consult a qualified financial advisor before implementing any investment strategy.
+    </div>
+    <p>
+      StockRent by <a href="/">Neel Labs</a> ·
+      <em>Never sell. Always rent.</em>
+    </p>
+  </footer>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // CONSTANTS
+    // ═══════════════════════════════════════════════════════════════
+
+    const END_AGE = 60;
+    const GROWTH_RATE = 0.08;           // 8% annual stock growth
+    const OPTION_INCOME_RATE = 0.12;    // 12% annual (1% monthly)
+    const TAX_RATE = 0.30;              // 30% blended tax rate
+    const COST_BASIS_RATIO = 0.20;      // 20% cost basis, 80% gains
+
+    let incomeChart = null;
+    let portfolioChart = null;
+
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITY FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+
+    function formatNumber(input) {
+      let value = input.value.replace(/[^\d]/g, '');
+      if (value) {
+        input.value = parseInt(value).toLocaleString();
+      }
+    }
+
+    function parseNumber(str) {
+      return parseFloat(str.replace(/[^\d.-]/g, '')) || 0;
+    }
+
+    function formatCurrency(num) {
+      if (Math.abs(num) >= 1e6) {
+        return '$' + (num / 1e6).toFixed(2) + 'M';
+      } else if (Math.abs(num) >= 1e3) {
+        return '$' + Math.round(num / 1e3).toLocaleString() + 'K';
+      }
+      return '$' + Math.round(num).toLocaleString();
+    }
+
+    function formatFullCurrency(num) {
+      return '$' + Math.round(num).toLocaleString();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // CALCULATION ENGINE
+    // ═══════════════════════════════════════════════════════════════
+
+    function calculate() {
+      // Get inputs
+      const portfolioValue = parseNumber(document.getElementById('portfolioValue').value);
+      const incomeNeed = parseNumber(document.getElementById('incomeNeed').value);
+      const currentAge = parseInt(document.getElementById('currentAge').value);
+      const years = END_AGE - currentAge;
+
+      // Calculate how much to sell to get incomeNeed after tax
+      // If 80% is gains and taxed at 30%: sellAmount * (1 - 0.80 * 0.30) = incomeNeed
+      const gainsRatio = 1 - COST_BASIS_RATIO;
+      const sellAmount = incomeNeed / (1 - gainsRatio * TAX_RATE);
+
+      // Simulate both scenarios
+      const sellData = simulateBuySell(portfolioValue, sellAmount, years);
+      const rentData = simulateRent(portfolioValue, years);
+
+      // Find crossover year (when rent income exceeds sell income)
+      let crossoverYear = null;
+      for (let i = 0; i < years; i++) {
+        if (rentData.incomeByYear[i] >= sellData.incomeByYear[i]) {
+          crossoverYear = i + 1;
+          break;
+        }
+      }
+
+      // Update UI
+      updateSummary(sellData, rentData, crossoverYear);
+      updateCharts(sellData, rentData, currentAge, years);
+
+      // Show results
+      document.getElementById('results').classList.add('visible');
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function simulateBuySell(startingPortfolio, annualSellAmount, years) {
+      let portfolio = startingPortfolio;
+      const portfolioByYear = [portfolio];
+      const incomeByYear = [];
+      let totalTaxes = 0;
+      let depletedYear = null;
+
+      const afterTaxIncome = annualSellAmount * (1 - (1 - COST_BASIS_RATIO) * TAX_RATE);
+
+      for (let year = 1; year <= years; year++) {
+        if (portfolio > 0) {
+          // Grow portfolio
+          portfolio *= (1 + GROWTH_RATE);
+
+          // Sell for income
+          const actualSell = Math.min(annualSellAmount, portfolio);
+          portfolio -= actualSell;
+
+          // Calculate income and taxes
+          const income = actualSell * (1 - (1 - COST_BASIS_RATIO) * TAX_RATE);
+          const taxes = actualSell * (1 - COST_BASIS_RATIO) * TAX_RATE;
+
+          incomeByYear.push(Math.max(0, income));
+          totalTaxes += taxes;
+
+          if (portfolio <= 0 && depletedYear === null) {
+            depletedYear = year;
+            portfolio = 0;
+          }
+        } else {
+          incomeByYear.push(0);
+        }
+
+        portfolioByYear.push(Math.max(0, portfolio));
+      }
+
+      return {
+        portfolioByYear,
+        incomeByYear,
+        totalTaxes,
+        finalPortfolio: Math.max(0, portfolio),
+        depletedYear
+      };
+    }
+
+    function simulateRent(startingPortfolio, years) {
+      let portfolio = startingPortfolio;
+      const portfolioByYear = [portfolio];
+      const incomeByYear = [];
+      let totalTaxes = 0;
+      let totalIncome = 0;
+
+      for (let year = 1; year <= years; year++) {
+        // Generate option income (before growth, based on start-of-year value)
+        const grossIncome = portfolio * OPTION_INCOME_RATE;
+        const taxes = grossIncome * TAX_RATE;
+        const netIncome = grossIncome - taxes;
+
+        incomeByYear.push(netIncome);
+        totalTaxes += taxes;
+        totalIncome += netIncome;
+
+        // Portfolio grows (principal never touched)
+        portfolio *= (1 + GROWTH_RATE);
+        portfolioByYear.push(portfolio);
+      }
+
+      return {
+        portfolioByYear,
+        incomeByYear,
+        totalTaxes,
+        totalIncome,
+        finalPortfolio: portfolio
+      };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // UI UPDATES
+    // ═══════════════════════════════════════════════════════════════
+
+    function updateSummary(sellData, rentData, crossoverYear) {
+      // Portfolio at 60
+      document.getElementById('summaryPortfolioSell').textContent =
+        sellData.finalPortfolio > 0 ? formatCurrency(sellData.finalPortfolio) : '$0';
+      document.getElementById('summaryPortfolioRent').textContent = formatCurrency(rentData.finalPortfolio);
+
+      // Crossover year
+      document.getElementById('summaryCrossoverYear').textContent =
+        crossoverYear ? `Year ${crossoverYear}` : 'Year 1';
+
+      // Legacy
+      document.getElementById('summaryLegacySell').textContent =
+        sellData.finalPortfolio > 0 ? formatCurrency(sellData.finalPortfolio) : '$0';
+      document.getElementById('summaryLegacyRent').textContent = formatCurrency(rentData.finalPortfolio);
+
+      // Insight boxes
+      document.getElementById('insightCrossover').textContent =
+        crossoverYear ? `Year ${crossoverYear}` : 'Year 1';
+      document.getElementById('insightFinalPortfolio').textContent = formatCurrency(rentData.finalPortfolio);
+    }
+
+    function updateCharts(sellData, rentData, currentAge, years) {
+      const labels = [];
+      for (let i = 0; i <= years; i++) {
+        labels.push(currentAge + i);
+      }
+
+      const incomeLabels = labels.slice(1); // Income starts from year 1
+
+      // Chart 1: Income Comparison
+      const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+
+      if (incomeChart) {
+        incomeChart.destroy();
+      }
+
+      incomeChart = new Chart(incomeCtx, {
+        type: 'line',
+        data: {
+          labels: incomeLabels,
+          datasets: [
+            {
+              label: 'Buy & Sell',
+              data: sellData.incomeByYear,
+              borderColor: '#EF4444',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#EF4444'
+            },
+            {
+              label: 'Rent Mode',
+              data: rentData.incomeByYear,
+              borderColor: '#00D632',
+              backgroundColor: 'rgba(0, 214, 50, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#00D632'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1A1A1A',
+              titleColor: '#FFFFFF',
+              bodyColor: '#A3A3A3',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 12,
+              callbacks: {
+                title: (context) => `Age ${context[0].label}`,
+                label: (context) => `${context.dataset.label}: ${formatFullCurrency(context.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Age', color: '#737373' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#737373' }
+            },
+            y: {
+              title: { display: true, text: 'Annual Income (After Tax)', color: '#737373' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                callback: (value) => formatCurrency(value)
+              },
+              min: 0
+            }
+          }
+        }
+      });
+
+      // Chart 2: Portfolio Value
+      const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+
+      if (portfolioChart) {
+        portfolioChart.destroy();
+      }
+
+      portfolioChart = new Chart(portfolioCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Buy & Sell',
+              data: sellData.portfolioByYear,
+              borderColor: '#EF4444',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#EF4444'
+            },
+            {
+              label: 'Rent Mode',
+              data: rentData.portfolioByYear,
+              borderColor: '#00D632',
+              backgroundColor: 'rgba(0, 214, 50, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#00D632'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1A1A1A',
+              titleColor: '#FFFFFF',
+              bodyColor: '#A3A3A3',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 12,
+              callbacks: {
+                title: (context) => `Age ${context[0].label}`,
+                label: (context) => `${context.dataset.label}: ${formatFullCurrency(context.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Age', color: '#737373' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#737373' }
+            },
+            y: {
+              title: { display: true, text: 'Portfolio Value', color: '#737373' },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#737373',
+                callback: (value) => formatCurrency(value)
+              },
+              min: 0
+            }
+          }
+        }
+      });
+    }
+
+    // Calculate on page load
+    document.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>
