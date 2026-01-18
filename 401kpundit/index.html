@@ -349,6 +349,61 @@
       background: var(--color-gold-muted);
     }
 
+    /* Inflation Toggle */
+    .inflation-toggle {
+      margin-top: var(--space-4);
+      text-align: center;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    .toggle-label input {
+      display: none;
+    }
+
+    .toggle-slider {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-border);
+      border-radius: 100px;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--color-text-tertiary);
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-label input:checked + .toggle-slider {
+      background: var(--color-accent-muted);
+      border-color: var(--color-accent);
+    }
+
+    .toggle-label input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+      background: var(--color-accent);
+    }
+
+    .toggle-text {
+      user-select: none;
+    }
+
     .calculate-btn {
       width: 100%;
       padding: var(--space-4);
@@ -848,7 +903,7 @@
       </div>
 
       <div class="withdrawal-input-section">
-        <label>Monthly Spending in Retirement (Today's Dollars, After Taxes)</label>
+        <label id="spendingLabel">Monthly Spending in Retirement (Today's Dollars, After Taxes)</label>
         <div class="withdrawal-controls">
           <button class="withdrawal-btn" onclick="adjustMonthlySpending(-1000)">−$1K</button>
           <input type="text" id="monthlySpendingInput" value="20,000" class="monthly-input" oninput="formatNumber(this); clearPresetSelection(); updateFromMonthlyInput()">
@@ -859,6 +914,15 @@
         </div>
         <div class="withdrawal-breakdown">
           Requires: <span id="iraWithdrawalDisplay">$230K</span> IRA + <span id="rothWithdrawalDisplay">$58K</span> Roth = <span id="totalWithdrawalDisplay">$288K</span>/year
+        </div>
+
+        <!-- Inflation Toggle -->
+        <div class="inflation-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" id="inflationToggle" checked onchange="updateFromMonthlyInput()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Inflation-Adjusted (spending increases 3%/year in retirement)</span>
+          </label>
         </div>
       </div>
 
@@ -1067,7 +1131,7 @@
       <!-- 4. Retirement Spending (60-90) -->
       <h2 class="section-title"><span class="number">4</span> Your Retirement Lifestyle (Age 60-90)</h2>
       <div class="card">
-        <div style="margin-bottom: var(--space-4); padding: var(--space-4); background: var(--color-gold-muted); border-radius: var(--radius-md); font-size: 0.85rem; color: var(--color-text-secondary);">
+        <div id="inflationNoteBox" style="margin-bottom: var(--space-4); padding: var(--space-4); background: var(--color-gold-muted); border-radius: var(--radius-md); font-size: 0.85rem; color: var(--color-text-secondary);">
           <strong style="color: var(--color-gold);">Inflation Adjustment:</strong> You entered <span id="inflationNoteToday">$20K</span>/month in today's dollars.
           With 3% annual inflation over <span id="inflationNoteYears">20</span> years, that becomes <span id="inflationNoteFuture">$36K</span>/month at retirement.
         </div>
@@ -1106,7 +1170,7 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
           <div class="big-number">
-            <div class="label">Monthly (Future Dollars at 60)</div>
+            <div class="label" id="monthlySpendingLabel">Monthly (Future Dollars at 60)</div>
             <div class="amount green" id="monthlySpending">$23,843</div>
             <div class="subtitle" id="monthlyTodayEquiv">≈ $20K in today's dollars</div>
           </div>
@@ -1334,6 +1398,10 @@
     // Store the calculated IRA withdrawal amount
     let calculatedIraWithdrawal = 230000; // Default
 
+    function isInflationAdjusted() {
+      return document.getElementById('inflationToggle').checked;
+    }
+
     function getDesiredMonthlySpending() {
       // Returns monthly spending in TODAY's dollars (what user entered)
       return parseNumber(document.getElementById('monthlySpendingInput').value) || 20000;
@@ -1341,6 +1409,11 @@
 
     function getInflationAdjustedMonthlySpending() {
       // Returns monthly spending in FUTURE dollars (at retirement)
+      // If inflation toggle is OFF, just return today's dollars
+      if (!isInflationAdjusted()) {
+        return getDesiredMonthlySpending();
+      }
+
       const currentAge = parseInt(document.getElementById('currentAge').value) || 40;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
       const todaysDollars = getDesiredMonthlySpending();
@@ -1390,19 +1463,30 @@
     function updateFromMonthlyInput() {
       const currentAge = parseInt(document.getElementById('currentAge').value) || 40;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
+      const inflationEnabled = isInflationAdjusted();
 
       // Get today's dollars and convert to future dollars
       const monthlyTodaysDollars = getDesiredMonthlySpending();
       const monthlyFutureDollars = getInflationAdjustedMonthlySpending();
 
-      // Calculate the IRA withdrawal needed based on FUTURE dollars
+      // Calculate the IRA withdrawal needed based on spending (future dollars if inflation on)
       calculatedIraWithdrawal = calculateIraFromMonthlySpending(monthlyFutureDollars);
       const rothWithdrawal = calculatedIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
       const totalWithdrawal = calculatedIraWithdrawal + rothWithdrawal;
 
-      // Update inflation display
-      document.getElementById('futureMonthlyDisplay').textContent = formatCurrency(monthlyFutureDollars);
-      document.getElementById('yearsToRetireDisplay').textContent = yearsToRetirement;
+      // Update inflation display (show/hide based on toggle)
+      const inflationNote = document.getElementById('inflationNote');
+      const spendingLabel = document.getElementById('spendingLabel');
+
+      if (inflationEnabled) {
+        inflationNote.style.display = 'block';
+        spendingLabel.textContent = "Monthly Spending in Retirement (Today's Dollars, After Taxes)";
+        document.getElementById('futureMonthlyDisplay').textContent = formatCurrency(monthlyFutureDollars);
+        document.getElementById('yearsToRetireDisplay').textContent = yearsToRetirement;
+      } else {
+        inflationNote.style.display = 'none';
+        spendingLabel.textContent = "Monthly Spending in Retirement (After Taxes)";
+      }
 
       // Update breakdown display
       document.getElementById('iraWithdrawalDisplay').textContent = formatCurrency(calculatedIraWithdrawal);
@@ -1453,16 +1537,13 @@
     // STOP AGE CALCULATION
     // ═══════════════════════════════════════════════════════════════
 
-    function simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, annualIraWithdrawal) {
+    function simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, annualIraWithdrawalAt60, applyInflation = true) {
       // Uses MONTHLY simulation for more accurate results
-      // annualIraWithdrawal is the yearly 401k/IRA portion (80% of total)
+      // annualIraWithdrawalAt60 is the yearly 401k/IRA portion at age 60 (80% of total)
+      // If applyInflation is true, withdrawals increase each year with inflation (True World approach)
 
       let ira = iraBalance;
       let roth = rothBalance;
-
-      // Monthly withdrawal amounts
-      const monthlyIraWithdrawal = annualIraWithdrawal / 12;
-      const monthlyRothWithdrawal = monthlyIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
 
       // Phase 1: Accumulation (monthly simulation)
       for (let age = currentAge; age < RETIREMENT_AGE; age++) {
@@ -1484,9 +1565,15 @@
       const totalAt60 = ira + roth;
 
       // Phase 2: Decumulation from 60 to 90 (monthly simulation)
-      const totalMonthlyWithdrawal = monthlyIraWithdrawal + monthlyRothWithdrawal;
-
       for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
+        // Calculate this year's withdrawal (inflated from age 60 baseline if enabled)
+        const yearsIntoRetirement = age - RETIREMENT_AGE;
+        const inflationMultiplier = applyInflation ? Math.pow(1 + INFLATION_RATE, yearsIntoRetirement) : 1;
+        const thisYearIraWithdrawal = annualIraWithdrawalAt60 * inflationMultiplier;
+        const thisYearRothWithdrawal = thisYearIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+        const monthlyIraWithdrawal = thisYearIraWithdrawal / 12;
+        const monthlyRothWithdrawal = thisYearRothWithdrawal / 12;
+
         for (let month = 0; month < 12; month++) {
           // Grow first
           ira *= (1 + MONTHLY_GROWTH_RATE);
@@ -1537,11 +1624,11 @@
       };
     }
 
-    function findOptimalStopAge(iraBalance, rothBalance, currentAge, iraWithdrawal) {
+    function findOptimalStopAge(iraBalance, rothBalance, currentAge, iraWithdrawal, applyInflation = true) {
       // Find the earliest age where you can stop contributing and still have money at 90
 
       // Check if already enough (stop contributing now)
-      const ifStopNow = simulateWithStopAge(iraBalance, rothBalance, currentAge, currentAge, iraWithdrawal);
+      const ifStopNow = simulateWithStopAge(iraBalance, rothBalance, currentAge, currentAge, iraWithdrawal, applyInflation);
       if (!ifStopNow.ranOut && ifStopNow.totalRemaining > 0) {
         return {
           stopAge: currentAge,
@@ -1552,7 +1639,7 @@
 
       // Search from current age to 60 to find the earliest stop age that works
       for (let stopAge = currentAge; stopAge <= RETIREMENT_AGE; stopAge++) {
-        const result = simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, iraWithdrawal);
+        const result = simulateWithStopAge(iraBalance, rothBalance, currentAge, stopAge, iraWithdrawal, applyInflation);
 
         if (!result.ranOut && result.totalRemaining > 0) {
           return {
@@ -1564,7 +1651,7 @@
       }
 
       // If we get here, even contributing till 60 isn't enough
-      const ifContributeTill60 = simulateWithStopAge(iraBalance, rothBalance, currentAge, RETIREMENT_AGE, iraWithdrawal);
+      const ifContributeTill60 = simulateWithStopAge(iraBalance, rothBalance, currentAge, RETIREMENT_AGE, iraWithdrawal, applyInflation);
       return {
         stopAge: RETIREMENT_AGE,
         status: 'need-more',
@@ -1585,6 +1672,7 @@
       const iraBalanceStart = parseNumber(document.getElementById('iraBalance').value);
       const rothBalanceStart = parseNumber(document.getElementById('rothBalance').value);
       const iraWithdrawal = getIraWithdrawal(); // Calculated from desired monthly spending
+      const inflationEnabled = isInflationAdjusted();
 
       const totalCurrent = iraBalanceStart + rothBalanceStart;
       const yearsToRetirement = Math.max(0, RETIREMENT_AGE - currentAge);
@@ -1653,15 +1741,18 @@
 
       // ─────────────────────────────────────────────────────────────
       // PHASE 2: Decumulation (60 → 90) - MONTHLY SIMULATION
+      // If inflation enabled: withdrawals increase each year (True World)
+      // If inflation disabled: withdrawals stay constant (Simple mode)
       // ─────────────────────────────────────────────────────────────
 
       let totalWithdrawn = 0;
       let totalGrowthInRetirement = 0;
       const decumulationData = [];
 
-      // Monthly withdrawal amounts
-      const monthlyIraWithdrawal = iraWithdrawal / 12;
-      const monthlyRothWithdrawal = rothWithdrawal / 12;
+      // Base withdrawal amounts at age 60
+      const baseIraWithdrawal = iraWithdrawal;
+      const baseRothWithdrawal = rothWithdrawal;
+      const baseTotalWithdrawal = totalWithdrawalPerYear;
 
       for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
         const startIra = ira;
@@ -1671,6 +1762,15 @@
         let yearWithdrawal = 0;
 
         if (age > RETIREMENT_AGE) {
+          // Calculate this year's withdrawal (inflated if enabled)
+          const yearsIntoRetirement = age - RETIREMENT_AGE;
+          const inflationMultiplier = inflationEnabled ? Math.pow(1 + INFLATION_RATE, yearsIntoRetirement) : 1;
+          const thisYearIraWithdrawal = baseIraWithdrawal * inflationMultiplier;
+          const thisYearRothWithdrawal = baseRothWithdrawal * inflationMultiplier;
+          const thisYearTotalWithdrawal = baseTotalWithdrawal * inflationMultiplier;
+          const monthlyIraWithdrawal = thisYearIraWithdrawal / 12;
+          const monthlyRothWithdrawal = thisYearRothWithdrawal / 12;
+
           // Simulate 12 months: grow then withdraw each month
           for (let month = 0; month < 12; month++) {
             // Grow both accounts
@@ -1699,8 +1799,8 @@
             roth -= rothWithdraw;
           }
 
-          yearWithdrawal = totalWithdrawalPerYear;
-          totalWithdrawn += totalWithdrawalPerYear;
+          yearWithdrawal = thisYearTotalWithdrawal;
+          totalWithdrawn += thisYearTotalWithdrawal;
           totalGrowthInRetirement += yearGrowth;
         }
 
@@ -1729,6 +1829,10 @@
       const iraRemaining = Math.max(0, ira);
       const rothRemaining = Math.max(0, roth);
 
+      // Calculate spending at age 90 (for display)
+      const spendingAt90Multiplier = inflationEnabled ? Math.pow(1 + INFLATION_RATE, 30) : 1;
+      const monthlySpendingAt90 = (baseTotalWithdrawal * spendingAt90Multiplier) / 12;
+
       // ─────────────────────────────────────────────────────────────
       // UPDATE UI
       // ─────────────────────────────────────────────────────────────
@@ -1749,9 +1853,10 @@
       document.getElementById('bigNestEgg').textContent = formatCurrency(balanceAt60);
 
       // Section 1 & 4: Tax calculation
-      // Update inflation note in Section 4
+      // Update inflation note in Section 4 (show/hide based on toggle)
       const monthlyTodayDollars = getDesiredMonthlySpending();
       const monthlyFutureDollars = getInflationAdjustedMonthlySpending();
+      document.getElementById('inflationNoteBox').style.display = inflationEnabled ? 'block' : 'none';
       document.getElementById('inflationNoteToday').textContent = formatCurrency(monthlyTodayDollars);
       document.getElementById('inflationNoteYears').textContent = yearsToRetirement;
       document.getElementById('inflationNoteFuture').textContent = formatCurrency(monthlyFutureDollars);
@@ -1761,9 +1866,18 @@
       const federalTax = taxResult.federal.tax;
       const stateTax = taxResult.state.tax;
       const iraAfterTax = taxResult.afterTax; // IRA after taxes
-      const afterTaxSpending = iraAfterTax + rothWithdrawal; // IRA (taxed) + Roth (tax-free)
+      const afterTaxSpending = iraAfterTax + rothWithdrawal; // IRA (taxed) + Roth (tax-free) at age 60
       const monthlyAfterTax = afterTaxSpending / 12;
-      const total30yrSpending = afterTaxSpending * 30;
+
+      // Calculate 30-year total spending (with or without inflation)
+      let total30yrSpending;
+      if (inflationEnabled) {
+        // Geometric series: S = a * (r^n - 1) / (r - 1) where r = 1.03
+        const inflationGrowthFactor = (Math.pow(1 + INFLATION_RATE, 30) - 1) / INFLATION_RATE;
+        total30yrSpending = afterTaxSpending * inflationGrowthFactor;
+      } else {
+        total30yrSpending = afterTaxSpending * 30;
+      }
 
       // Effective rate on total withdrawal (including tax-free Roth)
       const totalTaxPaid = federalTax + stateTax;
@@ -1783,19 +1897,32 @@
       document.getElementById('taxState').textContent = '-' + formatFullCurrency(stateTax);
       document.getElementById('taxNetSpending').textContent = formatFullCurrency(afterTaxSpending);
       document.getElementById('monthlySpending').textContent = formatFullCurrency(monthlyAfterTax);
-      document.getElementById('monthlyTodayEquiv').textContent = `≈ ${formatCurrency(getDesiredMonthlySpending())} in today's dollars`;
+      document.getElementById('monthlySpendingLabel').textContent = inflationEnabled
+        ? 'Monthly (Future Dollars at 60)'
+        : 'Monthly Spending';
+      document.getElementById('monthlyTodayEquiv').textContent = inflationEnabled
+        ? `≈ ${formatCurrency(getDesiredMonthlySpending())} in today's dollars`
+        : '';
+      document.getElementById('monthlyTodayEquiv').style.display = inflationEnabled ? 'block' : 'none';
       document.getElementById('totalSpending30yr').textContent = formatCurrency(total30yrSpending);
 
-      // Update tax labels with bracket and effective rates
+      // Update labels based on inflation toggle
       document.getElementById('taxFederalLabel').textContent =
         `Federal Tax on IRA (Bracket: ${(federalMarginalRate * 100).toFixed(0)}%, Effective: ${(taxResult.federal.effectiveRate * 100).toFixed(1)}%)`;
       document.getElementById('taxStateLabel').textContent =
         `CA Tax on IRA (Bracket: ${(stateMarginalRate * 100).toFixed(1)}%, Effective: ${(taxResult.state.effectiveRate * 100).toFixed(1)}%)`;
-      document.getElementById('taxEffectiveLabel').textContent =
-        `After-Tax Spending (IRA: ${formatCurrency(iraWithdrawal)} taxed + Roth: ${formatCurrency(rothWithdrawal)} tax-free)`;
-      document.getElementById('section5Title').textContent = `Each Year: Withdraw ${formatCurrency(totalWithdrawalPerYear)} (${formatCurrency(iraWithdrawal)} IRA + ${formatCurrency(rothWithdrawal)} Roth)`;
-      document.getElementById('summaryWithdrawnLabel').textContent = `Total Withdrawn (30 years × ${formatCurrency(totalWithdrawalPerYear)})`;
-      document.getElementById('howItWorksAmount').textContent = formatCurrency(totalWithdrawalPerYear);
+      document.getElementById('taxEffectiveLabel').textContent = inflationEnabled
+        ? `After-Tax Spending at 60 (IRA: ${formatCurrency(iraWithdrawal)} taxed + Roth: ${formatCurrency(rothWithdrawal)} tax-free)`
+        : `After-Tax Spending (IRA: ${formatCurrency(iraWithdrawal)} taxed + Roth: ${formatCurrency(rothWithdrawal)} tax-free)`;
+      document.getElementById('section5Title').textContent = inflationEnabled
+        ? `Year 1: Withdraw ${formatCurrency(totalWithdrawalPerYear)}, increasing 3%/year with inflation`
+        : `Each Year: Withdraw ${formatCurrency(totalWithdrawalPerYear)}`;
+      document.getElementById('summaryWithdrawnLabel').textContent = inflationEnabled
+        ? `Total Withdrawn (30 years, increasing 3%/yr)`
+        : `Total Withdrawn (30 years × ${formatCurrency(totalWithdrawalPerYear)})`;
+      document.getElementById('howItWorksAmount').textContent = inflationEnabled
+        ? `${formatCurrency(totalWithdrawalPerYear)} at 60, ${formatCurrency(totalWithdrawalPerYear * spendingAt90Multiplier)} at 90`
+        : formatCurrency(totalWithdrawalPerYear);
 
       // Section 5: What's Left at 90
       document.getElementById('summaryStart').textContent = formatFullCurrency(balanceAt60);
@@ -1822,10 +1949,10 @@
       const withdrawalDisplay = formatCurrency(totalWithdrawalPerYear);
 
       // Scenario 1: What happens if you stop contributing TODAY
-      const stopNowResult = simulateWithStopAge(iraBalanceStart, rothBalanceStart, currentAge, currentAge, iraWithdrawal);
+      const stopNowResult = simulateWithStopAge(iraBalanceStart, rothBalanceStart, currentAge, currentAge, iraWithdrawal, inflationEnabled);
 
       // Scenario 2: Find the minimum stop age needed
-      const stopAgeResult = findOptimalStopAge(iraBalanceStart, rothBalanceStart, currentAge, iraWithdrawal);
+      const stopAgeResult = findOptimalStopAge(iraBalanceStart, rothBalanceStart, currentAge, iraWithdrawal, inflationEnabled);
 
       // Scenario 3: Continue to 60 (already calculated as balanceAt60 and remainingAt90)
 
@@ -1900,6 +2027,14 @@
       const monthlySpendingFuture = getInflationAdjustedMonthlySpending();
       document.getElementById('answerMonthlySpending').textContent = formatCurrency(monthlySpendingToday);
       document.getElementById('answerFutureMonthly').textContent = formatCurrency(monthlySpendingFuture);
+
+      // Update footer text based on inflation mode
+      const answerFooter = document.getElementById('answerFooter');
+      if (inflationEnabled) {
+        answerFooter.innerHTML = `Based on <strong id="answerMonthlySpending">${formatCurrency(monthlySpendingToday)}</strong>/month in today's dollars (<span id="answerFutureMonthly">${formatCurrency(monthlySpendingFuture)}</span>/mo at 60, increasing 3%/yr)`;
+      } else {
+        answerFooter.innerHTML = `Based on <strong id="answerMonthlySpending">${formatCurrency(monthlySpendingFuture)}</strong>/month spending from age 60-90`;
+      }
 
       // Update Charts
       updateChart(yearlyData, RETIREMENT_AGE);
