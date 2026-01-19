@@ -1595,52 +1595,57 @@
       const totalAt60 = ira + roth;
 
       // Phase 2: Decumulation from 60 to 90 (monthly simulation)
-      for (let age = RETIREMENT_AGE; age < LIFE_EXPECTANCY; age++) {
-        // Calculate this year's withdrawal (inflated from age 60 baseline if enabled)
-        const yearsIntoRetirement = age - RETIREMENT_AGE;
-        const inflationMultiplier = applyInflation ? Math.pow(1 + INFLATION_RATE, yearsIntoRetirement) : 1;
-        const thisYearIraWithdrawal = annualIraWithdrawalAt60 * inflationMultiplier;
-        const thisYearRothWithdrawal = thisYearIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
-        const monthlyIraWithdrawal = thisYearIraWithdrawal / 12;
-        const monthlyRothWithdrawal = thisYearRothWithdrawal / 12;
+      // Withdrawals start at age 61 (first year of retirement spending)
+      // This matches the main calculate() function's logic
+      for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
+        // Only withdraw after retirement age (ages 61-90)
+        if (age > RETIREMENT_AGE) {
+          // Calculate this year's withdrawal (inflated from age 60 baseline if enabled)
+          const yearsIntoRetirement = age - RETIREMENT_AGE;
+          const inflationMultiplier = applyInflation ? Math.pow(1 + INFLATION_RATE, yearsIntoRetirement) : 1;
+          const thisYearIraWithdrawal = annualIraWithdrawalAt60 * inflationMultiplier;
+          const thisYearRothWithdrawal = thisYearIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+          const monthlyIraWithdrawal = thisYearIraWithdrawal / 12;
+          const monthlyRothWithdrawal = thisYearRothWithdrawal / 12;
 
-        for (let month = 0; month < 12; month++) {
-          // Grow first
-          ira *= (1 + MONTHLY_GROWTH_RATE);
-          roth *= (1 + MONTHLY_GROWTH_RATE);
+          for (let month = 0; month < 12; month++) {
+            // Grow first
+            ira *= (1 + MONTHLY_GROWTH_RATE);
+            roth *= (1 + MONTHLY_GROWTH_RATE);
 
-          // Withdraw with flexible ratio - if one account runs low, take more from the other
-          let iraWithdraw = monthlyIraWithdrawal;
-          let rothWithdraw = monthlyRothWithdrawal;
+            // Withdraw with flexible ratio - if one account runs low, take more from the other
+            let iraWithdraw = monthlyIraWithdrawal;
+            let rothWithdraw = monthlyRothWithdrawal;
 
-          // If Roth can't cover its share, take more from IRA
-          if (roth < rothWithdraw) {
-            const shortfall = rothWithdraw - roth;
-            rothWithdraw = Math.max(0, roth);
-            iraWithdraw += shortfall;
-          }
+            // If Roth can't cover its share, take more from IRA
+            if (roth < rothWithdraw) {
+              const shortfall = rothWithdraw - roth;
+              rothWithdraw = Math.max(0, roth);
+              iraWithdraw += shortfall;
+            }
 
-          // If IRA can't cover its share, take more from Roth
-          if (ira < iraWithdraw) {
-            const shortfall = iraWithdraw - ira;
-            iraWithdraw = Math.max(0, ira);
-            rothWithdraw += shortfall;
-          }
+            // If IRA can't cover its share, take more from Roth
+            if (ira < iraWithdraw) {
+              const shortfall = iraWithdraw - ira;
+              iraWithdraw = Math.max(0, ira);
+              rothWithdraw += shortfall;
+            }
 
-          ira -= iraWithdraw;
-          roth -= rothWithdraw;
+            ira -= iraWithdraw;
+            roth -= rothWithdraw;
 
-          // Only "ran out" if BOTH accounts are depleted
-          if (ira <= 0 && roth <= 0) {
-            const ranOutAge = age + (month / 12);
-            return {
-              iraAt60, rothAt60, totalAt60,
-              iraRemaining: 0,
-              rothRemaining: 0,
-              totalRemaining: 0,
-              ranOut: true,
-              ranOutAge: Math.ceil(ranOutAge)
-            };
+            // Only "ran out" if BOTH accounts are depleted
+            if (ira <= 0 && roth <= 0) {
+              const ranOutAge = age + (month / 12);
+              return {
+                iraAt60, rothAt60, totalAt60,
+                iraRemaining: 0,
+                rothRemaining: 0,
+                totalRemaining: 0,
+                ranOut: true,
+                ranOutAge: Math.ceil(ranOutAge)
+              };
+            }
           }
         }
       }
