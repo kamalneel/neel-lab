@@ -352,20 +352,20 @@
     /* Inflation Toggle */
     .inflation-toggle {
       margin-top: var(--space-4);
-      padding: var(--space-4);
+      padding: var(--space-4) var(--space-6);
       background: var(--color-bg-tertiary);
       border-radius: var(--radius-lg);
       border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
     }
 
     .toggle-label {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: var(--space-4);
       cursor: pointer;
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
     }
 
     .toggle-label input {
@@ -408,13 +408,26 @@
       background: var(--color-accent);
     }
 
-    .toggle-text {
-      user-select: none;
-      line-height: 1.3;
-    }
-
     .toggle-label:hover .toggle-slider {
       border-color: var(--color-accent);
+    }
+
+    .toggle-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      user-select: none;
+    }
+
+    .toggle-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .toggle-desc {
+      font-size: 0.8rem;
+      color: var(--color-text-tertiary);
     }
 
     .calculate-btn {
@@ -928,8 +941,11 @@
           <label class="toggle-label">
             <input type="checkbox" id="inflationToggle" checked onchange="updateFromMonthlyInput(); calculate();">
             <span class="toggle-slider"></span>
-            <span class="toggle-text">Inflation-Adjusted<br><small style="color: var(--color-text-tertiary);">Spending increases 3%/year during retirement</small></span>
           </label>
+          <div class="toggle-content">
+            <span class="toggle-title">Inflation-Adjusted</span>
+            <span class="toggle-desc">Spending increases 3%/year during retirement</span>
+          </div>
         </div>
 
         <div class="withdrawal-breakdown" id="inflationNote">
