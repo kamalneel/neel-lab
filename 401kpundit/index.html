@@ -715,6 +715,23 @@
       background: linear-gradient(135deg, var(--color-accent-muted), var(--color-bg-tertiary));
     }
 
+    .scenario-card.info {
+      border-color: var(--color-blue);
+      background: linear-gradient(135deg, var(--color-blue-muted), var(--color-bg-tertiary));
+    }
+
+    .scenario-card.info .scenario-recommend-badge {
+      background: var(--color-blue);
+    }
+
+    .scenario-card.info .scenario-main-answer {
+      color: var(--color-blue);
+    }
+
+    .result-text.info {
+      color: var(--color-blue);
+    }
+
     .scenario-recommend-badge {
       position: absolute;
       top: -12px;
@@ -1022,18 +1039,18 @@
 
           <!-- Scenario 3: If You Continue to 60 -->
           <div class="scenario-card" id="scenarioContinue">
-            <div class="scenario-title">If You Continue to 60</div>
+            <div class="scenario-title" id="continueHeader">If You Continue to 60</div>
             <div class="scenario-result bonus" id="continueResult">
               <span class="result-icon">🎯</span>
               <span class="result-text">$10.5M cushion</span>
             </div>
             <div class="scenario-stats">
               <div class="scenario-stat">
-                <span class="stat-label">Balance at 60</span>
+                <span class="stat-label" id="continueLabel60">Balance at 60</span>
                 <span class="stat-value" id="continueBalance60">$3.6M</span>
               </div>
               <div class="scenario-stat">
-                <span class="stat-label">Remaining at 90</span>
+                <span class="stat-label" id="continueLabel90">Remaining at 90</span>
                 <span class="stat-value" id="continueRemaining90">$10.5M</span>
               </div>
             </div>
@@ -1696,6 +1713,119 @@
       };
     }
 
+    /**
+     * Find the maximum sustainable monthly spending given balance at retirement
+     * Uses binary search to find the highest spending that lasts until 90
+     */
+    function findSustainableSpending(iraAt60, rothAt60, applyInflation = true) {
+      let low = 1000;  // $1K/month minimum
+      let high = 50000; // $50K/month maximum
+      let iterations = 0;
+      const maxIterations = 30;
+
+      while (high - low > 500 && iterations < maxIterations) {
+        const mid = (low + high) / 2;
+        const iraWithdrawal = calculateIraFromMonthlySpending(mid);
+
+        // Simulate retirement with this spending level
+        let ira = iraAt60;
+        let roth = rothAt60;
+        let ranOut = false;
+
+        for (let age = RETIREMENT_AGE; age <= LIFE_EXPECTANCY; age++) {
+          if (age > RETIREMENT_AGE) {
+            const yearsIntoRetirement = age - RETIREMENT_AGE;
+            const inflationMultiplier = applyInflation ? Math.pow(1 + INFLATION_RATE, yearsIntoRetirement) : 1;
+            const thisYearIraWithdrawal = iraWithdrawal * inflationMultiplier;
+            const thisYearRothWithdrawal = thisYearIraWithdrawal * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+            const monthlyIra = thisYearIraWithdrawal / 12;
+            const monthlyRoth = thisYearRothWithdrawal / 12;
+
+            for (let month = 0; month < 12; month++) {
+              ira *= (1 + MONTHLY_GROWTH_RATE);
+              roth *= (1 + MONTHLY_GROWTH_RATE);
+
+              let iraW = monthlyIra, rothW = monthlyRoth;
+              if (roth < rothW) { iraW += rothW - roth; rothW = Math.max(0, roth); }
+              if (ira < iraW) { rothW += iraW - ira; iraW = Math.max(0, ira); }
+
+              ira -= iraW;
+              roth -= rothW;
+
+              if (ira <= 0 && roth <= 0) { ranOut = true; break; }
+            }
+            if (ranOut) break;
+          }
+        }
+
+        if (ranOut) {
+          high = mid; // Too much spending
+        } else {
+          low = mid; // Can afford this, try higher
+        }
+        iterations++;
+      }
+
+      return Math.floor(low / 1000) * 1000; // Round down to nearest $1K
+    }
+
+    /**
+     * Find the age you'd need to work until to afford the desired spending
+     * Searches beyond age 60 if needed
+     */
+    function findRequiredWorkAge(iraBalance, rothBalance, currentAge, iraWithdrawal, applyInflation = true) {
+      const MAX_WORK_AGE = 75; // Don't search beyond 75
+
+      for (let workUntil = RETIREMENT_AGE + 1; workUntil <= MAX_WORK_AGE; workUntil++) {
+        // Simulate: contribute until workUntil, then retire
+        let ira = iraBalance;
+        let roth = rothBalance;
+
+        // Accumulation phase: current age to workUntil
+        for (let age = currentAge; age < workUntil; age++) {
+          for (let month = 0; month < 12; month++) {
+            ira *= (1 + MONTHLY_GROWTH_RATE);
+            roth *= (1 + MONTHLY_GROWTH_RATE);
+            ira += MONTHLY_IRA_CONTRIBUTION;
+            roth += MONTHLY_ROTH_CONTRIBUTION;
+          }
+        }
+
+        // Decumulation phase: workUntil to 90
+        let ranOut = false;
+        const retirementYears = LIFE_EXPECTANCY - workUntil;
+
+        for (let year = 1; year <= retirementYears; year++) {
+          const inflationMultiplier = applyInflation ? Math.pow(1 + INFLATION_RATE, year) : 1;
+          const thisYearIra = iraWithdrawal * inflationMultiplier;
+          const thisYearRoth = thisYearIra * (ROTH_WITHDRAWAL_RATIO / IRA_WITHDRAWAL_RATIO);
+          const monthlyIra = thisYearIra / 12;
+          const monthlyRoth = thisYearRoth / 12;
+
+          for (let month = 0; month < 12; month++) {
+            ira *= (1 + MONTHLY_GROWTH_RATE);
+            roth *= (1 + MONTHLY_GROWTH_RATE);
+
+            let iraW = monthlyIra, rothW = monthlyRoth;
+            if (roth < rothW) { iraW += rothW - roth; rothW = Math.max(0, roth); }
+            if (ira < iraW) { rothW += iraW - ira; iraW = Math.max(0, ira); }
+
+            ira -= iraW;
+            roth -= rothW;
+
+            if (ira <= 0 && roth <= 0) { ranOut = true; break; }
+          }
+          if (ranOut) break;
+        }
+
+        if (!ranOut && (ira + roth) > 0) {
+          return { found: true, workUntilAge: workUntil };
+        }
+      }
+
+      return { found: false, workUntilAge: null };
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // CALCULATION ENGINE
     // ═══════════════════════════════════════════════════════════════
@@ -2025,12 +2155,14 @@
         scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'Great News!';
         scenarioMinimum.className = 'scenario-card primary'; // Green - good news
       } else if (stopAgeResult.status === 'need-more') {
-        minimumAnswerEl.textContent = 'Age 60+';
-        minimumSubtextEl.textContent = 'Need more savings or lower goal';
+        // Calculate what they CAN afford
+        const sustainableSpending = findSustainableSpending(stopAgeResult.totalAt60 * 0.8, stopAgeResult.totalAt60 * 0.2, inflationEnabled);
+        minimumAnswerEl.textContent = formatCurrency(sustainableSpending);
+        minimumSubtextEl.textContent = 'per month is sustainable';
         minimumBalance60El.textContent = formatCurrency(stopAgeResult.totalAt60);
-        minimumRemaining90El.textContent = stopAgeResult.ranOutAge ? `Run out at ${stopAgeResult.ranOutAge}` : '$0';
-        scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'Warning';
-        scenarioMinimum.className = 'scenario-card danger'; // Red - can't achieve goal
+        minimumRemaining90El.textContent = 'Lasts to 90';
+        scenarioMinimum.querySelector('.scenario-recommend-badge').textContent = 'You Can Afford';
+        scenarioMinimum.className = 'scenario-card info'; // Blue - helpful info
       } else {
         const yearsToContribute = stopAgeResult.stopAge - currentAge;
         minimumAnswerEl.textContent = `Age ${stopAgeResult.stopAge}`;
@@ -2047,16 +2179,39 @@
       const continueResultEl = document.getElementById('continueResult');
       const continueBalance60El = document.getElementById('continueBalance60');
       const continueRemaining90El = document.getElementById('continueRemaining90');
-
-      continueBalance60El.textContent = formatCurrency(balanceAt60);
-      continueRemaining90El.textContent = formatCurrency(remainingAt90);
+      const continueHeaderEl = document.getElementById('continueHeader');
+      const continueLabel60El = document.getElementById('continueLabel60');
+      const continueLabel90El = document.getElementById('continueLabel90');
 
       if (remainingAt90 > 0) {
+        // Normal case: show what happens if they continue to 60
+        continueHeaderEl.textContent = 'IF YOU CONTINUE TO 60';
         continueResultEl.innerHTML = `<span class="result-icon">🎯</span><span class="result-text bonus">${formatCurrency(remainingAt90)} cushion</span>`;
+        continueBalance60El.textContent = formatCurrency(balanceAt60);
+        continueRemaining90El.textContent = formatCurrency(remainingAt90);
+        continueLabel60El.textContent = 'Balance at 60';
+        continueLabel90El.textContent = 'Remaining at 90';
         scenarioContinue.className = 'scenario-card bonus'; // Gold - extra cushion
       } else {
-        continueResultEl.innerHTML = `<span class="result-icon">⚠️</span><span class="result-text">Still not enough</span>`;
-        scenarioContinue.className = 'scenario-card warning'; // Red - even max isn't enough
+        // Need-more case: show what age they'd need to work until
+        const requiredWork = findRequiredWorkAge(iraBalanceStart, rothBalanceStart, currentAge, iraWithdrawal, inflationEnabled);
+        continueHeaderEl.textContent = 'TO AFFORD THIS GOAL';
+
+        if (requiredWork.found) {
+          const extraYears = requiredWork.workUntilAge - RETIREMENT_AGE;
+          continueResultEl.innerHTML = `<span class="result-icon">📅</span><span class="result-text info">Work until ${requiredWork.workUntilAge}</span>`;
+          continueBalance60El.textContent = `+${extraYears} years`;
+          continueRemaining90El.textContent = 'Then retire';
+          continueLabel60El.textContent = 'Beyond 60';
+          continueLabel90El.textContent = 'Required';
+        } else {
+          continueResultEl.innerHTML = `<span class="result-icon">⚠️</span><span class="result-text">Lower spending needed</span>`;
+          continueBalance60El.textContent = 'N/A';
+          continueRemaining90El.textContent = 'N/A';
+          continueLabel60El.textContent = 'Balance at 60';
+          continueLabel90El.textContent = 'Remaining at 90';
+        }
+        scenarioContinue.className = 'scenario-card info'; // Blue - helpful info
       }
 
       // Update footer with monthly spending focus
