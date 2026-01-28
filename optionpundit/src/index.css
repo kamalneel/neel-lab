@@ -1,0 +1,356 @@
+@import "tailwindcss";
+
+/**
+ * OptionPundit - Design Tokens
+ * Matching Agrawal Estate Planner theme
+ */
+
+:root {
+  /* Backgrounds */
+  --color-bg-primary: #0D0D0D;
+  --color-bg-secondary: #1A1A1A;
+  --color-bg-tertiary: #242424;
+  --color-bg-elevated: #2D2D2D;
+  --color-bg-hover: #333333;
+  
+  /* Text */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A3A3A3;
+  --color-text-tertiary: #737373;
+  --color-text-inverse: #0D0D0D;
+  
+  /* Accent - "Neel Green" (matching Agrawal Estate Planner) */
+  --color-accent: #00D632;
+  --color-accent-hover: #00E639;
+  --color-accent-muted: rgba(0, 214, 50, 0.12);
+  --color-accent-subtle: rgba(0, 214, 50, 0.06);
+  
+  /* Semantic Colors */
+  --color-positive: #00D632;
+  --color-positive-muted: rgba(0, 214, 50, 0.12);
+  --color-negative: #FF5A5A;
+  --color-negative-muted: rgba(255, 90, 90, 0.12);
+  --color-warning: #FFB800;
+  --color-warning-muted: rgba(255, 184, 0, 0.12);
+  --color-info: #00A3FF;
+  --color-info-muted: rgba(0, 163, 255, 0.12);
+  
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border-focus: var(--color-accent);
+  
+  /* Legacy aliases for compatibility */
+  --color-primary: var(--color-accent);
+  --color-primary-light: var(--color-accent-hover);
+  --color-bg: var(--color-bg-primary);
+  --color-bg-card: var(--color-bg-secondary);
+  --color-text: var(--color-text-primary);
+  --color-text-muted: var(--color-text-secondary);
+  --color-success: var(--color-positive);
+  --color-danger: var(--color-negative);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.25);
+  --shadow-glow-sm: 0 0 10px rgba(0, 214, 50, 0.2);
+  --shadow-glow: 0 0 20px rgba(0, 214, 50, 0.3);
+  --shadow-glow-lg: 0 0 30px rgba(0, 214, 50, 0.4);
+}
+
+/* Base styles */
+body {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background gradient */
+.bg-gradient-main {
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(0, 214, 50, 0.06) 0%, transparent 50%),
+    var(--color-bg-primary);
+}
+
+/* Card styles */
+.card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+}
+
+.card-elevated {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-bg-elevated);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--color-accent); }
+  50% { box-shadow: 0 0 20px var(--color-accent), 0 0 30px var(--color-accent-hover); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Priority badges */
+.priority-urgent {
+  background: linear-gradient(135deg, var(--color-negative), #dc2626);
+  color: white;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.priority-high {
+  background: linear-gradient(135deg, var(--color-warning), #d97706);
+  color: var(--color-text-inverse);
+}
+
+.priority-medium {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  color: var(--color-text-inverse);
+}
+
+.priority-low {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+/* Profit/Loss indicators */
+.profit {
+  color: var(--color-positive);
+}
+
+.loss {
+  color: var(--color-negative);
+}
+
+/* Input styles */
+input, select, textarea {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+input:hover, select:hover, textarea:hover {
+  border-color: var(--color-border-hover);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* Button styles */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+tr:hover td {
+  background: var(--color-accent-subtle);
+}
+
+/* Recommendation card styles */
+.recommendation-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.recommendation-card:hover {
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.recommendation-card.urgent {
+  border-left: 4px solid var(--color-negative);
+}
+
+.recommendation-card.high {
+  border-left: 4px solid var(--color-warning);
+}
+
+.recommendation-card.medium {
+  border-left: 4px solid var(--color-accent);
+}
+
+.recommendation-card.low {
+  border-left: 4px solid var(--color-text-tertiary);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badge-success {
+  background: var(--color-positive-muted);
+  color: var(--color-positive);
+}
+
+.badge-warning {
+  background: var(--color-warning-muted);
+  color: var(--color-warning);
+}
+
+.badge-error {
+  background: var(--color-negative-muted);
+  color: var(--color-negative);
+}
+
+.badge-info {
+  background: var(--color-info-muted);
+  color: var(--color-info);
+}
+
+/* Typography for display */
+.text-display {
+  font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.text-mono {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
