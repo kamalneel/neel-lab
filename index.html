@@ -245,6 +245,11 @@
       gap: var(--space-6);
     }
 
+    /* Keep a lone project card the same size as a tool card */
+    .projects-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
     .app-card {
       background: var(--color-bg-secondary);
       border: 1px solid var(--color-border);
@@ -580,6 +585,7 @@
         <a href="/fundpundit/" class="nav-link">FundPundit</a>
         <a href="/buyborrowdie/" class="nav-link">Buy Borrow Die</a>
         <a href="/401kpundit/" class="nav-link">401k Pundit</a>
+        <a href="/handsfree/" class="nav-link">HandsFree</a>
       </div>
       <button class="nav-toggle" aria-label="Toggle menu">
         <span></span>
@@ -709,6 +715,36 @@
           </p>
           <span class="app-link">
             Launch App
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="apps-section" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <h2>🧪 Projects</h2>
+      </div>
+
+      <div class="apps-grid projects-grid">
+        <!-- HandsFree -->
+        <a href="/handsfree/" class="app-card live">
+          <div class="app-icon">🎙️</div>
+          <h3 class="app-name">
+            HandsFree
+            <span class="status-badge coming">Early</span>
+          </h3>
+          <p class="app-description">
+            Do your whole job without using your hands. See, speak, listen,
+            and get the work done. An early-stage project, looking for people to try it.
+          </p>
+          <span class="app-link">
+            See the project
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>

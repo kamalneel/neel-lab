@@ -1,22 +1,57 @@
 {
   "buildCommand": "cd optionpundit && npm install && npm run build",
   "outputDirectory": ".",
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@3.0.0"
-    }
-  },
   "rewrites": [
-    { "source": "/optionpundit", "destination": "/optionpundit/dist/index.html" },
-    { "source": "/optionpundit/assets/(.*)", "destination": "/optionpundit/dist/assets/$1" },
-    { "source": "/optionpundit/((?!api/).*)", "destination": "/optionpundit/dist/index.html" },
-    { "source": "/fundpundit", "destination": "/fundpundit/index.html" },
-    { "source": "/fundpundit/(.*)", "destination": "/fundpundit/index.html" },
-    { "source": "/buyborrowdie", "destination": "/buyborrowdie/index.html" },
-    { "source": "/buyborrowdie/(.*)", "destination": "/buyborrowdie/index.html" },
-    { "source": "/401kpundit", "destination": "/401kpundit/index.html" },
-    { "source": "/401kpundit/(.*)", "destination": "/401kpundit/index.html" },
-    { "source": "/stockrent", "destination": "/stockrent/index.html" },
-    { "source": "/stockrent/(.*)", "destination": "/stockrent/index.html" }
+    {
+      "source": "/optionpundit",
+      "destination": "/optionpundit/dist/index.html"
+    },
+    {
+      "source": "/optionpundit/assets/(.*)",
+      "destination": "/optionpundit/dist/assets/$1"
+    },
+    {
+      "source": "/optionpundit/((?!api/).*)",
+      "destination": "/optionpundit/dist/index.html"
+    },
+    {
+      "source": "/fundpundit",
+      "destination": "/fundpundit/index.html"
+    },
+    {
+      "source": "/fundpundit/(.*)",
+      "destination": "/fundpundit/index.html"
+    },
+    {
+      "source": "/buyborrowdie",
+      "destination": "/buyborrowdie/index.html"
+    },
+    {
+      "source": "/buyborrowdie/(.*)",
+      "destination": "/buyborrowdie/index.html"
+    },
+    {
+      "source": "/401kpundit",
+      "destination": "/401kpundit/index.html"
+    },
+    {
+      "source": "/401kpundit/(.*)",
+      "destination": "/401kpundit/index.html"
+    },
+    {
+      "source": "/stockrent",
+      "destination": "/stockrent/index.html"
+    },
+    {
+      "source": "/stockrent/(.*)",
+      "destination": "/stockrent/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/handsfree",
+      "destination": "/handsfree/",
+      "permanent": false
+    }
   ]
 }
