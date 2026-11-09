@@ -20,6 +20,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <script src="config.js"></script>
   <script src="app.js" defer></script>
+  <script src="scene.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#problem">Skip to content</a>
@@ -42,21 +43,33 @@
   <main id="top">
     <!-- HERO -->
     <section class="hero">
-      <div class="wrap hero-grid">
+      <div class="wrap">
         <div class="hero-text">
           <p class="eyebrow">An early-stage project</p>
           <h1>See. Speak. Listen.<br><span class="accent">Get the work done.</span></h1>
-          <p class="lede">For thousands of years, that is how people worked. Computers added the keyboard and mouse, and our hands became the bottleneck. HandsFree is software that lets you do your whole job without them.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#join">Get involved</a>
-            <a class="btn btn-ghost" href="#problem">See the problem <span aria-hidden="true">↓</span></a>
-          </div>
+          <p class="lede">An executive’s day runs through a keyboard, a mouse and a phone. HandsFree is software that lets you do it all without your hands.</p>
         </div>
-        <ul class="senses" aria-label="The three senses HandsFree works with">
-          <li><span class="sense-dot" data-icon="eye"></span>See</li>
-          <li><span class="sense-dot" data-icon="mouth"></span>Speak</li>
-          <li><span class="sense-dot" data-icon="ear"></span>Listen</li>
-        </ul>
+
+        <figure class="scene" id="scene" role="img" aria-label="An illustrative executive day at the desk"></figure>
+
+        <details class="sources">
+          <summary>Where these numbers come from</summary>
+          <p>An illustrative day for a desk-based executive, estimated from these studies. Your day will differ.</p>
+          <ul>
+            <li><strong>Email, 2–4 hours a day</strong> in most surveys; McKinsey put it at 28% of the work week. <a href="https://www.mckinsey.com/industries/high-tech/our-insights/the-social-economy">McKinsey Global Institute, 2012</a></li>
+            <li><strong>Meetings, chat and email</strong> take 57% of Microsoft 365 time; documents, slides and spreadsheets the other 43%. <a href="https://www.theregister.com/2023/05/10/microsoft_work_trend_index/">Microsoft Work Trend Index 2023</a></li>
+            <li><strong>117 emails and 153 chat messages</strong> a day, and an interruption every 2 minutes. <a href="https://news.microsoft.com/de-ch/2025/06/17/new-microsoft-study-reveals-the-rise-of-the-infinite-workday-40-of-employees-check-email-before-6-a-m-evening-meetings-up-16/">Microsoft, June 2025</a></li>
+            <li><strong>AI tools:</strong> among people who use them, 47% spend 15–59 minutes a day and 32% an hour or more. <a href="https://www.nber.org/system/files/working_papers/w32966/w32966.pdf">NBER, 2024</a></li>
+            <li><strong>~1,200 app switches a day</strong>, about 4 hours a week lost to refocusing. <a href="https://store.hbr.org/product/how-much-time-and-energy-do-we-waste-toggling-between-applications/H0777V">Harvard Business Review, 2022</a></li>
+            <li><strong>Mouse time runs well above keyboard time</strong> in software-logged office studies. <a href="https://wellnomics.com/wp-content/uploads/2020/01/Wellnomics-white-paper-Keystrokes-vs-Time-as-a-risk-factor-for-MSDs.pdf">Wellnomics</a></li>
+            <li><strong>Speaking is about 3× faster than typing</strong> on a phone. <a href="https://news.stanford.edu/stories/2016/08/stanford-study-speech-recognition-faster-texting">Stanford, 2016</a></li>
+          </ul>
+        </details>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#join">Get involved</a>
+          <a class="btn btn-ghost" href="#problem">See the problem <span aria-hidden="true">↓</span></a>
+        </div>
       </div>
     </section>
 
@@ -66,7 +79,7 @@
         <div class="section-head reveal">
           <p class="eyebrow">The problem</p>
           <h2>Too many ways in.<br>None of them natural.</h2>
-          <p class="body-lg">We type with our fingers. We point with a mouse. We tap on glass. A few AI apps let us talk. What comes back is a mix of screens, sounds and short messages. Every system has its own way in.</p>
+          <p class="body-lg">Type here, click there, tap on the phone, talk to one or two apps. Every system has its own way in.</p>
         </div>
 
         <figure class="diagram reveal" data-mode="today">
@@ -77,11 +90,11 @@
         <div class="pair reveal">
           <div class="point">
             <h3>No uniformity</h3>
-            <p>Keys here, clicks there, a tap on your phone, voice in one or two places. Every app asks for something different.</p>
+            <p>Every app asks for something different.</p>
           </div>
           <div class="point">
             <h3>Not natural</h3>
-            <p>None of it is how people work with each other. We bend to the machine, instead of the other way round.</p>
+            <p>We bend to the machine, not the other way round.</p>
           </div>
         </div>
       </div>
@@ -120,7 +133,7 @@
           </li>
           <li>
             <span class="t-when">The computer age</span>
-            <span class="t-what">Keyboard and mouse added on top. Eyes, ears and voice still in use.</span>
+            <span class="t-what">Keyboard and mouse added on top.</span>
           </li>
           <li class="t-now">
             <span class="t-when">Today</span>
@@ -134,7 +147,7 @@
     <section class="statement">
       <div class="wrap reveal">
         <p class="statement-big">The dependency was never the keyboard.<br><span class="accent">It was our hands.</span></p>
-        <p class="statement-small">HandsFree is not against the keyboard. It is a return to the most natural way we know to work: seeing, speaking and listening.</p>
+        <p class="statement-small">HandsFree isn’t against the keyboard. It just doesn’t need your hands.</p>
       </div>
     </section>
 
@@ -144,7 +157,7 @@
         <div class="section-head reveal">
           <p class="eyebrow">How it works</p>
           <h2>One layer, like a keyboard.</h2>
-          <p class="body-lg">One keyboard works with every app, because every app is built to expect it. With AI, we can build a new layer like that, one that doesn’t have to be rebuilt for each app. You talk to HandsFree. HandsFree works with everything else.</p>
+          <p class="body-lg">A keyboard works with every app because every app expects it. HandsFree is a layer like that, built with AI. You talk to it; it works with everything else.</p>
         </div>
 
         <figure class="diagram reveal" data-mode="hf" data-toggle>
@@ -169,7 +182,7 @@
             <h3 class="mini-head">What it isn’t</h3>
             <ul class="nots">
               <li><strong>Not a new laptop.</strong> It’s software.</li>
-              <li><strong>Not anti-keyboard.</strong> It frees your hands; it doesn’t ban the keys.</li>
+              <li><strong>Not anti-keyboard.</strong> It just frees your hands.</li>
               <li><strong>Not just dictation.</strong> It does the work, not only the typing.</li>
               <li><strong>Not voice commands, app by app.</strong> One layer for all of them.</li>
             </ul>
@@ -195,7 +208,7 @@
         <div class="section-head reveal">
           <p class="eyebrow">Get involved</p>
           <h2>Help build a more natural way to work.</h2>
-          <p class="body-lg">HandsFree is early. We’re looking for people to try it, tell us how they work, and build it with us.</p>
+          <p class="body-lg">HandsFree is early. Try it, tell us how you work, or build it with us.</p>
         </div>
 
         <div class="join reveal">

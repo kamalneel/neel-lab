@@ -19,4 +19,26 @@ window.HANDSFREE_CONFIG = {
 
   // Neel's videos. Each item: { title, youtubeId } or { title, src, poster }.
   videos: [],
+
+  // A video for the top of the page (e.g. from the video agent). When set, it
+  // replaces the drawn desk scene. Example: { src: "hero.mp4", poster: "hero.jpg" }
+  heroVideo: null,
+
+  // The executive's day shown in the desk scene. Minutes per day, an illustrative
+  // estimate built from published studies (see "Where these numbers come from" on the page).
+  day: {
+    apps: [
+      { name: "Email", icon: "mail", min: 140 },
+      { name: "Meetings", icon: "video", min: 120 },
+      { name: "Word & PowerPoint", icon: "file", min: 90 },
+      { name: "Slack & Teams chat", icon: "message", min: 75 },
+      { name: "ChatGPT", icon: "sparkles", min: 35 },
+      { name: "Claude", icon: "sparkles", min: 25 },
+      { name: "Calendar", icon: "calendar", min: 20 },
+      { name: "Google search", icon: "search", min: 15 },
+    ],
+    // How that time is spent, by the way you talk to the machine.
+    inputs: { reading: 190, keyboard: 65, mouse: 110, phone: 40, voice: 5 },
+    appSwitches: 1200,
+  },
 };
